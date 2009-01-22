@@ -19,7 +19,8 @@ HEADERS += include/common.hpp \
 	include/modulation_sources.hpp \
 	include/lfo.hpp \
 	include/applicationmodel.hpp \
-	include/applicationview.hpp
+	include/applicationview.hpp \
+	include/delay.hpp
 
 SOURCES += \
 	src/common.cpp \
@@ -31,4 +32,5 @@ SOURCES += \
 	src/modulation_destinations.cpp \
 	src/lfo.cpp \
 	src/applicationmodel.cpp \
-	src/applicationview.cpp
+	src/applicationview.cpp \
+	src/delay.cpp
