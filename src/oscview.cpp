@@ -4,6 +4,8 @@
 #include <QGridLayout>
 #include <QLabel>
 #include <QComboBox>
+#include <QPushButton>
+#include <QHBoxLayout>
 
 OscView::OscView(QWidget * parent) : QWidget(parent){
 	mFreqSlider = new SliderSpinBox(this);
@@ -90,25 +92,36 @@ void OscView::show_labels(bool show){
 AnalogOscView::AnalogOscView(QWidget * parent) : OscView(parent) {
 
 	QLabel * lab;
+	QHBoxLayout * hlayout = new QHBoxLayout;
+	hlayout->setSpacing(2);
+	hlayout->setContentsMargins(0,0,0,0);
 
 	mWidthSlider = new SliderSpinBox(parent);
 	mShapeSelect = new QComboBox(parent);
+	mSyncButton = new QPushButton("sync 2 -> 1", this);
+	mSyncButton->setCheckable(true);
 
 	mWidthSlider->setRange(0, AnalogOscModel::width_max);
 	mShapeSelect->addItem(QString("saw"));
 	mShapeSelect->addItem(QString("triangle"));
-	mShapeSelect->addItem(QString("saw/triangle mix"));
+	mShapeSelect->addItem(QString("saw/tri mix"));
 	mShapeSelect->addItem(QString("pulse"));
 
 	lab = new QLabel(parent); lab->setText(QString("shape"));
 	mLables.push_back(lab);
 	mLayout->addWidget(lab, 4, 0, Qt::AlignRight);
-	mLayout->addWidget(mShapeSelect, 4, 1);
+	hlayout->addWidget(mShapeSelect);
+	hlayout->addWidget(mSyncButton);
+	mLayout->addLayout(hlayout, 4, 1);
 
-	lab = new QLabel(parent); lab->setText(QString("width"));
+	lab = new QLabel(parent); lab->setText(QString("pulse width"));
 	mLables.push_back(lab);
 	mLayout->addWidget(lab, 5, 0, Qt::AlignRight);
 	mLayout->addWidget(mWidthSlider, 5, 1);
+}
+
+void AnalogOscView::show_sync_button(bool show){
+	mSyncButton->setVisible(show);
 }
 
 DigitalOscView::DigitalOscView(QWidget * parent) : OscView(parent){

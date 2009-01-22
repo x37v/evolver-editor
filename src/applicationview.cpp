@@ -22,6 +22,8 @@ ApplicationView::ApplicationView(QWidget * parent) : QWidget(parent){
 		a->show_labels(false);
 		d->show_labels(false);
 	}
+	//don't show the sync button on the last analog osc
+	mAnalogOscs.back()->show_sync_button(false);
 
 	for(unsigned int i = 0; i < 4; i++){
 		LFOView * lfo = new LFOView(this);

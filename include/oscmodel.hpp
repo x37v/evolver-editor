@@ -43,12 +43,17 @@ class AnalogOscModel : public OscModel {
 	private:
 		shapes mShape;
 		unsigned int mWidth;
+		//sync 2 -> 1
+		bool mSyncing;
 	signals:
 		void shape_changed(shapes);
 		void width_changed(unsigned int);
+		void sync_changed(bool);
 	public slots:
 		void set_shape(shapes shape);
 		void set_width(unsigned int width);
+		//sync 2 -> 1
+		void sync(bool s);
 };
 
 class DigitalOscModel : public OscModel {

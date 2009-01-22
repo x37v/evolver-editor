@@ -6,7 +6,7 @@
 
 class SliderSpinBox;
 class QGridLayout;
-class QRadioButton;
+class QPushButton;
 class QComboBox;
 class QLabel;
 
@@ -40,8 +40,11 @@ class AnalogOscView : public OscView {
 	private:
 		SliderSpinBox * mWidthSlider;
 		QComboBox * mShapeSelect;
+		QPushButton * mSyncButton;
 	public:
 		AnalogOscView(QWidget * parent = NULL);
+	public slots:
+		void show_sync_button(bool show);
 };
 
 class DigitalOscView : public OscView {

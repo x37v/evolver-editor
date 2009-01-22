@@ -69,6 +69,13 @@ void AnalogOscModel::set_width(unsigned int width){
 	}
 }
 
+void AnalogOscModel::sync(bool s){
+	if(s != mSyncing){
+		mSyncing = s;
+		emit(sync_changed(mSyncing));
+	}
+}
+
 
 DigitalOscModel::DigitalOscModel(QObject * parent): OscModel(parent){
 	mShape = 0;
