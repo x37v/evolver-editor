@@ -56,11 +56,12 @@ void DelayModel::set_delay_level(unsigned int index, int level){
 	}
 }
 
-void DelayModel::set_delay_sync(unsigned int index, sync_type t){
+void DelayModel::set_delay_sync(unsigned int index, int t){
+	sync_type type = (sync_type)t;
 	if (index > 2)
 		return;
-	if(t != mDelaySync[index]){
-		mDelaySync[index] = t;
+	if(type != mDelaySync[index]){
+		mDelaySync[index] = type;
 		emit(delay_sync_changed(index, mDelaySync[index]));
 	}
 }
@@ -129,5 +130,158 @@ DelayView::DelayView(QWidget * parent) : QWidget(parent) {
 
 	mLayout->setSpacing(1);
 	setLayout(mLayout);
+
+	//connect internal signals/slots
+	QObject::connect(mDelayTime[0], SIGNAL(valueChanged(int)),
+			this, SLOT(set_delay_time_0(int)));
+	QObject::connect(mDelayLevel[0], SIGNAL(valueChanged(int)),
+			this, SLOT(set_delay_level_0(int)));
+	QObject::connect(mDelaySync[0], SIGNAL(currentIndexChanged(int)),
+			this, SLOT(set_delay_sync_0(int)));
+
+	QObject::connect(mDelayTime[1], SIGNAL(valueChanged(int)),
+			this, SLOT(set_delay_time_1(int)));
+	QObject::connect(mDelayLevel[1], SIGNAL(valueChanged(int)),
+			this, SLOT(set_delay_level_1(int)));
+	QObject::connect(mDelaySync[1], SIGNAL(currentIndexChanged(int)),
+			this, SLOT(set_delay_sync_1(int)));
+
+	QObject::connect(mDelayTime[2], SIGNAL(valueChanged(int)),
+			this, SLOT(set_delay_time_2(int)));
+	QObject::connect(mDelayLevel[2], SIGNAL(valueChanged(int)),
+			this, SLOT(set_delay_level_2(int)));
+	QObject::connect(mDelaySync[2], SIGNAL(currentIndexChanged(int)),
+			this, SLOT(set_delay_sync_2(int)));
+
+	//connect out signals
+	QObject::connect(mFeedbackLevel,
+			SIGNAL(valueChanged(int)),
+			this, 
+			SIGNAL(feedback_level_changed(int)));
+	QObject::connect(mFilterFeedbackLevel,
+			SIGNAL(valueChanged(int)),
+			this, 
+			SIGNAL(filter_feedback_level_changed(int)));
 }
+
+void DelayView::connect_to_model(DelayModel * model){
+
+	QObject::connect(
+			this,
+			SIGNAL(delay_time_changed(unsigned int, int)),
+			model,
+			SLOT(set_delay_time(unsigned int, int)));
+	QObject::connect(
+			model,
+			SIGNAL(delay_time_changed(unsigned int, int)),
+			this,
+			SLOT(set_delay_time(unsigned int, int)));
+
+	QObject::connect(
+			this,
+			SIGNAL(delay_level_changed(unsigned int, int)),
+			model,
+			SLOT(set_delay_level(unsigned int, int)));
+	QObject::connect(
+			model,
+			SIGNAL(delay_level_changed(unsigned int, int)),
+			this,
+			SLOT(set_delay_level(unsigned int, int)));
+
+	QObject::connect(
+			this,
+			SIGNAL(delay_sync_changed(unsigned int, int)),
+			model,
+			SLOT(set_delay_sync(unsigned int, int)));
+	QObject::connect(
+			model,
+			SIGNAL(delay_sync_changed(unsigned int, int)),
+			this,
+			SLOT(set_delay_sync(unsigned int, int)));
+
+	QObject::connect(
+			this,
+			SIGNAL(feedback_level_changed(int)),
+			model,
+			SLOT(set_feedback_level(int)));
+	QObject::connect(
+			model,
+			SIGNAL(feedback_level_changed(int)),
+			this,
+			SLOT(set_feedback_level(int)));
+
+	QObject::connect(
+			this,
+			SIGNAL(filter_feedback_level_changed(int)),
+			model,
+			SLOT(set_filter_feedback_level(int)));
+	QObject::connect(
+			model,
+			SIGNAL(filter_feedback_level_changed(int)),
+			this,
+			SLOT(set_filter_feedback_level(int)));
+}
+
+void DelayView::set_delay_time_0(int time){
+	emit(delay_time_changed(0, time));
+}
+
+void DelayView::set_delay_level_0(int level){
+	emit(delay_level_changed(0, level));
+}
+
+void DelayView::set_delay_sync_0(int s){
+	emit(delay_sync_changed(0, s));
+}
+
+void DelayView::set_delay_time_1(int time){
+	emit(delay_time_changed(1, time));
+}
+
+void DelayView::set_delay_level_1(int level){
+	emit(delay_level_changed(1, level));
+}
+
+void DelayView::set_delay_sync_1(int s){
+	emit(delay_sync_changed(1, s));
+}
+
+void DelayView::set_delay_time_2(int time){
+	emit(delay_time_changed(2, time));
+}
+
+void DelayView::set_delay_level_2(int level){
+	emit(delay_level_changed(2, level));
+}
+
+void DelayView::set_delay_sync_2(int s){
+	emit(delay_sync_changed(2, s));
+}
+
+void DelayView::set_delay_time(unsigned int index, int time){
+	if(index > 2)
+		return;
+	mDelayTime[index]->setValue(time);
+}
+
+void DelayView::set_delay_level(unsigned int index, int level){
+	if(index > 2)
+		return;
+	mDelayLevel[index]->setValue(level);
+}
+
+void DelayView::set_delay_sync(unsigned int index, int t){
+	if(index > 2)
+		return;
+	mDelaySync[index]->setCurrentIndex(t);
+}
+
+void DelayView::set_feedback_level(int level){
+	mFeedbackLevel->setValue(level);
+}
+
+void DelayView::set_filter_feedback_level(int level){
+	mFilterFeedbackLevel->setValue(level);
+}
+
 

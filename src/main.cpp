@@ -1,6 +1,7 @@
 #include "oscmodel.hpp"
 #include "oscview.hpp"
 #include "lfo.hpp"
+#include "delay.hpp"
 #include <QApplication>
 #include "modulation_destinations.hpp"
 #include "applicationmodel.hpp"
@@ -23,6 +24,10 @@ int main(int argc, char *argv[])
 
 	view->audio_and_envelopes()->digital_oscs()->front()->connect_to_model(model->digital_oscs()->front());
 	model->digital_oscs()->front()->set_shape(100);
+
+	view->audio_and_envelopes()->delay()->connect_to_model(model->delay());
+	model->delay()->set_feedback_level(25);
+	model->delay()->set_delay_sync(1,3);
 	*/
 	
 	//AudioAndEnvelopeView * view = new AudioAndEnvelopeView();

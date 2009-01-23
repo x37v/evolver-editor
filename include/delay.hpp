@@ -34,7 +34,7 @@ class DelayModel : public QObject {
 	public slots:
 		void set_delay_time(unsigned int index, int time);
 		void set_delay_level(unsigned int index, int level);
-		void set_delay_sync(unsigned int index, sync_type t);
+		void set_delay_sync(unsigned int index, int t);
 		void set_feedback_level(int level);
 		void set_filter_feedback_level(int level);
 	signals:
@@ -60,6 +60,7 @@ class DelayView : public QWidget {
 	Q_OBJECT
 	public:
 		DelayView(QWidget * parent = NULL);
+		void connect_to_model(DelayModel * model);
 	private:
 		SliderSpinBox * mDelayTime[3];
 		SliderSpinBox * mDelayLevel[3];
@@ -67,6 +68,29 @@ class DelayView : public QWidget {
 		SliderSpinBox * mFeedbackLevel;
 		SliderSpinBox * mFilterFeedbackLevel;
 		QGridLayout * mLayout;
+	private slots:
+		//these simply map the individual signals to the signal (index, value)
+		void set_delay_time_0(int time);
+		void set_delay_level_0(int level);
+		void set_delay_sync_0(int s);
+		void set_delay_time_1(int time);
+		void set_delay_level_1(int level);
+		void set_delay_sync_1(int s);
+		void set_delay_time_2(int time);
+		void set_delay_level_2(int level);
+		void set_delay_sync_2(int s);
+	public slots:
+		void set_delay_time(unsigned int index, int time);
+		void set_delay_level(unsigned int index, int level);
+		void set_delay_sync(unsigned int index, int t);
+		void set_feedback_level(int level);
+		void set_filter_feedback_level(int level);
+	signals:
+		void delay_time_changed(unsigned int index, int time);
+		void delay_level_changed(unsigned int index, int time);
+		void delay_sync_changed(unsigned int index, int time);
+		void feedback_level_changed(int);
+		void filter_feedback_level_changed(int);
 };
 
 #endif
