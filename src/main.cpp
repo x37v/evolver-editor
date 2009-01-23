@@ -11,6 +11,7 @@
 #include "audioandenvelopeview.hpp"
 #include "modulationview.hpp"
 #include "modulators.hpp"
+#include "miscaudio.hpp"
 
 int main(int argc, char *argv[])
 {
@@ -37,6 +38,9 @@ int main(int argc, char *argv[])
 
 	view->audio_and_envelopes()->env3()->connect_to_model(model->env3());
 	model->env3()->set_velocity(25);
+	
+	view->audio_and_envelopes()->misc_audio()->connect_to_model(model->misc_audio());
+	model->misc_audio()->set_volume(25);
 	*/
 	
 	//AudioAndEnvelopeView * view = new AudioAndEnvelopeView();

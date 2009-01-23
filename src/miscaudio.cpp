@@ -1,4 +1,5 @@
 #include "miscaudio.hpp"
+#include "common.hpp"
 
 const unsigned int MiscAudioModel::volume_max = 100;
 const unsigned int MiscAudioModel::distortion_max = 99;
@@ -9,7 +10,7 @@ const unsigned int MiscAudioModel::ext_in_volume_max = 100;
 MiscAudioModel::MiscAudioModel(QObject * parent) : QObject(parent){
 	mVolume = 100;
 	mDistortionType = internal;
-	mDistortion = 0;
+	mDistortionAmount = 0;
 	mOutputHack = 0;
 	mInputHack = 0;
 	mNoiseVolume = 0;
@@ -17,6 +18,70 @@ MiscAudioModel::MiscAudioModel(QObject * parent) : QObject(parent){
 	mExtInVolume = 0;
 	mEnvCurve = exponential;
 }
+
+void MiscAudioModel::set_volume(int val){
+	if(in_range_and_new<unsigned int>((unsigned int)val, mVolume, volume_max)){
+		mVolume = val;
+		emit(volume_changed(mVolume));
+	}
+}
+
+void MiscAudioModel::set_distortion_type(int val){
+	if(in_range_and_new<unsigned int>((unsigned int)val, mDistortionType, 1)){
+		mDistortionType = (distortion_type)val;
+		emit(distortion_type_changed(mDistortionType));
+	}
+}
+
+void MiscAudioModel::set_distortion_amount(int val){
+	if(in_range_and_new<unsigned int>((unsigned int)val, mDistortionAmount, distortion_max)){
+		mDistortionAmount = val;
+		emit(emit(distortion_amount_changed(mDistortionAmount)));
+	}
+}
+
+void MiscAudioModel::set_output_hack(int val){
+	if(in_range_and_new<unsigned int>((unsigned int)val, mOutputHack, hack_max)){
+		mOutputHack = val;
+		emit(output_hack_changed(mOutputHack));
+	}
+}
+
+void MiscAudioModel::set_input_hack(int val){
+	if(in_range_and_new<unsigned int>((unsigned int)val, mInputHack, hack_max)){
+		mInputHack = val;
+		emit(input_hack_changed(mInputHack));
+	}
+}
+
+void MiscAudioModel::set_noise_volume(int val){
+	if(in_range_and_new<unsigned int>((unsigned int)val, mNoiseVolume, noise_volume_max)){
+		mNoiseVolume = val;
+		emit(noise_volume_changed(mNoiseVolume));
+	}
+}
+
+void MiscAudioModel::set_ext_in_mode(int val){
+	if(in_range_and_new<unsigned int>((unsigned int)val, mExtInMode, 3)){
+		mExtInMode = (ext_in_mode_type)val;
+		emit(ext_in_mode_changed(mExtInMode));
+	}
+}
+
+void MiscAudioModel::set_ext_in_volume(int val){
+	if(in_range_and_new<unsigned int>((unsigned int)val, mExtInVolume, ext_in_volume_max)){
+		mExtInVolume = val;
+		emit(ext_in_volume_changed(mExtInVolume));
+	}
+}
+
+void MiscAudioModel::set_env_curve(int val){
+	if(in_range_and_new<unsigned int>((unsigned int)val, mEnvCurve, 1)){
+		mEnvCurve = (env_curve_type)val;
+		emit(env_curve_changed(mEnvCurve));
+	}
+}
+
 
 #include <QLabel>
 #include <QComboBox>
@@ -29,7 +94,7 @@ MiscAudioView::MiscAudioView(QWidget * parent) : QWidget(parent){
 	mLayout = new QGridLayout(this);
 	mVolume = new SliderSpinBox(this);
 	mDistortionType = new QComboBox(this);
-	mDistortion = new SliderSpinBox(this);
+	mDistortionAmount = new SliderSpinBox(this);
 	mOutputHack = new SliderSpinBox(this);
 	mInputHack = new SliderSpinBox(this);
 	mNoiseVolume = new SliderSpinBox(this);
@@ -42,7 +107,7 @@ MiscAudioView::MiscAudioView(QWidget * parent) : QWidget(parent){
 
 	mDistortionType->addItem("internal");
 	mDistortionType->addItem("input");
-	mDistortion->setRange(0, MiscAudioModel::distortion_max);
+	mDistortionAmount->setRange(0, MiscAudioModel::distortion_max);
 	mOutputHack->setRange(0, MiscAudioModel::hack_max);
 	mInputHack->setRange(0, MiscAudioModel::hack_max);
 	mNoiseVolume->setRange(0, MiscAudioModel::noise_volume_max);
@@ -54,7 +119,7 @@ MiscAudioView::MiscAudioView(QWidget * parent) : QWidget(parent){
 	mExtInVolume->setRange(0, MiscAudioModel::ext_in_volume_max);
 
 	mEnvCurve->addItem("exponential");
-	mEnvCurve->addItem("stereo");
+	mEnvCurve->addItem("linear");
 
 	//label and plot
 	lab = new QLabel(QString("volume"));
@@ -66,7 +131,7 @@ MiscAudioView::MiscAudioView(QWidget * parent) : QWidget(parent){
 	mLayout->addWidget(lab, 1, 0, Qt::AlignRight);
 
 	lab = new QLabel(QString("dist amt"));
-	mLayout->addWidget(mDistortion, 2, 1);
+	mLayout->addWidget(mDistortionAmount, 2, 1);
 	mLayout->addWidget(lab, 2, 0, Qt::AlignRight);
 
 	lab = new QLabel(QString("output hack"));
@@ -97,4 +162,181 @@ MiscAudioView::MiscAudioView(QWidget * parent) : QWidget(parent){
 	mLayout->setRowStretch(10, 1);
 
 	setLayout(mLayout);
+	
+	//connect out signals
+	QObject::connect(mVolume,
+			SIGNAL(valueChanged(int)),
+			this,
+			SIGNAL(volume_changed(int)));
+	QObject::connect(mDistortionType,
+			SIGNAL(currentIndexChanged(int)),
+			this,
+			SIGNAL(distortion_type_changed(int)));
+	QObject::connect(mDistortionAmount,
+			SIGNAL(valueChanged(int)),
+			this,
+			SIGNAL(distortion_amount_changed(int)));
+	QObject::connect(mOutputHack,
+			SIGNAL(valueChanged(int)),
+			this,
+			SIGNAL(output_hack_changed(int)));
+	QObject::connect(mInputHack,
+			SIGNAL(valueChanged(int)),
+			this,
+			SIGNAL(input_hack_changed(int)));
+	QObject::connect(mNoiseVolume,
+			SIGNAL(valueChanged(int)),
+			this,
+			SIGNAL(noise_volume_changed(int)));
+	QObject::connect(mExtInMode,
+			SIGNAL(currentIndexChanged(int)),
+			this,
+			SIGNAL(ext_in_mode_changed(int)));
+	QObject::connect(mExtInVolume,
+			SIGNAL(valueChanged(int)),
+			this,
+			SIGNAL(ext_in_volume_changed(int)));
+	QObject::connect(mEnvCurve,
+			SIGNAL(currentIndexChanged(int)),
+			this,
+			SIGNAL(env_curve_changed(int)));
 }
+
+void MiscAudioView::connect_to_model(MiscAudioModel * model){
+
+	QObject::connect(
+			this,
+			SIGNAL(volume_changed(int)),
+			model,
+			SLOT(set_volume(int)));
+	QObject::connect(
+			model,
+			SIGNAL(volume_changed(int)),
+			this,
+			SLOT(set_volume(int)));
+
+	QObject::connect(
+			this,
+			SIGNAL(distortion_type_changed(int)),
+			model,
+			SLOT(set_distortion_type(int)));
+	QObject::connect(
+			model,
+			SIGNAL(distortion_type_changed(int)),
+			this,
+			SLOT(set_distortion_type(int)));
+
+	QObject::connect(
+			this,
+			SIGNAL(distortion_amount_changed(int)),
+			model,
+			SLOT(set_distortion_amount(int)));
+	QObject::connect(
+			model,
+			SIGNAL(distortion_amount_changed(int)),
+			this,
+			SLOT(set_distortion_amount(int)));
+
+	QObject::connect(
+			this,
+			SIGNAL(output_hack_changed(int)),
+			model,
+			SLOT(set_output_hack(int)));
+	QObject::connect(
+			model,
+			SIGNAL(output_hack_changed(int)),
+			this,
+			SLOT(set_output_hack(int)));
+
+	QObject::connect(
+			this,
+			SIGNAL(input_hack_changed(int)),
+			model,
+			SLOT(set_input_hack(int)));
+	QObject::connect(
+			model,
+			SIGNAL(input_hack_changed(int)),
+			this,
+			SLOT(set_input_hack(int)));
+
+	QObject::connect(
+			this,
+			SIGNAL(noise_volume_changed(int)),
+			model,
+			SLOT(set_noise_volume(int)));
+	QObject::connect(
+			model,
+			SIGNAL(noise_volume_changed(int)),
+			this,
+			SLOT(set_noise_volume(int)));
+
+	QObject::connect(
+			this,
+			SIGNAL(ext_in_mode_changed(int)),
+			model,
+			SLOT(set_ext_in_mode(int)));
+	QObject::connect(
+			model,
+			SIGNAL(ext_in_mode_changed(int)),
+			this,
+			SLOT(set_ext_in_mode(int)));
+
+	QObject::connect(
+			this,
+			SIGNAL(ext_in_volume_changed(int)),
+			model,
+			SLOT(set_ext_in_volume(int)));
+	QObject::connect(
+			model,
+			SIGNAL(ext_in_volume_changed(int)),
+			this,
+			SLOT(set_ext_in_volume(int)));
+
+	QObject::connect(
+			this,
+			SIGNAL(env_curve_changed(int)),
+			model,
+			SLOT(set_env_curve(int)));
+	QObject::connect(
+			model,
+			SIGNAL(env_curve_changed(int)),
+			this,
+			SLOT(set_env_curve(int)));
+}
+
+void MiscAudioView::set_volume(int val){
+	mVolume->setValue(val);
+}
+
+void MiscAudioView::set_distortion_type(int val){
+	mDistortionType->setCurrentIndex(val);
+}
+
+void MiscAudioView::set_distortion_amount(int val){
+	mDistortionAmount->setValue(val);
+}
+
+void MiscAudioView::set_output_hack(int val){
+	mOutputHack->setValue(val);
+}
+
+void MiscAudioView::set_input_hack(int val){
+	mInputHack->setValue(val);
+}
+
+void MiscAudioView::set_noise_volume(int val){
+	mNoiseVolume->setValue(val);
+}
+
+void MiscAudioView::set_ext_in_mode(int val){
+	mExtInMode->setCurrentIndex(val);
+}
+
+void MiscAudioView::set_ext_in_volume(int val){
+	mExtInVolume->setValue(val);
+}
+
+void MiscAudioView::set_env_curve(int val){
+	mEnvCurve->setCurrentIndex(val);
+}
+
