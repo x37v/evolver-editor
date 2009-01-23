@@ -22,7 +22,8 @@ HEADERS += include/common.hpp \
 	include/applicationview.hpp \
 	include/delay.hpp \
 	include/filter.hpp \
-	include/vca.hpp
+	include/vca.hpp \
+	include/env3.hpp
 
 SOURCES += \
 	src/common.cpp \
@@ -37,5 +38,6 @@ SOURCES += \
 	src/applicationview.cpp \
 	src/delay.cpp \
 	src/filter.cpp \
-	src/vca.cpp
+	src/vca.cpp \
+	src/env3.cpp
 
