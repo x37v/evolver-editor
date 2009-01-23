@@ -102,16 +102,16 @@ DelayView::DelayView(QWidget * parent) : QWidget(parent) {
 		mDelayTime[i] = new SliderSpinBox(this);
 		mDelayLevel[i] = new SliderSpinBox(this);
 
-		lab = new QLabel(QString("delay %1 level").arg(i), this);
-		mLayout->addWidget(lab, 0 + i * 3, 0);
+		lab = new QLabel(QString("%1 level").arg(i + 1), this);
+		mLayout->addWidget(lab, 0 + i * 3, 0, Qt::AlignRight);
 		mLayout->addWidget(mDelayLevel[i], 0 + i * 3, 1);
 
-		lab = new QLabel(QString("delay %1 sync").arg(i), this);
-		mLayout->addWidget(lab, 1 + i * 3, 0);
+		lab = new QLabel(QString("%1 sync").arg(i + 1), this);
+		mLayout->addWidget(lab, 1 + i * 3, 0, Qt::AlignRight);
 		mLayout->addWidget(mDelaySync[i], 1 + i * 3, 1);
 
-		lab = new QLabel(QString("delay %1 time").arg(i), this);
-		mLayout->addWidget(lab, 2 + i * 3, 0);
+		lab = new QLabel(QString("%1 time").arg(i + 1), this);
+		mLayout->addWidget(lab, 2 + i * 3, 0, Qt::AlignRight);
 		mLayout->addWidget(mDelayTime[i], 2 + i * 3, 1);
 
 		mDelayTime[i]->setRange(0, DelayModel::delay_time_max);
@@ -120,11 +120,11 @@ DelayView::DelayView(QWidget * parent) : QWidget(parent) {
 			mDelaySync[i]->addItem(QString(DelayModel::delay_type_names[j]));
 	}
 	lab = new QLabel(QString("fbdk"), this);
-	mLayout->addWidget(lab, 9, 0);
+	mLayout->addWidget(lab, 9, 0, Qt::AlignRight);
 	mLayout->addWidget(mFeedbackLevel, 9, 1);
 
 	lab = new QLabel(QString("fbdk to filter"), this);
-	mLayout->addWidget(lab, 10, 0);
+	mLayout->addWidget(lab, 10, 0, Qt::AlignRight);
 	mLayout->addWidget(mFilterFeedbackLevel, 10, 1);
 
 	mLayout->setSpacing(1);
