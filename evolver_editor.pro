@@ -28,7 +28,8 @@ HEADERS += include/common.hpp \
 	include/miscaudio.hpp \
 	include/miscmodulation.hpp \
 	include/audioandenvelopeview.hpp \
-	include/titledwidget.hpp
+	include/titledwidget.hpp \
+	include/modulationview.hpp
 
 SOURCES += \
 	src/common.cpp \
@@ -49,5 +50,6 @@ SOURCES += \
 	src/miscaudio.cpp \
 	src/miscmodulation.cpp \
 	src/audioandenvelopeview.cpp \
-	src/titledwidget.cpp
+	src/titledwidget.cpp \
+	src/modulationview.cpp
 
