@@ -6,6 +6,7 @@
 #include "env3.hpp"
 #include "feedback.hpp"
 #include "miscaudio.hpp"
+#include "lfo.hpp"
 #include <QSplitter>
 #include <QVBoxLayout>
 #include <QLabel>
@@ -15,6 +16,7 @@ AudioAndEnvelopeView::AudioAndEnvelopeView(QWidget * parent) : QWidget(parent){
 	QGridLayout * topLayout = new QGridLayout(this);
 	QGridLayout * oscLayout = new QGridLayout;
 
+	//allocate!
 	mDelay = new DelayView;
 	mFilter = new FilterView;
 	mVCA = new VCAView;
@@ -22,6 +24,7 @@ AudioAndEnvelopeView::AudioAndEnvelopeView(QWidget * parent) : QWidget(parent){
 	mFeedback = new FeedbackView;
 	mMiscAudio = new MiscAudioView;
 
+	//set up the oscs
 	for(unsigned int i = 0; i < 2; i++){
 		DigitalOscView * d = new DigitalOscView(this);
 		AnalogOscView * a = new AnalogOscView(this);
@@ -54,50 +57,42 @@ AudioAndEnvelopeView::AudioAndEnvelopeView(QWidget * parent) : QWidget(parent){
 	oscLayout->addWidget(new QLabel("analog osc 2", this), 0, 2, Qt::AlignCenter);
 	oscLayout->addWidget(new QLabel("digital osc 1", this), 2, 1, Qt::AlignCenter);
 	oscLayout->addWidget(new QLabel("digital osc 2", this), 2, 2, Qt::AlignCenter);
-
 	oscLayout->setRowStretch(10,1);
 
 	QWidget * oscs = new QWidget(this);
 	oscs->setLayout(oscLayout);
 
-	QVBoxLayout * delay_feedback_and_env3_layout = new QVBoxLayout;
-	delay_feedback_and_env3_layout->addWidget(new TitledWidget(QString("delay"), mDelay, this));
-	delay_feedback_and_env3_layout->addWidget(new TitledWidget(QString("feedback"), mFeedback, this));
-	delay_feedback_and_env3_layout->addStretch(10);
-	delay_feedback_and_env3_layout->setContentsMargins(1,1,1,1);
-	delay_feedback_and_env3_layout->setSpacing(1);
-	QWidget * delay_feedback_and_env3_widget = new QWidget(this);
-	delay_feedback_and_env3_widget->setLayout(delay_feedback_and_env3_layout);
+	//create a layout for the far right pane
+	QVBoxLayout * delay_feedback_and_misc_layout = new QVBoxLayout;
+	delay_feedback_and_misc_layout->addWidget(new TitledWidget(QString("delay"), mDelay, this));
+	delay_feedback_and_misc_layout->addWidget(new TitledWidget(QString("feedback"), mFeedback, this));
+	delay_feedback_and_misc_layout->addWidget(new TitledWidget(QString("misc"), mMiscAudio, this));
+	delay_feedback_and_misc_layout->addStretch(10);
+	delay_feedback_and_misc_layout->setContentsMargins(1,1,1,1);
+	delay_feedback_and_misc_layout->setSpacing(1);
+	QWidget * delay_feedback_and_misc_widget = new QWidget(this);
+	delay_feedback_and_misc_widget->setLayout(delay_feedback_and_misc_layout);
 
-	QVBoxLayout * filt_and_vca_layout = new QVBoxLayout;
-	filt_and_vca_layout->addWidget(new TitledWidget(QString("filter"), mFilter, this));
-	filt_and_vca_layout->addStretch(10);
-	QWidget * filt_and_vca_widget = new QWidget(this);
-	filt_and_vca_widget->setLayout(filt_and_vca_layout);
+	//set up the splitters
+	QSplitter * topLeftHorizSplit = new QSplitter(Qt::Horizontal, this);
+	QSplitter * bottomLeftHorizSplit = new QSplitter(Qt::Horizontal, this);
+	QSplitter * leftVertSplit = new QSplitter(Qt::Vertical, this);
+	QSplitter * masterHorizSplit = new QSplitter(Qt::Horizontal, this);
 
-	/*
-	filt_and_vca_layout->addWidget(new TitledWidget(QString("vca"), mVCA, this));
-	delay_feedback_and_env3_layout->addWidget(new TitledWidget(QString("env 3"), mEnv3, this));
-	mMiscAudio
-	1 lfo?
-	*/
+	topLeftHorizSplit->addWidget(oscs);
+	topLeftHorizSplit->addWidget(new TitledWidget(QString("filter"), mFilter, this));
 
-	QSplitter * topSplitter = new QSplitter(Qt::Horizontal, this);
-	QSplitter * bottomSplitter = new QSplitter(Qt::Horizontal, this);
-	QSplitter * leftSplitter = new QSplitter(Qt::Vertical, this);
+	//add an lfo?
+	bottomLeftHorizSplit->addWidget(new TitledWidget(QString("vca"), mVCA, this));
+	bottomLeftHorizSplit->addWidget(new TitledWidget(QString("env 3"), mEnv3, this));
 
-	topSplitter->addWidget(oscs);
-	topSplitter->addWidget(filt_and_vca_widget);
-	topSplitter->addWidget(delay_feedback_and_env3_widget);
+	leftVertSplit->addWidget(topLeftHorizSplit);
+	leftVertSplit->addWidget(bottomLeftHorizSplit);
 
-	bottomSplitter->addWidget(new TitledWidget(QString("vca"), mVCA, this));
-	bottomSplitter->addWidget(new TitledWidget(QString("env 3"), mEnv3, this));
-	bottomSplitter->addWidget(new TitledWidget(QString("misc"), mMiscAudio, this));
+	masterHorizSplit->addWidget(leftVertSplit);
+	masterHorizSplit->addWidget(delay_feedback_and_misc_widget);
 
-	leftSplitter->addWidget(topSplitter);
-	leftSplitter->addWidget(bottomSplitter);
-
-	topLayout->addWidget(leftSplitter);
+	topLayout->addWidget(masterHorizSplit);
 
 	setLayout(topLayout);
 	topLayout->setContentsMargins(1,1,1,1);
