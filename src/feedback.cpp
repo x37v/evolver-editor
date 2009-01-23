@@ -1,4 +1,5 @@
 #include "feedback.hpp"
+#include "common.hpp"
 
 const unsigned int FeedbackModel::freq_max = 48;
 const unsigned int FeedbackModel::level_max = 100;
@@ -7,6 +8,27 @@ FeedbackModel::FeedbackModel(QObject * parent) : QObject(parent){
 	mFreq = 0;
 	mLevel = 0;
 	mGrunge = false;
+}
+
+void FeedbackModel::set_freq(int f){
+	if(in_range_and_new<unsigned int>((unsigned int)f, mFreq, freq_max)){
+		mFreq = f;
+		emit(freq_changed(mFreq));
+	}
+}
+
+void FeedbackModel::set_level(int l){
+	if(in_range_and_new<unsigned int>((unsigned int)l, mLevel, level_max)){
+		mLevel = l;
+		emit(level_changed(mLevel));
+	}
+}
+
+void FeedbackModel::set_grunge(bool g){
+	if(g != mGrunge){
+		mGrunge = g;
+		emit(grunge_changed(mGrunge));
+	}
 }
 
 #include <QPushButton>
@@ -43,5 +65,68 @@ FeedbackView::FeedbackView(QWidget * parent) : QWidget(parent){
 	mLayout->setRowStretch(3, 1);
 
 	setLayout(mLayout);
+
+	//connect out signals
+	QObject::connect(mFreq,
+			SIGNAL(valueChanged(int)),
+			this,
+			SIGNAL(freq_changed(int)));
+	QObject::connect(mLevel,
+			SIGNAL(valueChanged(int)),
+			this,
+			SIGNAL(level_changed(int)));
+	QObject::connect(mGrunge,
+			SIGNAL(toggled(bool)),
+			this,
+			SIGNAL(grunge_changed(bool)));
 }
+
+void FeedbackView::connect_to_model(FeedbackModel * model){
+
+	QObject::connect(
+			this,
+			SIGNAL(freq_changed(int)),
+			model,
+			SLOT(set_freq(int)));
+	QObject::connect(
+			model,
+			SIGNAL(freq_changed(int)),
+			this,
+			SLOT(set_freq(int)));
+
+	QObject::connect(
+			this,
+			SIGNAL(level_changed(int)),
+			model,
+			SLOT(set_level(int)));
+	QObject::connect(
+			model,
+			SIGNAL(level_changed(int)),
+			this,
+			SLOT(set_level(int)));
+
+	QObject::connect(
+			this,
+			SIGNAL(grunge_changed(bool)),
+			model,
+			SLOT(set_grunge(bool)));
+	QObject::connect(
+			model,
+			SIGNAL(grunge_changed(bool)),
+			this,
+			SLOT(set_grunge(bool)));
+}
+
+void FeedbackView::set_freq(int f){
+	mFreq->setValue(f);
+}
+
+void FeedbackView::set_level(int l){
+	mLevel->setValue(l);
+}
+
+void FeedbackView::set_grunge(bool g){
+	mGrunge->setChecked(g);
+}
+
 
