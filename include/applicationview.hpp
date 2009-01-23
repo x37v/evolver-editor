@@ -11,6 +11,7 @@ class ModRoutingView;
 class DelayView;
 class FilterView;
 class VCAView;
+class Env3View;
 
 class ApplicationView : public QWidget {
 	Q_OBJECT
@@ -24,6 +25,7 @@ class ApplicationView : public QWidget {
 		DelayView * mDelay;
 		FilterView * mFilter;
 		VCAView * mVCA;
+		Env3View * mEnv3;
 };
 
 #endif

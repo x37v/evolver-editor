@@ -2,10 +2,10 @@
 #define ENV3_HPP
 
 #include <QObject>
-class ENV3Model : public QObject {
+class Env3Model : public QObject {
 	Q_OBJECT
 	public:
-		ENV3Model(QObject * parent = NULL);
+		Env3Model(QObject * parent = NULL);
 		static const unsigned int delay_max;
 		static const int amount_min;
 		static const int amount_max;
@@ -30,10 +30,10 @@ class QComboBox;
 class SliderSpinBox;
 class QGridLayout;
 
-class ENV3View : public QWidget {
+class Env3View : public QWidget {
 	Q_OBJECT
 	public:
-		ENV3View(QWidget * parent = NULL);
+		Env3View(QWidget * parent = NULL);
 	private:
 		QGridLayout * mLayout;
 

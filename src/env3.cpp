@@ -1,16 +1,16 @@
 #include "env3.hpp"
 #include "modulation_destinations.hpp"
 
-const int ENV3Model::amount_min = -99;
-const int ENV3Model::amount_max = 99;
-const unsigned int ENV3Model::delay_max = 110;
-const unsigned int ENV3Model::attack_max = 110;
-const unsigned int ENV3Model::decay_max = 110;
-const unsigned int ENV3Model::sustain_max = 100;
-const unsigned int ENV3Model::release_max = 110;
-const unsigned int ENV3Model::velocity_max = 100;
+const int Env3Model::amount_min = -99;
+const int Env3Model::amount_max = 99;
+const unsigned int Env3Model::delay_max = 110;
+const unsigned int Env3Model::attack_max = 110;
+const unsigned int Env3Model::decay_max = 110;
+const unsigned int Env3Model::sustain_max = 100;
+const unsigned int Env3Model::release_max = 110;
+const unsigned int Env3Model::velocity_max = 100;
 
-ENV3Model::ENV3Model(QObject * parent) : QObject(parent){
+Env3Model::Env3Model(QObject * parent) : QObject(parent){
 	mDestination = 0;
 	mDelay = 0;
 	mAmount = 0;
@@ -26,7 +26,7 @@ ENV3Model::ENV3Model(QObject * parent) : QObject(parent){
 #include <QLabel>
 #include "sliderspinbox.hpp"
 
-ENV3View::ENV3View(QWidget * parent) : QWidget(parent){
+Env3View::Env3View(QWidget * parent) : QWidget(parent){
 	QLabel * lab;
 	//allocate
 	mLayout = new QGridLayout(this);
@@ -44,13 +44,13 @@ ENV3View::ENV3View(QWidget * parent) : QWidget(parent){
 	//set up
 	for(unsigned int i = 0; i < NUM_MODULATION_DESTINATIONS; i++)
 		mDestSelect->addItem(QString(modulation_destinations[i]));
-	mDelay->setRange(0, ENV3Model::delay_max);
-	mAmount->setRange(ENV3Model::amount_min, ENV3Model::amount_max);
-	mAttack->setRange(0, ENV3Model::attack_max);
-	mDecay->setRange(0, ENV3Model::decay_max);
-	mSustain->setRange(0, ENV3Model::sustain_max);
-	mRelease->setRange(0, ENV3Model::release_max);
-	mVelocity->setRange(0, ENV3Model::velocity_max);
+	mDelay->setRange(0, Env3Model::delay_max);
+	mAmount->setRange(Env3Model::amount_min, Env3Model::amount_max);
+	mAttack->setRange(0, Env3Model::attack_max);
+	mDecay->setRange(0, Env3Model::decay_max);
+	mSustain->setRange(0, Env3Model::sustain_max);
+	mRelease->setRange(0, Env3Model::release_max);
+	mVelocity->setRange(0, Env3Model::velocity_max);
 
 	//label and plot
 	lab = new QLabel(QString("delay"));
@@ -80,6 +80,10 @@ ENV3View::ENV3View(QWidget * parent) : QWidget(parent){
 	lab = new QLabel(QString("velocity"));
 	mLayout->addWidget(mVelocity, 6, 1);
 	mLayout->addWidget(lab, 6, 0, Qt::AlignRight);
+
+	lab = new QLabel(QString("dest"));
+	mLayout->addWidget(mDestSelect, 7, 1);
+	mLayout->addWidget(lab, 7, 0, Qt::AlignRight);
 
 	mLayout->setSpacing(2);
 	mLayout->setRowStretch(10, 1);

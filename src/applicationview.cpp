@@ -5,6 +5,7 @@
 #include "delay.hpp"
 #include "filter.hpp"
 #include "vca.hpp"
+#include "env3.hpp"
 #include <QSplitter>
 #include <QHBoxLayout>
 #include <QLabel>
@@ -17,8 +18,9 @@ ApplicationView::ApplicationView(QWidget * parent) : QWidget(parent){
 	QGridLayout * delayLayout = new QGridLayout;
 
 	mDelay = new DelayView(this);
-	//mVCA = new VCAView(this);
 	//mFilter = new FilterView(this);
+	//mVCA = new VCAView(this);
+	//mEnv3 = new Env3View(this);
 
 	for(unsigned int i = 0; i < 2; i++){
 		DigitalOscView * d = new DigitalOscView(this);
