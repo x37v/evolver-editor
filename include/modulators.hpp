@@ -7,17 +7,17 @@ class QComboBox;
 class SliderSpinBox;
 class QGridLayout;
 
-class ModModel : public QObject {
+class ModRoutingModel : public QObject {
 	Q_OBJECT
 	public:
 		const static int amount_max;
 		const static int amount_min;
 };
 
-class ModView : public QWidget {
+class ModRoutingView : public QWidget {
 	Q_OBJECT
 	public:
-		ModView(QWidget * parent = NULL);
+		ModRoutingView(QWidget * parent = NULL);
 		std::vector<QLabel *> * labels();
 	public slots:
 		void show_labels(bool show);

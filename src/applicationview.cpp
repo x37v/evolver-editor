@@ -4,6 +4,7 @@
 #include "modulators.hpp"
 #include "delay.hpp"
 #include "filter.hpp"
+#include "vca.hpp"
 #include <QSplitter>
 #include <QHBoxLayout>
 #include <QLabel>
@@ -16,6 +17,7 @@ ApplicationView::ApplicationView(QWidget * parent) : QWidget(parent){
 	QGridLayout * delayLayout = new QGridLayout;
 
 	mDelay = new DelayView(this);
+	//mVCA = new VCAView(this);
 	//mFilter = new FilterView(this);
 
 	for(unsigned int i = 0; i < 2; i++){
@@ -39,7 +41,7 @@ ApplicationView::ApplicationView(QWidget * parent) : QWidget(parent){
 		mLFOs.push_back(lfo);
 		lfo->show_labels(false);
 
-		ModView * v = new ModView(this);
+		ModRoutingView * v = new ModRoutingView(this);
 		modLayout->addWidget(v, i, 1);
 		//modLayout->addWidget(new QLabel(QString("mod %1").arg(i + 1), this), i, 0, Qt::AlignCenter);
 		mMods.push_back(v);

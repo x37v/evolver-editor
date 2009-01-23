@@ -6,15 +6,15 @@
 #include <QGridLayout>
 #include "sliderspinbox.hpp"
 
-const int ModModel::amount_max = 99;
-const int ModModel::amount_min = -99;
+const int ModRoutingModel::amount_max = 99;
+const int ModRoutingModel::amount_min = -99;
 
-ModView::ModView(QWidget * parent) : QWidget(parent){
+ModRoutingView::ModRoutingView(QWidget * parent) : QWidget(parent){
 	QLabel * lab;
 	mLayout = new QGridLayout(this);
 
 	mAmountSlider = new SliderSpinBox(this);
-	mAmountSlider->setRange(ModModel::amount_min, ModModel::amount_max);
+	mAmountSlider->setRange(ModRoutingModel::amount_min, ModRoutingModel::amount_max);
 
 	mSrcSelect = new QComboBox(this);
 	mDestSelect = new QComboBox(this);
@@ -43,11 +43,11 @@ ModView::ModView(QWidget * parent) : QWidget(parent){
 	mLayout->setSpacing(1);
 }
 
-std::vector<QLabel *> * ModView::labels(){
+std::vector<QLabel *> * ModRoutingView::labels(){
 	return &mLabels;
 }
 
-void ModView::show_labels(bool show){
+void ModRoutingView::show_labels(bool show){
 	for(std::vector<QLabel *>::iterator it = mLabels.begin(); it != mLabels.end(); it++)
 		(*it)->setVisible(show);
 }
