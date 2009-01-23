@@ -2,36 +2,24 @@
 #define APPLICATION_VIEW_HPP
 
 #include <QWidget>
-#include <vector>
 
-class LFOView;
-class AnalogOscView;
-class DigitalOscView;
-class ModRoutingView;
-class DelayView;
-class FilterView;
-class VCAView;
-class Env3View;
-class FeedbackView;
-class MiscAudioView;
-class MiscModulationView;
+class QTabWidget;
+class AudioAndEnvelopeView;
+class ModulationView;
+class QVBoxLayout;
 
 class ApplicationView : public QWidget {
 	Q_OBJECT
 	public:
 		ApplicationView(QWidget * parent = NULL);
+		AudioAndEnvelopeView * audio_and_envelopes();
+		ModulationView * modulation();
 	private:
-		std::vector<AnalogOscView *> mAnalogOscs;
-		std::vector<DigitalOscView *> mDigitalOscs;
-		std::vector<LFOView *> mLFOs;
-		std::vector<ModRoutingView *> mMods;
-		DelayView * mDelay;
-		FilterView * mFilter;
-		VCAView * mVCA;
-		Env3View * mEnv3;
-		FeedbackView * mFeedback;
-		MiscAudioView * mMiscAudio;
-		MiscModulationView * mMiscModulation;
+		QVBoxLayout * mLayout;
+		QTabWidget * mTabView;
+
+		AudioAndEnvelopeView * mAudioAndEnvelopes;
+		ModulationView * mModulations;
 };
 
 #endif

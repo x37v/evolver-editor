@@ -12,9 +12,9 @@ int main(int argc, char *argv[])
 {
    QApplication app(argc, argv);
 	ApplicationModel * model = new ApplicationModel(&app);
-	//ApplicationView * view = new ApplicationView();
+	ApplicationView * view = new ApplicationView();
 	//AudioAndEnvelopeView * view = new AudioAndEnvelopeView();
-	ModulationView * view = new ModulationView();
+	//ModulationView * view = new ModulationView();
 	
 	view->show();
    return app.exec();
