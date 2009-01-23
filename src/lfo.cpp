@@ -122,7 +122,7 @@ LFOView::LFOView(QWidget * parent) : QWidget(parent){
 	mLayout->addWidget(mShapeSelect, 3, 1);
 
 
-	lab = new QLabel(this); lab->setText(QString("modulation destination"));
+	lab = new QLabel(this); lab->setText(QString("destination"));
 	mLabels.push_back(lab);
 	mLayout->addWidget(lab, 4, 0, Qt::AlignRight);
 	mLayout->addWidget(mDestSelect, 4, 1);
