@@ -7,6 +7,7 @@
 #include "vca.hpp"
 #include "env3.hpp"
 #include "feedback.hpp"
+#include "miscaudio.hpp"
 #include <QSplitter>
 #include <QHBoxLayout>
 #include <QLabel>
@@ -23,6 +24,7 @@ ApplicationView::ApplicationView(QWidget * parent) : QWidget(parent){
 	//mVCA = new VCAView(this);
 	//mEnv3 = new Env3View(this);
 	//mFeedback = new FeedbackView(this);
+	//mMiscAudio = new MiscAudioView(this);
 
 	for(unsigned int i = 0; i < 2; i++){
 		DigitalOscView * d = new DigitalOscView(this);

@@ -24,7 +24,8 @@ HEADERS += include/common.hpp \
 	include/filter.hpp \
 	include/vca.hpp \
 	include/env3.hpp \
-	include/feedback.hpp
+	include/feedback.hpp \
+	include/miscaudio.hpp
 
 SOURCES += \
 	src/common.cpp \
@@ -41,5 +42,6 @@ SOURCES += \
 	src/filter.cpp \
 	src/vca.cpp \
 	src/env3.cpp \
-	src/feedback.cpp
+	src/feedback.cpp \
+	src/miscaudio.cpp
 
