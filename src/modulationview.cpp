@@ -55,3 +55,16 @@ ModulationView::ModulationView(QWidget * parent) : QWidget(parent){
 
 	setLayout(topLayout);
 }
+
+std::vector<LFOView *> * ModulationView::lfos(){
+	return &mLFOs;
+}
+
+std::vector<ModRoutingView *> * ModulationView::mods(){
+	return &mMods;
+}
+
+MiscModulationView * ModulationView::misc_modulations(){
+	return mMiscModulation;
+}
+

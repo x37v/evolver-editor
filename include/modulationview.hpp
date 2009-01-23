@@ -12,6 +12,9 @@ class ModulationView : public QWidget {
 	Q_OBJECT
 	public:
 		ModulationView(QWidget * parent = NULL);
+		std::vector<LFOView *> * lfos();
+		std::vector<ModRoutingView *> * mods();
+		MiscModulationView * misc_modulations();
 	private:
 		std::vector<LFOView *> mLFOs;
 		std::vector<ModRoutingView *> mMods;
