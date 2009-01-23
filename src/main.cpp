@@ -2,6 +2,7 @@
 #include "oscview.hpp"
 #include "lfo.hpp"
 #include "delay.hpp"
+#include "vca.hpp"
 #include <QApplication>
 #include "modulation_destinations.hpp"
 #include "applicationmodel.hpp"
@@ -28,6 +29,10 @@ int main(int argc, char *argv[])
 	view->audio_and_envelopes()->delay()->connect_to_model(model->delay());
 	model->delay()->set_feedback_level(25);
 	model->delay()->set_delay_sync(1,3);
+
+	view->audio_and_envelopes()->vca()->connect_to_model(model->vca());
+	model->vca()->set_pan(3);
+	model->vca()->set_velocity(25);
 	*/
 	
 	//AudioAndEnvelopeView * view = new AudioAndEnvelopeView();

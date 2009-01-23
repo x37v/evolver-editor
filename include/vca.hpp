@@ -24,6 +24,24 @@ class VCAModel : public QObject {
 			rev_stereo_two,
 			rev_stereo_three
 		};
+	public slots:
+		void set_level(int val);
+		void set_env_amount(int val);
+		void set_attack(int val);
+		void set_decay(int val);
+		void set_sustain(int val);
+		void set_release(int val);
+		void set_velocity(int val);
+		void set_pan(int val);
+	signals:
+		void level_changed(int val);
+		void env_amount_changed(int val);
+		void attack_changed(int val);
+		void decay_changed(int val);
+		void sustain_changed(int val);
+		void release_changed(int val);
+		void velocity_changed(int val);
+		void pan_changed(int val);
 	private:
 		unsigned int mLevel;
 		unsigned int mEnvAmount;
@@ -44,6 +62,7 @@ class VCAView : public QWidget {
 	Q_OBJECT
 	public:
 		VCAView(QWidget * parent = NULL);
+		void connect_to_model(VCAModel * model);
 	private:
 		QGridLayout * mLayout;
 
@@ -55,6 +74,24 @@ class VCAView : public QWidget {
 		SliderSpinBox * mRelease;
 		SliderSpinBox * mVelocity;
 		QComboBox * mPanType;
+	public slots:
+		void set_level(int val);
+		void set_env_amount(int val);
+		void set_attack(int val);
+		void set_decay(int val);
+		void set_sustain(int val);
+		void set_release(int val);
+		void set_velocity(int val);
+		void set_pan(int val);
+	signals:
+		void level_changed(int val);
+		void env_amount_changed(int val);
+		void attack_changed(int val);
+		void decay_changed(int val);
+		void sustain_changed(int val);
+		void release_changed(int val);
+		void velocity_changed(int val);
+		void pan_changed(int val);
 };
 
 #endif

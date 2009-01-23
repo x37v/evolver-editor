@@ -1,4 +1,5 @@
 #include "vca.hpp"
+#include "common.hpp"
 
 const unsigned int VCAModel::level_max = 100;
 const unsigned int VCAModel::env_amount_max = 100;
@@ -28,6 +29,66 @@ VCAModel::VCAModel(QObject * parent) : QObject(parent){
 	mVelocity = 0;
 	mPanType = stereo_one;
 }
+
+void VCAModel::set_level(int val){
+	if(in_range_and_new<unsigned int>((unsigned int)val, mLevel, level_max)){
+		mLevel = val;
+		emit(level_changed(mLevel));
+	}
+}
+
+void VCAModel::set_env_amount(int val){
+	if(in_range_and_new<unsigned int>((unsigned int)val, mEnvAmount, env_amount_max)){
+		mEnvAmount = val;
+		emit(env_amount_changed(mEnvAmount));
+	}
+}
+
+void VCAModel::set_attack(int val){
+	if(in_range_and_new<unsigned int>((unsigned int)val, mAttack, attack_max)){
+		mAttack = val;
+		emit(attack_changed(mAttack));
+	}
+}
+
+void VCAModel::set_decay(int val){
+	if(in_range_and_new<unsigned int>((unsigned int)val, mDecay, decay_max)){
+		mDecay = val;
+		emit(decay_changed(mDecay));
+	}
+}
+
+void VCAModel::set_sustain(int val){
+	if(in_range_and_new<unsigned int>((unsigned int)val, mSustain, sustain_max)){
+		mSustain = val;
+		emit(sustain_changed(mSustain));
+	}
+}
+
+void VCAModel::set_release(int val){
+	if(in_range_and_new<unsigned int>((unsigned int)val, mRelease, release_max)){
+		mRelease = val;
+		emit(release_changed(mRelease));
+	}
+}
+
+void VCAModel::set_velocity(int val){
+	if(in_range_and_new<unsigned int>((unsigned int)val, mVelocity, velocity_max)){
+		mVelocity = val;
+		emit(velocity_changed(mVelocity));
+	}
+}
+
+void VCAModel::set_pan(int val){
+	if(val < 0)
+		return;
+	pan_type pan = (pan_type)val;
+	if(pan != mPanType){
+		mPanType = pan;
+		emit(pan_changed(mPanType));
+	}
+}
+
 
 #include <QComboBox>
 #include <QGridLayout>
@@ -96,5 +157,159 @@ VCAView::VCAView(QWidget * parent) : QWidget(parent){
 	mLayout->setRowStretch(10, 1);
 
 	setLayout(mLayout);
+
+	//connect out signals
+	QObject::connect(mLevel,
+			SIGNAL(valueChanged(int)),
+			this,
+			SIGNAL(level_changed(int)));
+	QObject::connect(mEnvAmount,
+			SIGNAL(valueChanged(int)),
+			this,
+			SIGNAL(env_amount_changed(int)));
+	QObject::connect(mAttack,
+			SIGNAL(valueChanged(int)),
+			this,
+			SIGNAL(attack_changed(int)));
+	QObject::connect(mDecay,
+			SIGNAL(valueChanged(int)),
+			this,
+			SIGNAL(sustain_changed(int)));
+	QObject::connect(mRelease,
+			SIGNAL(valueChanged(int)),
+			this,
+			SIGNAL(release_changed(int)));
+	QObject::connect(mVelocity,
+			SIGNAL(valueChanged(int)),
+			this,
+			SIGNAL(velocity_changed(int)));
+	QObject::connect(mPanType,
+			SIGNAL(currentIndexChanged(int)),
+			this,
+			SIGNAL(pan_changed(int)));
 }
+
+void VCAView::connect_to_model(VCAModel * model){
+
+	QObject::connect(
+			this,
+			SIGNAL(level_changed(int)),
+			model,
+			SLOT(set_level(int)));
+	QObject::connect(
+			model,
+			SIGNAL(level_changed(int)),
+			this,
+			SLOT(set_level(int)));
+
+	QObject::connect(
+			this,
+			SIGNAL(env_amount_changed(int)),
+			model,
+			SLOT(set_env_amount(int)));
+	QObject::connect(
+			model,
+			SIGNAL(env_amount_changed(int)),
+			this,
+			SLOT(set_env_amount(int)));
+
+	QObject::connect(
+			this,
+			SIGNAL(attack_changed(int)),
+			model,
+			SLOT(set_attack(int)));
+	QObject::connect(
+			model,
+			SIGNAL(attack_changed(int)),
+			this,
+			SLOT(set_attack(int)));
+
+	QObject::connect(
+			this,
+			SIGNAL(decay_changed(int)),
+			model,
+			SLOT(set_decay(int)));
+	QObject::connect(
+			model,
+			SIGNAL(decay_changed(int)),
+			this,
+			SLOT(set_decay(int)));
+
+	QObject::connect(
+			this,
+			SIGNAL(sustain_changed(int)),
+			model,
+			SLOT(set_sustain(int)));
+	QObject::connect(
+			model,
+			SIGNAL(sustain_changed(int)),
+			this,
+			SLOT(set_sustain(int)));
+
+	QObject::connect(
+			this,
+			SIGNAL(release_changed(int)),
+			model,
+			SLOT(set_release(int)));
+	QObject::connect(
+			model,
+			SIGNAL(release_changed(int)),
+			this,
+			SLOT(set_release(int)));
+
+	QObject::connect(
+			this,
+			SIGNAL(velocity_changed(int)),
+			model,
+			SLOT(set_velocity(int)));
+	QObject::connect(
+			model,
+			SIGNAL(velocity_changed(int)),
+			this,
+			SLOT(set_velocity(int)));
+
+	QObject::connect(
+			this,
+			SIGNAL(pan_changed(int)),
+			model,
+			SLOT(set_pan(int)));
+	QObject::connect(
+			model,
+			SIGNAL(pan_changed(int)),
+			this,
+			SLOT(set_pan(int)));
+}
+
+void VCAView::set_level(int val){
+	mLevel->setValue(val);
+}
+
+void VCAView::set_env_amount(int val){
+	mEnvAmount->setValue(val);
+}
+
+void VCAView::set_attack(int val){
+	mAttack->setValue(val);
+}
+
+void VCAView::set_decay(int val){
+	mDecay->setValue(val);
+}
+
+void VCAView::set_sustain(int val){
+	mSustain->setValue(val);
+}
+
+void VCAView::set_release(int val){
+	mRelease->setValue(val);
+}
+
+void VCAView::set_velocity(int val){
+	mVelocity->setValue(val);
+}
+
+void VCAView::set_pan(int val){
+	mPanType->setCurrentIndex(val);
+}
+
 
