@@ -90,8 +90,8 @@ MiscAudioView::MiscAudioView(QWidget * parent) : QWidget(parent){
 	mLayout->addWidget(lab, 7, 0, Qt::AlignRight);
 
 	lab = new QLabel(QString("env curve"));
-	mLayout->addWidget(mEnvCurve, 7, 1);
-	mLayout->addWidget(lab, 7, 0, Qt::AlignRight);
+	mLayout->addWidget(mEnvCurve, 8, 1);
+	mLayout->addWidget(lab, 8, 0, Qt::AlignRight);
 
 	mLayout->setSpacing(2);
 	mLayout->setRowStretch(10, 1);
