@@ -10,6 +10,8 @@ class DelayModel : public QObject {
 		const static unsigned int delay_time_max;
 		const static unsigned int delay_level_max;
 		const static unsigned int feedback_level_max;
+		const static unsigned int num_delay_types;
+		const static char* delay_type_names[];
 		enum sync_type {
 			off,
 			steps_32,
@@ -47,6 +49,24 @@ class DelayModel : public QObject {
 		sync_type mDelaySync[3];
 		unsigned int mFeedbackLevel;
 		unsigned int mFilterFeedbackLevel;
+};
+
+#include <QWidget>
+class SliderSpinBox;
+class QComboBox;
+class QGridLayout;
+
+class DelayView : public QWidget {
+	Q_OBJECT
+	public:
+		DelayView(QWidget * parent = NULL);
+	private:
+		SliderSpinBox * mDelayTime[3];
+		SliderSpinBox * mDelayLevel[3];
+		QComboBox * mDelaySync[3];
+		SliderSpinBox * mFeedbackLevel;
+		SliderSpinBox * mFilterFeedbackLevel;
+		QGridLayout * mLayout;
 };
 
 #endif
