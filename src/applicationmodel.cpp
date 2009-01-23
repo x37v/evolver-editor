@@ -24,7 +24,7 @@ ApplicationModel::ApplicationModel(QObject * parent) : QObject(parent){
 	mVCA = new VCAModel(this);
 	mEnv3 = new Env3Model(this);
 	mDelay = new DelayModel(this);
-	mFeedback = new FilterModel(this);
+	mFeedback = new FeedbackModel(this);
 	mMiscAudio = new MiscAudioModel(this);
 	mMiscModulation = new MiscModulationModel(this);
 }
@@ -61,7 +61,7 @@ DelayModel * ApplicationModel::delay(){
 	return mDelay;
 }
 
-FilterModel * ApplicationModel::feedback(){
+FeedbackModel * ApplicationModel::feedback(){
 	return mFeedback;
 }
 

@@ -12,6 +12,7 @@ class VCAView;
 class Env3View;
 class FeedbackView;
 class MiscAudioView;
+class ApplicationModel;
 
 //this is a view/window which include the audio an envelope control settings
 
@@ -27,6 +28,7 @@ class AudioAndEnvelopeView : public QWidget {
 		Env3View * env3();
 		FeedbackView * feedback();
 		MiscAudioView * misc_audio();
+		void connect_to_model(ApplicationModel * model);
 	private:
 		std::vector<AnalogOscView *> mAnalogOscs;
 		std::vector<DigitalOscView *> mDigitalOscs;

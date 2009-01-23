@@ -64,3 +64,8 @@ MiscModulationView::MiscModulationView(QWidget * parent) : QWidget(parent){
 	mLayout->setSpacing(2);
 	setLayout(mLayout);
 }
+
+void MiscModulationView::connect_to_model(MiscModulationModel * model){
+	//XXX doesn't do anything yet!
+}
+

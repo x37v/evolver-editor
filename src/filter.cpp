@@ -148,3 +148,7 @@ FilterView::FilterView(QWidget * parent) : QWidget(parent){
 	mLayout->setSpacing(2);
 }
 
+void FilterView::connect_to_model(FilterModel * model){
+	//XXX doesnt' do anything yet!
+}
+

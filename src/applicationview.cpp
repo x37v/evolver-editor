@@ -1,4 +1,5 @@
 #include "applicationview.hpp"
+#include "applicationmodel.hpp"
 #include <QTabWidget>
 #include <QVBoxLayout>
 #include "audioandenvelopeview.hpp"
@@ -26,5 +27,10 @@ AudioAndEnvelopeView * ApplicationView::audio_and_envelopes(){
 
 ModulationView * ApplicationView::modulation(){
 	return mModulations;
+}
+
+void ApplicationView::connect_to_model(ApplicationModel * model){
+	mAudioAndEnvelopes->connect_to_model(model);
+	//XXX mModulations->connect_to_model(model);
 }
 

@@ -59,6 +59,7 @@ class FilterView : public QWidget {
 	Q_OBJECT
 	public:
 		FilterView(QWidget * parent = NULL);
+		void connect_to_model(FilterModel * model);
 	private:
 		QGridLayout * mLayout;
 

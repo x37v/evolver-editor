@@ -11,6 +11,7 @@
 #include <QVBoxLayout>
 #include <QLabel>
 #include "titledwidget.hpp"
+#include "applicationmodel.hpp"
 
 AudioAndEnvelopeView::AudioAndEnvelopeView(QWidget * parent) : QWidget(parent){
 	QGridLayout * topLayout = new QGridLayout(this);
@@ -128,5 +129,18 @@ FeedbackView * AudioAndEnvelopeView::feedback(){
 
 MiscAudioView * AudioAndEnvelopeView::misc_audio(){
 	return mMiscAudio;
+}
+
+void AudioAndEnvelopeView::connect_to_model(ApplicationModel * model){
+	mAnalogOscs[0]->connect_to_model(model->analog_oscs()->front());
+	mAnalogOscs[1]->connect_to_model(model->analog_oscs()->back());
+	mDigitalOscs[0]->connect_to_model(model->digital_oscs()->front());
+	mDigitalOscs[1]->connect_to_model(model->digital_oscs()->back());
+	mDelay->connect_to_model(model->delay());
+	mFilter->connect_to_model(model->filter());
+	mVCA->connect_to_model(model->vca());
+	mEnv3->connect_to_model(model->env3());
+	mFeedback->connect_to_model(model->feedback());
+	mMiscAudio->connect_to_model(model->misc_audio());
 }
 

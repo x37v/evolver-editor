@@ -10,6 +10,7 @@ class LFOModel;
 class ModRoutingModel;
 
 class FilterModel;
+class FeedbackModel;
 class VCAModel;
 class Env3Model;
 class DelayModel;
@@ -30,7 +31,7 @@ class ApplicationModel : public QObject {
 		VCAModel * vca();
 		Env3Model * env3();
 		DelayModel * delay();
-		FilterModel * feedback();
+		FeedbackModel * feedback();
 		MiscAudioModel * misc_audio();
 		MiscModulationModel * misc_modulations();
 	private:
@@ -42,7 +43,7 @@ class ApplicationModel : public QObject {
 		VCAModel * mVCA;
 		Env3Model * mEnv3;
 		DelayModel * mDelay;
-		FilterModel * mFeedback;
+		FeedbackModel * mFeedback;
 		MiscAudioModel * mMiscAudio;
 		MiscModulationModel * mMiscModulation;
 };

@@ -39,6 +39,7 @@ class MiscModulationView : public QWidget {
 	Q_OBJECT
 	public:
 		MiscModulationView(QWidget * parent = NULL);
+		void connect_to_model(MiscModulationModel * model);
 	private:
 		QGridLayout * mLayout;
 		SliderSpinBox * mOscSlop;
