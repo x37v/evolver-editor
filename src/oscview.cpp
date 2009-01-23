@@ -64,6 +64,54 @@ OscView::OscView(QWidget * parent) : QWidget(parent){
 	setLayout(mLayout);
 }
 
+void OscView::connect_to_model(OscModel * model){
+
+	QObject::connect(
+			this,
+			SIGNAL(freq_changed(int)),
+			model,
+			SLOT(set_freq(int)));
+	QObject::connect(
+			model,
+			SIGNAL(freq_changed(int)),
+			this,
+			SLOT(set_freq(int)));
+
+	QObject::connect(
+			this,
+			SIGNAL(tune_changed(int)),
+			model,
+			SLOT(set_tune(int)));
+	QObject::connect(
+			model,
+			SIGNAL(tune_changed(int)),
+			this,
+			SLOT(set_tune(int)));
+
+	QObject::connect(
+			this,
+			SIGNAL(glide_changed(int)),
+			model,
+			SLOT(set_glide(int)));
+	QObject::connect(
+			model,
+			SIGNAL(glide_changed(int)),
+			this,
+			SLOT(set_glide(int)));
+
+	QObject::connect(
+			this,
+			SIGNAL(level_changed(int)),
+			model,
+			SLOT(set_level(int)));
+	QObject::connect(
+			model,
+			SIGNAL(level_changed(int)),
+			this,
+			SLOT(set_level(int)));
+
+}
+
 std::vector<QLabel *> * OscView::labels(){
 	return &mLables;
 }
@@ -118,10 +166,74 @@ AnalogOscView::AnalogOscView(QWidget * parent) : OscView(parent) {
 	mLables.push_back(lab);
 	mLayout->addWidget(lab, 5, 0, Qt::AlignRight);
 	mLayout->addWidget(mWidthSlider, 5, 1);
+
+	//connect out signals
+	QObject::connect(mShapeSelect,
+			SIGNAL(currentIndexChanged(int)),
+			this,
+			SIGNAL(shape_changed(int)));
+	QObject::connect(mWidthSlider,
+			SIGNAL(valueChanged(int)),
+			this,
+			SIGNAL(width_changed(int)));
+	QObject::connect(mSyncButton,
+			SIGNAL(toggled(bool)),
+			this,
+			SIGNAL(sync_changed(bool)));
+}
+
+void AnalogOscView::connect_to_model(AnalogOscModel * model){
+	//connect our parent
+	OscView::connect_to_model(model);
+
+	QObject::connect(
+			this,
+			SIGNAL(shape_changed(int)),
+			model,
+			SLOT(set_shape(int)));
+	QObject::connect(
+			model,
+			SIGNAL(shape_changed(int)),
+			this,
+			SLOT(set_shape(int)));
+
+	QObject::connect(
+			this,
+			SIGNAL(width_changed(int)),
+			model,
+			SLOT(set_width(int)));
+	QObject::connect(
+			model,
+			SIGNAL(width_changed(int)),
+			this,
+			SLOT(set_width(int)));
+
+	QObject::connect(
+			this,
+			SIGNAL(sync_changed(bool)),
+			model,
+			SLOT(set_sync(bool)));
+	QObject::connect(
+			model,
+			SIGNAL(sync_changed(bool)),
+			this,
+			SLOT(set_sync(bool)));
 }
 
 void AnalogOscView::show_sync_button(bool show){
 	mSyncButton->setVisible(show);
+}
+
+void AnalogOscView::set_shape(int shape){
+	mShapeSelect->setCurrentIndex(shape);
+}
+
+void AnalogOscView::set_width(int width){
+	mWidthSlider->setValue(width);
+}
+
+void AnalogOscView::set_sync(bool s){
+	mSyncButton->setChecked(s);
 }
 
 DigitalOscView::DigitalOscView(QWidget * parent) : OscView(parent){
@@ -161,4 +273,88 @@ DigitalOscView::DigitalOscView(QWidget * parent) : OscView(parent){
 	mLables.push_back(lab);
 	mLayout->addWidget(lab, 7, 0, Qt::AlignRight);
 	mLayout->addWidget(mShapeSeqSelect, 7, 1);
+
+	//connect out signals
+	QObject::connect(mShapeSlider,
+			SIGNAL(valueChanged(int)),
+			this,
+			SIGNAL(shape_changed(int)));
+	QObject::connect(mFmInSlider,
+			SIGNAL(valueChanged(int)),
+			this,
+			SIGNAL(fm_in_changed(int)));
+	QObject::connect(mRingInSlider,
+			SIGNAL(valueChanged(int)),
+			this,
+			SIGNAL(ring_in_changed(int)));
+	QObject::connect(mShapeSeqSelect,
+			SIGNAL(currentIndexChanged(int)),
+			this,
+			SIGNAL(shape_mod_changed(int)));
 }
+
+void DigitalOscView::connect_to_model(DigitalOscModel * model){
+	//connect our parent
+	OscView::connect_to_model(model);
+
+	QObject::connect(
+			this,
+			SIGNAL(shape_changed(int)),
+			model,
+			SLOT(set_shape(int)));
+	QObject::connect(
+			model,
+			SIGNAL(shape_changed(int)),
+			this,
+			SLOT(set_shape(int)));
+
+	QObject::connect(
+			this,
+			SIGNAL(fm_in_changed(int)),
+			model,
+			SLOT(set_fm_in(int)));
+	QObject::connect(
+			model,
+			SIGNAL(fm_in_changed(int)),
+			this,
+			SLOT(set_fm_in(int)));
+
+	QObject::connect(
+			this,
+			SIGNAL(ring_in_changed(int)),
+			model,
+			SLOT(set_ring_in(int)));
+	QObject::connect(
+			model,
+			SIGNAL(ring_in_changed(int)),
+			this,
+			SLOT(set_ring_in(int)));
+
+	QObject::connect(
+			this,
+			SIGNAL(shape_mod_changed(int)),
+			model,
+			SLOT(set_shape_mod(int)));
+	QObject::connect(
+			model,
+			SIGNAL(shape_mod_changed(int)),
+			this,
+			SLOT(set_shape_mod(int)));
+}
+
+void DigitalOscView::set_shape(int shape){
+	mShapeSlider->setValue(shape);
+}
+
+void DigitalOscView::set_fm_in(int fm){
+	mFmInSlider->setValue(fm);
+}
+
+void DigitalOscView::set_ring_in(int ring){
+	mRingInSlider->setValue(ring);
+}
+
+void DigitalOscView::set_shape_mod(int mod){
+	mShapeSeqSelect->setCurrentIndex(mod);
+}
+

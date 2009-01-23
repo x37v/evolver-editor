@@ -10,10 +10,15 @@ class QPushButton;
 class QComboBox;
 class QLabel;
 
+class OscModel;
+class AnalogOscModel;
+class DigitalOscModel;
+
 class OscView : public QWidget {
 	Q_OBJECT
 	public:
 		OscView(QWidget * parent = NULL);
+		void connect_to_model(OscModel * model);
 		std::vector<QLabel *> * labels();
 	protected:
 		SliderSpinBox * mFreqSlider;
@@ -43,8 +48,17 @@ class AnalogOscView : public OscView {
 		QPushButton * mSyncButton;
 	public:
 		AnalogOscView(QWidget * parent = NULL);
+		void connect_to_model(AnalogOscModel * model);
+	signals:
+		void shape_changed(int);
+		void width_changed(int);
+		void sync_changed(bool);
 	public slots:
 		void show_sync_button(bool show);
+		void set_shape(int shape);
+		void set_width(int width);
+		//sync 2 -> 1
+		void set_sync(bool s);
 };
 
 class DigitalOscView : public OscView {
@@ -56,6 +70,17 @@ class DigitalOscView : public OscView {
 		QComboBox * mShapeSeqSelect;
 	public:
 		DigitalOscView(QWidget * parent = NULL);
+		void connect_to_model(DigitalOscModel * model);
+	public slots:
+		void set_shape(int shape);
+		void set_fm_in(int fm);
+		void set_ring_in(int ring);
+		void set_shape_mod(int mod);
+	signals:
+		void shape_changed(int shape);
+		void fm_in_changed(int fm);
+		void ring_in_changed(int ring);
+		void shape_mod_changed(int mod);
 };
 
 #endif

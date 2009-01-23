@@ -17,6 +17,13 @@ int main(int argc, char *argv[])
 
 	//view->modulation()->lfos()->front()->connect_to_model(model->lfos()->front());
 	//model->lfos()->front()->set_destination(5);
+	/*
+	view->audio_and_envelopes()->analog_oscs()->front()->connect_to_model(model->analog_oscs()->front());
+	model->analog_oscs()->front()->set_freq(100);
+
+	view->audio_and_envelopes()->digital_oscs()->front()->connect_to_model(model->digital_oscs()->front());
+	model->digital_oscs()->front()->set_shape(100);
+	*/
 	
 	//AudioAndEnvelopeView * view = new AudioAndEnvelopeView();
 	//ModulationView * view = new ModulationView();

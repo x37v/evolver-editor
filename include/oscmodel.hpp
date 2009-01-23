@@ -19,15 +19,15 @@ class OscModel : public QObject {
 		unsigned int mLevel;
 		int mTune;
 	signals:
-		void freq_changed(unsigned int);
+		void freq_changed(int);
 		void tune_changed(int);
-		void glide_changed(unsigned int);
-		void level_changed(unsigned int);
+		void glide_changed(int);
+		void level_changed(int);
 	public slots:
-		void set_freq(unsigned int freq);
+		void set_freq(int freq);
 		void set_tune(int tune);
-		void set_glide(unsigned int glide);
-		void set_level(unsigned int lev);
+		void set_glide(int glide);
+		void set_level(int lev);
 };
 
 class AnalogOscModel : public OscModel {
@@ -46,14 +46,14 @@ class AnalogOscModel : public OscModel {
 		//sync 2 -> 1
 		bool mSyncing;
 	signals:
-		void shape_changed(shapes);
-		void width_changed(unsigned int);
+		void shape_changed(int);
+		void width_changed(int);
 		void sync_changed(bool);
 	public slots:
-		void set_shape(shapes shape);
-		void set_width(unsigned int width);
+		void set_shape(int shape);
+		void set_width(int width);
 		//sync 2 -> 1
-		void sync(bool s);
+		void set_sync(bool s);
 };
 
 class DigitalOscModel : public OscModel {
@@ -76,15 +76,15 @@ class DigitalOscModel : public OscModel {
 		unsigned int mRingIn;
 		shape_mod mShapeMod;
 	public slots:
-		void set_shape(unsigned int shape);
-		void set_fm_in(unsigned int fm);
-		void set_ring_in(unsigned int ring);
-		void set_shape_mod(shape_mod mod);
+		void set_shape(int shape);
+		void set_fm_in(int fm);
+		void set_ring_in(int ring);
+		void set_shape_mod(int mod);
 	signals:
-		void shape_changed(unsigned int shape);
-		void fm_in_changed(unsigned int fm);
-		void ring_in_changed(unsigned int ring);
-		void shape_mod_changed(shape_mod mod);
+		void shape_changed(int shape);
+		void fm_in_changed(int fm);
+		void ring_in_changed(int ring);
+		void shape_mod_changed(int mod);
 };
 
 #endif
