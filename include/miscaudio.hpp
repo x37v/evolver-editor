@@ -18,6 +18,10 @@ class MiscAudioModel : public QObject {
 			right,
 			split
 		};
+		enum env_curve_type {
+			exponential,
+			linear
+		};
 		static const unsigned int volume_max;
 		static const unsigned int distortion_max;
 		static const unsigned int hack_max;
@@ -32,6 +36,7 @@ class MiscAudioModel : public QObject {
 		unsigned int mNoiseVolume;
 		ext_in_mode_type mExtInMode;
 		unsigned int mExtInVolume;
+		env_curve_type mEnvCurve;
 };
 
 #include <QWidget>
@@ -58,6 +63,8 @@ class MiscAudioView : public QWidget {
 
 		QComboBox * mExtInMode;
 		SliderSpinBox * mExtInVolume;
+
+		QComboBox * mEnvCurve;
 };
 
 #endif

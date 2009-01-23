@@ -15,6 +15,7 @@ MiscAudioModel::MiscAudioModel(QObject * parent) : QObject(parent){
 	mNoiseVolume = 0;
 	mExtInMode = stereo;
 	mExtInVolume = 0;
+	mEnvCurve = exponential;
 }
 
 #include <QLabel>
@@ -34,6 +35,7 @@ MiscAudioView::MiscAudioView(QWidget * parent) : QWidget(parent){
 	mNoiseVolume = new SliderSpinBox(this);
 	mExtInMode = new QComboBox(this);
 	mExtInVolume = new SliderSpinBox(this);
+	mEnvCurve = new QComboBox(this);
 
 	//setup
 	mVolume->setRange(0, MiscAudioModel::volume_max);
@@ -50,6 +52,9 @@ MiscAudioView::MiscAudioView(QWidget * parent) : QWidget(parent){
 	mExtInMode->addItem("right");
 	mExtInMode->addItem("split");
 	mExtInVolume->setRange(0, MiscAudioModel::ext_in_volume_max);
+
+	mEnvCurve->addItem("exponential");
+	mEnvCurve->addItem("stereo");
 
 	//label and plot
 	lab = new QLabel(QString("volume"));
@@ -82,6 +87,10 @@ MiscAudioView::MiscAudioView(QWidget * parent) : QWidget(parent){
 
 	lab = new QLabel(QString("ext in vol"));
 	mLayout->addWidget(mExtInVolume, 7, 1);
+	mLayout->addWidget(lab, 7, 0, Qt::AlignRight);
+
+	lab = new QLabel(QString("env curve"));
+	mLayout->addWidget(mEnvCurve, 7, 1);
 	mLayout->addWidget(lab, 7, 0, Qt::AlignRight);
 
 	mLayout->setSpacing(2);
