@@ -23,7 +23,8 @@ HEADERS += include/common.hpp \
 	include/delay.hpp \
 	include/filter.hpp \
 	include/vca.hpp \
-	include/env3.hpp
+	include/env3.hpp \
+	include/feedback.hpp
 
 SOURCES += \
 	src/common.cpp \
@@ -39,5 +40,6 @@ SOURCES += \
 	src/delay.cpp \
 	src/filter.cpp \
 	src/vca.cpp \
-	src/env3.cpp
+	src/env3.cpp \
+	src/feedback.cpp
 

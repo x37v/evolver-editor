@@ -12,6 +12,7 @@ class DelayView;
 class FilterView;
 class VCAView;
 class Env3View;
+class FeedbackView;
 
 class ApplicationView : public QWidget {
 	Q_OBJECT
@@ -26,6 +27,7 @@ class ApplicationView : public QWidget {
 		FilterView * mFilter;
 		VCAView * mVCA;
 		Env3View * mEnv3;
+		FeedbackView * mFeedback;
 };
 
 #endif

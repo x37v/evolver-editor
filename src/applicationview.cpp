@@ -6,6 +6,7 @@
 #include "filter.hpp"
 #include "vca.hpp"
 #include "env3.hpp"
+#include "feedback.hpp"
 #include <QSplitter>
 #include <QHBoxLayout>
 #include <QLabel>
@@ -21,6 +22,7 @@ ApplicationView::ApplicationView(QWidget * parent) : QWidget(parent){
 	//mFilter = new FilterView(this);
 	//mVCA = new VCAView(this);
 	//mEnv3 = new Env3View(this);
+	//mFeedback = new FeedbackView(this);
 
 	for(unsigned int i = 0; i < 2; i++){
 		DigitalOscView * d = new DigitalOscView(this);
