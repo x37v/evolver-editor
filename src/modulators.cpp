@@ -17,12 +17,10 @@ ModRoutingView::ModRoutingView(QWidget * parent) : QWidget(parent){
 	mAmountSlider->setRange(ModRoutingModel::amount_min, ModRoutingModel::amount_max);
 
 	mSrcSelect = new QComboBox(this);
-	mDestSelect = new QComboBox(this);
+	mDestSelect = new ModDestComboBox(this);
 
 	for(unsigned int i = 0; i < NUM_MODULATION_SOURCES; i++)
 		mSrcSelect->addItem(QString(modulation_sources[i]));
-	for(unsigned int i = 0; i < NUM_MODULATION_DESTINATIONS; i++)
-		mDestSelect->addItem(QString(modulation_destinations[i]));
 
 	lab = new QLabel(QString("source"), this);
 	mLabels.push_back(lab);

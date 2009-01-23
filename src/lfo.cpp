@@ -89,11 +89,9 @@ LFOView::LFOView(QWidget * parent) : QWidget(parent){
 	mLayout->addWidget(mFreqSlider, 1 , 1);
 
 
-	mDestSelect = new QComboBox(this);
+	mDestSelect = new ModDestComboBox(this);
 	mSyncSelect = new QComboBox(this);
-	for(unsigned int i = 0; i < NUM_MODULATION_DESTINATIONS; i++){
-		mDestSelect->addItem(QString(modulation_destinations[i]));
-	}
+
 	mSyncSelect->addItem(QString("free"));
 	mSyncSelect->addItem(QString("seq div 32"));
 	mSyncSelect->addItem(QString("seq div 16"));

@@ -31,7 +31,7 @@ Env3View::Env3View(QWidget * parent) : QWidget(parent){
 	//allocate
 	mLayout = new QGridLayout(this);
 
-	mDestSelect = new QComboBox(this);
+	mDestSelect = new ModDestComboBox(this);
 
 	mDelay = new SliderSpinBox(this);
 	mAmount = new SliderSpinBox(this);
@@ -42,8 +42,6 @@ Env3View::Env3View(QWidget * parent) : QWidget(parent){
 	mVelocity = new SliderSpinBox(this);
 
 	//set up
-	for(unsigned int i = 0; i < NUM_MODULATION_DESTINATIONS; i++)
-		mDestSelect->addItem(QString(modulation_destinations[i]));
 	mDelay->setRange(0, Env3Model::delay_max);
 	mAmount->setRange(Env3Model::amount_min, Env3Model::amount_max);
 	mAttack->setRange(0, Env3Model::attack_max);

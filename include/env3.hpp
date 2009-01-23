@@ -29,6 +29,7 @@ class Env3Model : public QObject {
 class QComboBox;
 class SliderSpinBox;
 class QGridLayout;
+class ModDestComboBox;
 
 class Env3View : public QWidget {
 	Q_OBJECT
@@ -37,7 +38,7 @@ class Env3View : public QWidget {
 	private:
 		QGridLayout * mLayout;
 
-		QComboBox * mDestSelect;
+		ModDestComboBox * mDestSelect;
 
 		SliderSpinBox * mDelay;
 		SliderSpinBox * mAmount;

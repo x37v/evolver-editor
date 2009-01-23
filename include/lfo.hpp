@@ -59,6 +59,7 @@ class SliderSpinBox;
 class QPushButton;
 class QGridLayout;
 class QLabel;
+class ModDestComboBox;
 
 class LFOView : public QWidget {
 	Q_OBJECT
@@ -67,7 +68,7 @@ class LFOView : public QWidget {
 		std::vector<QLabel *> * labels();
 
 	private:
-		QComboBox * mDestSelect;
+		ModDestComboBox * mDestSelect;
 		QComboBox * mSyncSelect;
 		QComboBox * mShapeSelect;
 		SliderSpinBox * mFreqSlider;

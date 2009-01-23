@@ -6,6 +6,7 @@ class QLabel;
 class QComboBox;
 class SliderSpinBox;
 class QGridLayout;
+class ModDestComboBox;
 
 class ModRoutingModel : public QObject {
 	Q_OBJECT
@@ -25,7 +26,7 @@ class ModRoutingView : public QWidget {
 		std::vector<QLabel *> mLabels;
 		SliderSpinBox * mAmountSlider;
 		QComboBox * mSrcSelect;
-		QComboBox * mDestSelect;
+		ModDestComboBox * mDestSelect;
 		QGridLayout * mLayout;
 
 };
