@@ -3,6 +3,7 @@
 #include "lfo.hpp"
 #include "delay.hpp"
 #include "vca.hpp"
+#include "env3.hpp"
 #include <QApplication>
 #include "modulation_destinations.hpp"
 #include "applicationmodel.hpp"
@@ -33,6 +34,9 @@ int main(int argc, char *argv[])
 	view->audio_and_envelopes()->vca()->connect_to_model(model->vca());
 	model->vca()->set_pan(3);
 	model->vca()->set_velocity(25);
+
+	view->audio_and_envelopes()->env3()->connect_to_model(model->env3());
+	model->env3()->set_velocity(25);
 	*/
 	
 	//AudioAndEnvelopeView * view = new AudioAndEnvelopeView();
