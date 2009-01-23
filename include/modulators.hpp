@@ -11,6 +11,7 @@ class ModDestComboBox;
 class ModRoutingModel : public QObject {
 	Q_OBJECT
 	public:
+		ModRoutingModel(QObject * parent = NULL);
 		const static int amount_max;
 		const static int amount_min;
 };

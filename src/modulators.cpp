@@ -9,6 +9,9 @@
 const int ModRoutingModel::amount_max = 99;
 const int ModRoutingModel::amount_min = -99;
 
+ModRoutingModel::ModRoutingModel(QObject * parent) : QObject(parent){
+}
+
 ModRoutingView::ModRoutingView(QWidget * parent) : QWidget(parent){
 	QLabel * lab;
 	mLayout = new QGridLayout(this);
