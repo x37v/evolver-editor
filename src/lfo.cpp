@@ -29,7 +29,8 @@ void LFOModel::set_amount(int amount){
 	}
 }
 
-void LFOModel::set_shape(shapes shape){
+void LFOModel::set_shape(int s){
+	shapes shape = (shapes)s;
 	if(shape != mShape){
 		mShape = shape;
 		emit(shape_changed(mShape));
@@ -43,7 +44,8 @@ void LFOModel::set_key_sync(bool sync){
 	}
 }
 
-void LFOModel::set_sync_type(sync_types t){
+void LFOModel::set_sync_type(int type){
+	sync_types t = (sync_types)type;
 	if(t != mSyncType){
 		mSyncType = t;
 		emit(sync_type_changed(t));
@@ -137,18 +139,6 @@ LFOView::LFOView(QWidget * parent) : QWidget(parent){
 
 	//connect out signals
 
-	QObject::connect(mDestSelect,
-			SIGNAL(currentIndexChanged(int)),
-			this,
-			SIGNAL(modulation_dest_changed(int)));
-	QObject::connect(mSyncSelect,
-			SIGNAL(currentIndexChanged(int)),
-			this,
-			SIGNAL(sync_changed(int)));
-	QObject::connect(mShapeSelect,
-			SIGNAL(currentIndexChanged(int)),
-			this,
-			SIGNAL(shape_changed(int)));
 	QObject::connect(mFreqSlider,
 			SIGNAL(valueChanged(int)),
 			this,
@@ -157,10 +147,22 @@ LFOView::LFOView(QWidget * parent) : QWidget(parent){
 			SIGNAL(valueChanged(int)),
 			this,
 			SIGNAL(amount_changed(int)));
+	QObject::connect(mShapeSelect,
+			SIGNAL(currentIndexChanged(int)),
+			this,
+			SIGNAL(shape_changed(int)));
 	QObject::connect(mKeySyncButton,
 			SIGNAL(clicked(bool)),
 			this,
 			SIGNAL(key_sync_changed(bool)));
+	QObject::connect(mSyncSelect,
+			SIGNAL(currentIndexChanged(int)),
+			this,
+			SIGNAL(sync_type_changed(int)));
+	QObject::connect(mDestSelect,
+			SIGNAL(currentIndexChanged(int)),
+			this,
+			SIGNAL(destination_changed(int)));
 }
 
 std::vector<QLabel *> * LFOView::labels(){
@@ -172,19 +174,95 @@ void LFOView::show_labels(bool show){
 		(*it)->setVisible(show);
 }
 
+void LFOView::connect_to_model(LFOModel * model){
+	QObject::connect(
+			this,
+			SIGNAL(freq_changed(int)),
+			model,
+			SLOT(set_freq(int)));
+	QObject::connect(
+			model,
+			SIGNAL(freq_changed(int)),
+			this,
+			SLOT(set_freq(int)));
 
-LFOArrayView::LFOArrayView(QWidget * parent) : QWidget(parent){
-	mLayout = new QVBoxLayout(this);
-	for(unsigned int i = 0; i < 4; i++){
-		LFOView * lfo = new LFOView(this);
-		mLFOs.push_back(lfo);
-		mLayout->addWidget(lfo);
-	}
-	setLayout(mLayout);
+	QObject::connect(
+			this,
+			SIGNAL(amount_changed(int)),
+			model,
+			SLOT(set_amount(int)));
+	QObject::connect(
+			model,
+			SIGNAL(amount_changed(int)),
+			this,
+			SLOT(set_amount(int)));
+
+	QObject::connect(
+			this,
+			SIGNAL(shape_changed(int)),
+			model,
+			SLOT(set_shape(int)));
+	QObject::connect(
+			model,
+			SIGNAL(shape_changed(int)),
+			this,
+			SLOT(set_shape(int)));
+
+	QObject::connect(
+			this,
+			SIGNAL(key_sync_changed(bool)),
+			model,
+			SLOT(set_key_sync(bool)));
+	QObject::connect(
+			model,
+			SIGNAL(key_sync_changed(bool)),
+			this,
+			SLOT(set_key_sync(bool)));
+
+	QObject::connect(
+			this,
+			SIGNAL(sync_type_changed(int)),
+			model,
+			SLOT(set_sync_type(int)));
+	QObject::connect(
+			model,
+			SIGNAL(sync_type_changed(int)),
+			this,
+			SLOT(set_sync_type(int)));
+
+	QObject::connect(
+			this,
+			SIGNAL(destination_changed(int)),
+			model,
+			SLOT(set_destination(int)));
+	QObject::connect(
+			model,
+			SIGNAL(destination_changed(int)),
+			this,
+			SLOT(set_destination(int)));
 }
 
-LFOView * LFOArrayView::operator[] (const int index){
-	if(index < 0 || (unsigned int)index >= mLFOs.size())
-		throw(std::runtime_error("array index out of bounds"));
-	return mLFOs[index];
+void LFOView::set_freq(int freq){
+	mFreqSlider->setValue(freq);
 }
+
+void LFOView::set_amount(int amount){
+	mAmountSlider->setValue(amount);
+}
+
+void LFOView::set_shape(int shape){
+	mShapeSelect->setCurrentIndex(shape);
+}
+
+void LFOView::set_key_sync(bool sync){
+	mKeySyncButton->setChecked(sync);
+}
+
+void LFOView::set_sync_type(int t){
+	mSyncSelect->setCurrentIndex(t);
+}
+
+void LFOView::set_destination(int dest){
+	mDestSelect->setCurrentIndex(dest);
+}
+

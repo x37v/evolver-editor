@@ -32,16 +32,16 @@ class LFOModel : public QObject {
 	public slots:
 		void set_freq(int freq);
 		void set_amount(int amount);
-		void set_shape(shapes shape);
+		void set_shape(int s);
 		void set_key_sync(bool sync);
-		void set_sync_type(sync_types t);
+		void set_sync_type(int t);
 		void set_destination(int dest);
 	signals:
 		void freq_changed(int freq);
 		void amount_changed(int amount);
-		void shape_changed(shapes shape);
+		void shape_changed(int shape);
 		void key_sync_changed(bool sync);
-		void sync_type_changed(sync_types t);
+		void sync_type_changed(int t);
 		void destination_changed(int dest);
 	private:
 		unsigned int mAmount;
@@ -66,6 +66,7 @@ class LFOView : public QWidget {
 	public:
 		LFOView(QWidget * parent = NULL);
 		std::vector<QLabel *> * labels();
+		void connect_to_model(LFOModel * model);
 
 	private:
 		ModDestComboBox * mDestSelect;
@@ -79,26 +80,19 @@ class LFOView : public QWidget {
 		std::vector<QLabel *> mLabels;
 	public slots:
 		void show_labels(bool show);
+		void set_freq(int freq);
+		void set_amount(int amount);
+		void set_shape(int s);
+		void set_key_sync(bool sync);
+		void set_sync_type(int t);
+		void set_destination(int dest);
 	signals:
-		void shape_changed(int);
-		void sync_changed(int);
-		void modulation_dest_changed(int);
-		void freq_changed(int);
-		void amount_changed(int);
-		void key_sync_changed(bool);
-};
-
-#include <stdexcept>
-class QVBoxLayout;
-
-class LFOArrayView : public QWidget {
-	Q_OBJECT
-	public:
-		LFOArrayView(QWidget * parent = NULL);
-		LFOView * operator[] (const int index);
-	private:
-		std::vector<LFOView *> mLFOs;
-		QVBoxLayout * mLayout;
+		void freq_changed(int freq);
+		void amount_changed(int amount);
+		void shape_changed(int shape);
+		void key_sync_changed(bool sync);
+		void sync_type_changed(int t);
+		void destination_changed(int dest);
 };
 
 #endif
