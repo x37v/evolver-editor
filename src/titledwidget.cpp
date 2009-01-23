@@ -12,6 +12,7 @@ TitledWidget::TitledWidget(QString title, QWidget * widget, QWidget * parent) : 
 	mLayout->addWidget(mWidget, 0);
 	mLayout->setContentsMargins(1,1,1,1);
 	mLayout->setSpacing(2);
+	mLayout->addStretch(1);
 
 	setLayout(mLayout);
 }
