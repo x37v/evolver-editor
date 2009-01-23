@@ -97,3 +97,36 @@ AudioAndEnvelopeView::AudioAndEnvelopeView(QWidget * parent) : QWidget(parent){
 	setLayout(topLayout);
 	topLayout->setContentsMargins(1,1,1,1);
 }
+
+std::vector<AnalogOscView *> * AudioAndEnvelopeView::analog_oscs(){
+	return &mAnalogOscs;
+}
+
+std::vector<DigitalOscView *> * AudioAndEnvelopeView::digital_oscs(){
+	return &mDigitalOscs;
+}
+
+DelayView * AudioAndEnvelopeView::delay(){
+	return mDelay;
+}
+
+FilterView * AudioAndEnvelopeView::filter(){
+	return mFilter;
+}
+
+VCAView * AudioAndEnvelopeView::vca(){
+	return mVCA;
+}
+
+Env3View * AudioAndEnvelopeView::env3(){
+	return mEnv3;
+}
+
+FeedbackView * AudioAndEnvelopeView::feedback(){
+	return mFeedback;
+}
+
+MiscAudioView * AudioAndEnvelopeView::misc_audio(){
+	return mMiscAudio;
+}
+

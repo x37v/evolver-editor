@@ -19,6 +19,14 @@ class AudioAndEnvelopeView : public QWidget {
 	Q_OBJECT
 	public:
 		AudioAndEnvelopeView(QWidget * parent = NULL);
+		std::vector<AnalogOscView *> * analog_oscs();
+		std::vector<DigitalOscView *> * digital_oscs();
+		DelayView * delay();
+		FilterView * filter();
+		VCAView * vca();
+		Env3View * env3();
+		FeedbackView * feedback();
+		MiscAudioView * misc_audio();
 	private:
 		std::vector<AnalogOscView *> mAnalogOscs;
 		std::vector<DigitalOscView *> mDigitalOscs;
