@@ -5,13 +5,15 @@
 #include "modulation_destinations.hpp"
 #include "applicationmodel.hpp"
 #include "applicationview.hpp"
+#include "audioandenvelopeview.hpp"
 
 int main(int argc, char *argv[])
 {
    QApplication app(argc, argv);
 	ApplicationModel * model = new ApplicationModel(&app);
-	ApplicationView * view = new ApplicationView();
-	//LFOView * view = new LFOView();
+	//ApplicationView * view = new ApplicationView();
+	AudioAndEnvelopeView * view = new AudioAndEnvelopeView();
+	
 	view->show();
    return app.exec();
 }

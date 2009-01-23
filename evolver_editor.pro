@@ -26,7 +26,9 @@ HEADERS += include/common.hpp \
 	include/env3.hpp \
 	include/feedback.hpp \
 	include/miscaudio.hpp \
-	include/miscmodulation.hpp
+	include/miscmodulation.hpp \
+	include/audioandenvelopeview.hpp \
+	include/titledwidget.hpp
 
 SOURCES += \
 	src/common.cpp \
@@ -45,5 +47,7 @@ SOURCES += \
 	src/env3.cpp \
 	src/feedback.cpp \
 	src/miscaudio.cpp \
-	src/miscmodulation.cpp
+	src/miscmodulation.cpp \
+	src/audioandenvelopeview.cpp \
+	src/titledwidget.cpp
 
