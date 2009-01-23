@@ -54,12 +54,13 @@ MiscModulationView::MiscModulationView(QWidget * parent) : QWidget(parent){
 	for(unsigned int i = 0; i < MiscModulationModel::num_modulation_sources; i++){
 
 		lab = new QLabel(QString("%1 amt").arg(MiscModulationModel::modulation_source_names[i]));
-		mLayout->addWidget(mAmounts[i], 0 + i * 2, 1);
-		mLayout->addWidget(lab, 0 + i * 2, 0, Qt::AlignRight);
+		mLayout->addWidget(mAmounts[i], 1 + i * 2, 1);
+		mLayout->addWidget(lab, 1 + i * 2, 0, Qt::AlignRight);
 
 		lab = new QLabel(QString("%1 dest").arg(MiscModulationModel::modulation_source_names[i]));
-		mLayout->addWidget(mDestinations[i], 1 + i * 2, 1);
-		mLayout->addWidget(lab, 1 + i * 2, 0, Qt::AlignRight);
+		mLayout->addWidget(mDestinations[i], 2 + i * 2, 1);
+		mLayout->addWidget(lab, 2 + i * 2, 0, Qt::AlignRight);
 	}
+	mLayout->setSpacing(2);
 	setLayout(mLayout);
 }

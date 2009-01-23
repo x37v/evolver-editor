@@ -14,6 +14,7 @@ class VCAView;
 class Env3View;
 class FeedbackView;
 class MiscAudioView;
+class MiscModulationView;
 
 class ApplicationView : public QWidget {
 	Q_OBJECT
@@ -30,6 +31,7 @@ class ApplicationView : public QWidget {
 		Env3View * mEnv3;
 		FeedbackView * mFeedback;
 		MiscAudioView * mMiscAudio;
+		MiscModulationView * mMiscModulation;
 };
 
 #endif
