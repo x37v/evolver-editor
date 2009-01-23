@@ -20,7 +20,8 @@ HEADERS += include/common.hpp \
 	include/lfo.hpp \
 	include/applicationmodel.hpp \
 	include/applicationview.hpp \
-	include/delay.hpp
+	include/delay.hpp \
+	include/filter.hpp
 
 SOURCES += \
 	src/common.cpp \
@@ -33,4 +34,6 @@ SOURCES += \
 	src/lfo.cpp \
 	src/applicationmodel.cpp \
 	src/applicationview.cpp \
-	src/delay.cpp
+	src/delay.cpp \
+	src/filter.cpp
+

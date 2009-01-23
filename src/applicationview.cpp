@@ -2,6 +2,8 @@
 #include "oscview.hpp"
 #include "lfo.hpp"
 #include "modulators.hpp"
+#include "delay.hpp"
+#include "filter.hpp"
 #include <QSplitter>
 #include <QHBoxLayout>
 #include <QLabel>
@@ -11,6 +13,10 @@ ApplicationView::ApplicationView(QWidget * parent) : QWidget(parent){
 	QGridLayout * oscLayout = new QGridLayout;
 	QGridLayout * lfoLayout = new QGridLayout;
 	QGridLayout * modLayout = new QGridLayout;
+	QGridLayout * delayLayout = new QGridLayout;
+
+	mDelay = new DelayView(this);
+	//mFilter = new FilterView(this);
 
 	for(unsigned int i = 0; i < 2; i++){
 		DigitalOscView * d = new DigitalOscView(this);
@@ -24,6 +30,7 @@ ApplicationView::ApplicationView(QWidget * parent) : QWidget(parent){
 	}
 	//don't show the sync button on the last analog osc
 	mAnalogOscs.back()->show_sync_button(false);
+
 
 	for(unsigned int i = 0; i < 4; i++){
 		LFOView * lfo = new LFOView(this);
@@ -71,17 +78,24 @@ ApplicationView::ApplicationView(QWidget * parent) : QWidget(parent){
 
 	oscLayout->setRowStretch(10,1);
 
+	delayLayout->addWidget(mDelay, 0, 0, Qt::AlignCenter);
+	oscLayout->setRowStretch(1,1);
+
 	QSplitter * topSplitter = new QSplitter(Qt::Horizontal, this);
 	QSplitter * leftSplitter = new QSplitter(Qt::Vertical, this);
 
 	QWidget * oscs = new QWidget(this);
 	QWidget * lfos = new QWidget(this);
 	QWidget * mods = new QWidget(this);
+	QWidget * delay = new QWidget(this);
+
 	oscs->setLayout(oscLayout);
 	lfos->setLayout(lfoLayout);
 	mods->setLayout(modLayout);
+	delay->setLayout(delayLayout);
 
 	topSplitter->addWidget(oscs);
+	topSplitter->addWidget(delay);
 	topSplitter->addWidget(mods);
 
 	leftSplitter->addWidget(topSplitter);

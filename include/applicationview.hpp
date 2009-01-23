@@ -8,6 +8,8 @@ class LFOView;
 class AnalogOscView;
 class DigitalOscView;
 class ModView;
+class DelayView;
+class FilterView;
 
 class ApplicationView : public QWidget {
 	Q_OBJECT
@@ -18,6 +20,8 @@ class ApplicationView : public QWidget {
 		std::vector<DigitalOscView *> mDigitalOscs;
 		std::vector<LFOView *> mLFOs;
 		std::vector<ModView *> mMods;
+		DelayView * mDelay;
+		FilterView * mFilter;
 };
 
 #endif
