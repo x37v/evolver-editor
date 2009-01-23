@@ -7,6 +7,7 @@
 #include "applicationview.hpp"
 #include "audioandenvelopeview.hpp"
 #include "modulationview.hpp"
+#include "modulators.hpp"
 
 int main(int argc, char *argv[])
 {

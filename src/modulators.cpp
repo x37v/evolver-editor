@@ -12,6 +12,32 @@ const int ModRoutingModel::amount_min = -99;
 ModRoutingModel::ModRoutingModel(QObject * parent) : QObject(parent){
 }
 
+void ModRoutingModel::set_amount(int amount){
+	if(amount >= amount_min && amount <= amount_max && amount != mAmount){
+		mAmount = amount;
+		emit(amount_changed(mAmount));
+	}
+}
+
+void ModRoutingModel::set_source(int source){
+	if(source >= 0 &&
+			(unsigned int)source < NUM_MODULATION_SOURCES && 
+			(unsigned int)source != mSource){
+		mSource = source;
+		emit(source_changed(mSource));
+	}
+}
+
+void ModRoutingModel::set_destination(int dest){
+	if(dest >= 0 && 
+			(unsigned int)dest < NUM_MODULATION_DESTINATIONS && 
+			(unsigned int)dest != mDestination){
+		mDestination = dest;
+		emit(destination_changed(mDestination));
+	}
+}
+
+
 ModRoutingView::ModRoutingView(QWidget * parent) : QWidget(parent){
 	QLabel * lab;
 	mLayout = new QGridLayout(this);
@@ -42,15 +68,76 @@ ModRoutingView::ModRoutingView(QWidget * parent) : QWidget(parent){
 
 	setLayout(mLayout);
 	mLayout->setSpacing(1);
+
+	//set out signals
+	QObject::connect(mAmountSlider,
+			SIGNAL(valueChanged(int)),
+			this,
+			SIGNAL(amount_changed(int)));
+	QObject::connect(mSrcSelect,
+			SIGNAL(currentIndexChanged(int)),
+			this,
+			SIGNAL(source_changed(int)));
+	QObject::connect(mDestSelect,
+			SIGNAL(currentIndexChanged(int)),
+			this,
+			SIGNAL(destination_changed(int)));
 }
 
 std::vector<QLabel *> * ModRoutingView::labels(){
 	return &mLabels;
 }
 
+void ModRoutingView::connect_to_model(ModRoutingModel * model){
+	QObject::connect(
+			this,
+			SIGNAL(amount_changed(int)),
+			model,
+			SLOT(set_amount(int)));
+	QObject::connect(
+			model,
+			SIGNAL(amount_changed(int)),
+			this,
+			SLOT(set_amount(int)));
+
+	QObject::connect(
+			this,
+			SIGNAL(source_changed(int)),
+			model,
+			SLOT(set_source(int)));
+	QObject::connect(
+			model,
+			SIGNAL(source_changed(int)),
+			this,
+			SLOT(set_source(int)));
+
+	QObject::connect(
+			this,
+			SIGNAL(destination_changed(int)),
+			model,
+			SLOT(set_destination(int)));
+	QObject::connect(
+			model,
+			SIGNAL(destination_changed(int)),
+			this,
+			SLOT(set_destination(int)));
+}
+
 void ModRoutingView::show_labels(bool show){
 	for(std::vector<QLabel *>::iterator it = mLabels.begin(); it != mLabels.end(); it++)
 		(*it)->setVisible(show);
+}
+
+void ModRoutingView::set_amount(int amount){
+	mAmountSlider->setValue(amount);
+}
+
+void ModRoutingView::set_source(int source){
+	mSrcSelect->setCurrentIndex(source);
+}
+
+void ModRoutingView::set_destination(int dest){
+	mDestSelect->setCurrentIndex(dest);
 }
 
 

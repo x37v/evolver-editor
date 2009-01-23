@@ -14,6 +14,18 @@ class ModRoutingModel : public QObject {
 		ModRoutingModel(QObject * parent = NULL);
 		const static int amount_max;
 		const static int amount_min;
+	signals:
+		void amount_changed(int);
+		void destination_changed(int);
+		void source_changed(int);
+	public slots:
+		void set_amount(int amount);
+		void set_source(int source);
+		void set_destination(int dest);
+	private:
+		int mAmount;
+		unsigned int mSource;
+		unsigned int mDestination;
 };
 
 class ModRoutingView : public QWidget {
@@ -21,8 +33,16 @@ class ModRoutingView : public QWidget {
 	public:
 		ModRoutingView(QWidget * parent = NULL);
 		std::vector<QLabel *> * labels();
+		void connect_to_model(ModRoutingModel * model);
+	signals:
+		void amount_changed(int);
+		void destination_changed(int);
+		void source_changed(int);
 	public slots:
 		void show_labels(bool show);
+		void set_amount(int amount);
+		void set_source(int source);
+		void set_destination(int dest);
 	private:
 		std::vector<QLabel *> mLabels;
 		SliderSpinBox * mAmountSlider;
