@@ -1,8 +1,6 @@
 #ifndef MODULATION_DESTINATIONS_HPP
 #define MODULATION_DESTINATIONS_HPP
 
-#include <QDialog>
-
 #define NUM_MODULATION_DESTINATIONS 69
 
 const static char* modulation_destinations[] = {
@@ -75,6 +73,15 @@ const static char* modulation_destinations[] = {
 	"Filter 1 (left) Resonance",
 	"Filter 2 (right) Resonance",
 	"Distortion"
+};
+
+
+#include <QComboBox>
+
+class ModDestComboBox : public QComboBox {
+	Q_OBJECT
+	public:
+		ModDestComboBox(QWidget * parent = NULL);
 };
 
 #endif
