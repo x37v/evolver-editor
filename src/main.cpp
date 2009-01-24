@@ -13,6 +13,7 @@
 #include "modulationview.hpp"
 #include "modulators.hpp"
 #include "miscaudio.hpp"
+#include "miscmodulation.hpp"
 
 int main(int argc, char *argv[])
 {
@@ -45,6 +46,9 @@ int main(int argc, char *argv[])
 	model->misc_audio()->set_volume(25);
 	*/
 	model->filter()->set_resonance(25);
+	model->mods()->at(0)->set_amount(40);
+	model->lfos()->at(0)->set_amount(40);
+	model->misc_modulations()->set_mod_amount(0, 70);
 	
 	//AudioAndEnvelopeView * view = new AudioAndEnvelopeView();
 	//ModulationView * view = new ModulationView();

@@ -23,12 +23,41 @@ MiscModulationModel::MiscModulationModel(QObject * parent) : QObject(parent) {
 	}
 }
 
+void MiscModulationModel::set_osc_slop(int value){
+	if(value >= 0 &&
+			(unsigned int)value <= osc_slop_max &&
+			(unsigned int)value != mOscSlop){
+		mOscSlop = value;
+		emit(osc_slop_changed(mOscSlop));
+	}
+}
+
+void MiscModulationModel::set_mod_amount(unsigned int index, int value){
+	if(index >= num_modulation_sources || value < amount_min || value > amount_max)
+		return;
+	mAmounts[index] = value;
+	emit(mod_amount_changed(index, value));
+}
+
+void MiscModulationModel::set_mod_destination(unsigned int index, int value){
+	if(index >= num_modulation_sources || value < 0 || 
+			value >= NUM_MODULATION_DESTINATIONS )
+		return;
+	mDestinations[index] = value;
+	emit(mod_destination_changed(index, value));
+}
+
+
 #include "sliderspinbox.hpp"
 #include "modulation_destinations.hpp"
+#include <QComboBox>
 #include <QGridLayout>
 #include <QLabel>
+#include <QSignalMapper>
 
 MiscModulationView::MiscModulationView(QWidget * parent) : QWidget(parent){
+	QSignalMapper * amtMapper = new QSignalMapper(this);
+	QSignalMapper * destMapper = new QSignalMapper(this);
 	QLabel * lab;
 	//allocate
 	mLayout = new QGridLayout(this);
@@ -37,10 +66,31 @@ MiscModulationView::MiscModulationView(QWidget * parent) : QWidget(parent){
 
 	for(unsigned int i = 0; i < MiscModulationModel::num_modulation_sources; i++){
 		SliderSpinBox * a = new SliderSpinBox(this);
+		ModDestComboBox * d = new ModDestComboBox(this);
 		mAmounts.push_back(a);
-		mDestinations.push_back(new ModDestComboBox(this));
+		mDestinations.push_back(d);
 		a->setRange(MiscModulationModel::amount_min, MiscModulationModel::amount_max);
+		//set up mappings
+		QObject::connect(a,
+				SIGNAL(valueChanged(int)),
+				amtMapper,
+				SLOT(map()));
+		QObject::connect(d,
+				SIGNAL(currentIndexChanged(int)),
+				destMapper,
+				SLOT(map()));
+		amtMapper->setMapping(a, i);
+		destMapper->setMapping(d, i);
 	}
+	//set up mappings
+	QObject::connect(amtMapper,
+			SIGNAL(mapped(int)),
+			this,
+			SLOT(update_mod_amount(int)));
+	QObject::connect(destMapper,
+			SIGNAL(mapped(int)),
+			this,
+			SLOT(update_mod_dest(int)));
 
 	//setup
 	mOscSlop->setRange(0, MiscModulationModel::osc_slop_max);
@@ -63,9 +113,67 @@ MiscModulationView::MiscModulationView(QWidget * parent) : QWidget(parent){
 	}
 	mLayout->setSpacing(2);
 	setLayout(mLayout);
+
+	//connect out signals
+	QObject::connect(mOscSlop,
+			SIGNAL(valueChanged(int)),
+			this,
+			SIGNAL(osc_slop_changed(int)));
 }
 
 void MiscModulationView::connect_to_model(MiscModulationModel * model){
-	//XXX doesn't do anything yet!
+	QObject::connect(
+			this,
+			SIGNAL(osc_slop_changed(int)),
+			model,
+			SLOT(set_osc_slop(int)));
+	QObject::connect(
+			model,
+			SIGNAL(osc_slop_changed(int)),
+			this,
+			SLOT(set_osc_slop(int)));
+	QObject::connect(
+			this,
+			SIGNAL(mod_amount_changed(unsigned int, int)),
+			model,
+			SLOT(set_mod_amount(unsigned int, int)));
+	QObject::connect(
+			model,
+			SIGNAL(mod_amount_changed(unsigned int, int)),
+			this,
+			SLOT(set_mod_amount(unsigned int, int)));
+	QObject::connect(
+			this,
+			SIGNAL(mod_destination_changed(unsigned int, int)),
+			model,
+			SLOT(set_mod_destination(unsigned int, int)));
+	QObject::connect(
+			model,
+			SIGNAL(mod_destination_changed(unsigned int, int)),
+			this,
+			SLOT(set_mod_destination(unsigned int, int)));
 }
+
+void MiscModulationView::update_mod_amount(int index){
+	emit(mod_amount_changed(index, mAmounts[index]->value()));
+}
+
+void MiscModulationView::update_mod_dest(int index){
+	emit(mod_destination_changed(index, mDestinations[index]->currentIndex()));
+}
+
+void MiscModulationView::set_osc_slop(int value){
+	mOscSlop->setValue(value);
+}
+
+void MiscModulationView::set_mod_amount(unsigned int index, int value){
+	if(index < mAmounts.size())
+		mAmounts[index]->setValue(value);
+}
+
+void MiscModulationView::set_mod_destination(unsigned int index, int value){
+	if(index < mDestinations.size())
+		mDestinations[index]->setCurrentIndex(value);
+}
+
 

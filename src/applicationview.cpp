@@ -31,6 +31,6 @@ ModulationView * ApplicationView::modulation(){
 
 void ApplicationView::connect_to_model(ApplicationModel * model){
 	mAudioAndEnvelopes->connect_to_model(model);
-	//XXX mModulations->connect_to_model(model);
+	mModulations->connect_to_model(model);
 }
 

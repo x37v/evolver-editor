@@ -1,3 +1,4 @@
+#include "applicationmodel.hpp"
 #include "modulationview.hpp"
 #include "lfo.hpp"
 #include "modulators.hpp"
@@ -54,6 +55,14 @@ ModulationView::ModulationView(QWidget * parent) : QWidget(parent){
 	topLayout->addStretch(1);
 
 	setLayout(topLayout);
+}
+
+void ModulationView::connect_to_model(ApplicationModel * model){
+	mMiscModulation->connect_to_model(model->misc_modulations());
+	for(unsigned int i = 0; i < 4; i++){
+		mLFOs[i]->connect_to_model(model->lfos()->at(i));
+		mMods[i]->connect_to_model(model->mods()->at(i));
+	}
 }
 
 std::vector<LFOView *> * ModulationView::lfos(){

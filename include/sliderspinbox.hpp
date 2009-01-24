@@ -14,6 +14,7 @@ class SliderSpinBox : public QWidget {
 		QSlider * slider();
 		QSpinBox * spinbox();
 		void setRange(int min, int max);
+		int value();
 	public slots:
 		void setValue(int val);
 	signals:

@@ -22,6 +22,14 @@ class MiscModulationModel : public QObject {
 		const static unsigned int osc_slop_max;
 		const static int amount_min;
 		const static int amount_max;
+	public slots:
+		void set_osc_slop(int value);
+		void set_mod_amount(unsigned int index, int value);
+		void set_mod_destination(unsigned int index, int value);
+	signals:
+		void osc_slop_changed(int);
+		void mod_amount_changed(unsigned int index, int value);
+		void mod_destination_changed(unsigned int index, int value);
 	private:
 		unsigned int mOscSlop;
 
@@ -40,6 +48,17 @@ class MiscModulationView : public QWidget {
 	public:
 		MiscModulationView(QWidget * parent = NULL);
 		void connect_to_model(MiscModulationModel * model);
+	public slots:
+		void set_osc_slop(int value);
+		void set_mod_amount(unsigned int index, int value);
+		void set_mod_destination(unsigned int index, int value);
+	private slots:
+		void update_mod_amount(int index);
+		void update_mod_dest(int index);
+	signals:
+		void osc_slop_changed(int);
+		void mod_amount_changed(unsigned int index, int value);
+		void mod_destination_changed(unsigned int index, int value);
 	private:
 		QGridLayout * mLayout;
 		SliderSpinBox * mOscSlop;

@@ -41,6 +41,10 @@ void SliderSpinBox::setRange(int min, int max){
 	mSpinBox->setRange(min, max);
 }
 
+int SliderSpinBox::value(){
+	return mSlider->value();
+}
+
 void SliderSpinBox::setValue(int val){
 	mSlider->setValue(val);
 }
