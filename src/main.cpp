@@ -2,6 +2,7 @@
 #include "oscview.hpp"
 #include "lfo.hpp"
 #include "delay.hpp"
+#include "filter.hpp"
 #include "vca.hpp"
 #include "env3.hpp"
 #include <QApplication>
@@ -43,6 +44,7 @@ int main(int argc, char *argv[])
 	view->audio_and_envelopes()->misc_audio()->connect_to_model(model->misc_audio());
 	model->misc_audio()->set_volume(25);
 	*/
+	model->filter()->set_resonance(25);
 	
 	//AudioAndEnvelopeView * view = new AudioAndEnvelopeView();
 	//ModulationView * view = new ModulationView();
