@@ -2,7 +2,7 @@
 #include "common.hpp"
 
 const unsigned int OscModel::freq_max = 120;
-const unsigned int OscModel::glide_max = 200;
+const unsigned int OscModel::glide_max = 100;
 const unsigned int OscModel::level_max = 100;
 const int OscModel::tune_max = 50;
 const int OscModel::tune_min = -50;
@@ -46,6 +46,14 @@ void OscModel::set_level(int level){
 	if(in_range_and_new<unsigned int>((unsigned int)level, mLevel, level_max)){
 		mLevel = level;
 		emit(level_changed(mLevel));
+	}
+}
+
+void OscModel::set_glide_mode(int m){
+	glide_mode mode = (glide_mode)m;
+	if(mode != mGlideMode){
+		mGlideMode = mode;
+		emit(glide_mode_changed(mGlideMode));
 	}
 }
 

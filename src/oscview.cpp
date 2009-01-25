@@ -8,15 +8,21 @@
 #include <QHBoxLayout>
 
 OscView::OscView(QWidget * parent) : QWidget(parent){
+	//allocate
 	mFreqSlider = new SliderSpinBox(this);
 	mTuneSlider = new SliderSpinBox(this);
+	mGlideMode = new QComboBox(this);
 	mGlideSlider = new SliderSpinBox(this);
 	mLevelSlider = new SliderSpinBox(this);
 
+	//set up
 	mFreqSlider->setRange(0, OscModel::freq_max);
 	mTuneSlider->setRange(OscModel::tune_min, OscModel::tune_max);
 	mGlideSlider->setRange(0, OscModel::glide_max);
 	mLevelSlider->setRange(0, OscModel::level_max);
+	mGlideMode->addItem("normal");
+	mGlideMode->addItem("fingered");
+	mGlideMode->addItem("off");
 
 	//connect signals out
 	QObject::connect(mFreqSlider,
@@ -35,6 +41,10 @@ OscView::OscView(QWidget * parent) : QWidget(parent){
 			SIGNAL(valueChanged(int)),
 			this,
 			SIGNAL(level_changed(int)));
+	QObject::connect(mGlideMode,
+			SIGNAL(currentIndexChanged(int)),
+			this,
+			SIGNAL(glide_mode_changed(int)));
 
 	mLayout = new QGridLayout(this);
 
@@ -49,15 +59,20 @@ OscView::OscView(QWidget * parent) : QWidget(parent){
 	mLayout->addWidget(lab, 1, 0, Qt::AlignRight);
 	mLayout->addWidget(mTuneSlider, 1, 1);
 
-	lab = new QLabel(this); lab->setText(QString("glide"));
+	lab = new QLabel(this); lab->setText(QString("glide mode"));
 	mLables.push_back(lab);
 	mLayout->addWidget(lab, 2, 0, Qt::AlignRight);
-	mLayout->addWidget(mGlideSlider, 2, 1);
+	mLayout->addWidget(mGlideMode, 2, 1);
+
+	lab = new QLabel(this); lab->setText(QString("glide"));
+	mLables.push_back(lab);
+	mLayout->addWidget(lab, 3, 0, Qt::AlignRight);
+	mLayout->addWidget(mGlideSlider, 3, 1);
 
 	lab = new QLabel(this); lab->setText(QString("level"));
 	mLables.push_back(lab);
-	mLayout->addWidget(lab, 3, 0, Qt::AlignRight);
-	mLayout->addWidget(mLevelSlider, 3, 1);
+	mLayout->addWidget(lab, 4, 0, Qt::AlignRight);
+	mLayout->addWidget(mLevelSlider, 4, 1);
 
 	mLayout->setContentsMargins(2,2,1,1);
 	mLayout->setSpacing(1);
@@ -101,6 +116,17 @@ void OscView::connect_to_model(OscModel * model){
 
 	QObject::connect(
 			this,
+			SIGNAL(glide_mode_changed(int)),
+			model,
+			SLOT(set_glide_mode(int)));
+	QObject::connect(
+			model,
+			SIGNAL(glide_mode_changed(int)),
+			this,
+			SLOT(set_glide_mode(int)));
+
+	QObject::connect(
+			this,
 			SIGNAL(level_changed(int)),
 			model,
 			SLOT(set_level(int)));
@@ -126,6 +152,10 @@ void OscView::set_tune(int tune){
 
 void OscView::set_glide(int glide){
 	mGlideSlider->setValue(glide);
+}
+
+void OscView::set_glide_mode(int mode){
+	mGlideMode->setCurrentIndex(mode);
 }
 
 void OscView::set_level(int lev){
@@ -157,15 +187,15 @@ AnalogOscView::AnalogOscView(QWidget * parent) : OscView(parent) {
 
 	lab = new QLabel(parent); lab->setText(QString("shape"));
 	mLables.push_back(lab);
-	mLayout->addWidget(lab, 4, 0, Qt::AlignRight);
+	mLayout->addWidget(lab, 5, 0, Qt::AlignRight);
 	hlayout->addWidget(mShapeSelect);
 	hlayout->addWidget(mSyncButton);
-	mLayout->addLayout(hlayout, 4, 1);
+	mLayout->addLayout(hlayout, 5, 1);
 
 	lab = new QLabel(parent); lab->setText(QString("pulse width"));
 	mLables.push_back(lab);
-	mLayout->addWidget(lab, 5, 0, Qt::AlignRight);
-	mLayout->addWidget(mWidthSlider, 5, 1);
+	mLayout->addWidget(lab, 6, 0, Qt::AlignRight);
+	mLayout->addWidget(mWidthSlider, 6, 1);
 
 	//connect out signals
 	QObject::connect(mShapeSelect,
@@ -250,18 +280,18 @@ DigitalOscView::DigitalOscView(QWidget * parent) : OscView(parent){
 
 	lab = new QLabel(parent); lab->setText(QString("shape"));
 	mLables.push_back(lab);
-	mLayout->addWidget(lab, 4, 0, Qt::AlignRight);
-	mLayout->addWidget(mShapeSlider, 4, 1);
+	mLayout->addWidget(lab, 5, 0, Qt::AlignRight);
+	mLayout->addWidget(mShapeSlider, 5, 1);
 
 	lab = new QLabel(parent); lab->setText(QString("fm in"));
 	mLables.push_back(lab);
-	mLayout->addWidget(lab, 5, 0, Qt::AlignRight);
-	mLayout->addWidget(mFmInSlider, 5, 1);
+	mLayout->addWidget(lab, 6, 0, Qt::AlignRight);
+	mLayout->addWidget(mFmInSlider, 6, 1);
 
 	lab = new QLabel(parent); lab->setText(QString("ring in"));
 	mLables.push_back(lab);
-	mLayout->addWidget(lab, 6, 0, Qt::AlignRight);
-	mLayout->addWidget(mRingInSlider, 6, 1);
+	mLayout->addWidget(lab, 7, 0, Qt::AlignRight);
+	mLayout->addWidget(mRingInSlider, 7, 1);
 
 	mShapeSeqSelect->addItem(QString("none"));
 	mShapeSeqSelect->addItem(QString("seq 1"));
@@ -271,8 +301,8 @@ DigitalOscView::DigitalOscView(QWidget * parent) : OscView(parent){
 
 	lab = new QLabel(parent); lab->setText(QString("shape seq"));
 	mLables.push_back(lab);
-	mLayout->addWidget(lab, 7, 0, Qt::AlignRight);
-	mLayout->addWidget(mShapeSeqSelect, 7, 1);
+	mLayout->addWidget(lab, 8, 0, Qt::AlignRight);
+	mLayout->addWidget(mShapeSeqSelect, 8, 1);
 
 	//connect out signals
 	QObject::connect(mShapeSlider,

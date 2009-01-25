@@ -23,6 +23,7 @@ class OscView : public QWidget {
 	protected:
 		SliderSpinBox * mFreqSlider;
 		SliderSpinBox * mTuneSlider;
+		QComboBox * mGlideMode;
 		SliderSpinBox * mGlideSlider;
 		SliderSpinBox * mLevelSlider;
 		QGridLayout * mLayout;
@@ -31,11 +32,13 @@ class OscView : public QWidget {
 		void freq_changed(int);
 		void tune_changed(int);
 		void glide_changed(int);
+		void glide_mode_changed(int);
 		void level_changed(int);
 	public slots:
 		void set_freq(int freq);
 		void set_tune(int tune);
 		void set_glide(int glide);
+		void set_glide_mode(int m);
 		void set_level(int lev);
 		void show_labels(bool show);
 };
