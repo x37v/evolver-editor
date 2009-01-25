@@ -1,8 +1,9 @@
 #ifndef ENV3_HPP
 #define ENV3_HPP
 
-#include <QObject>
-class Env3Model : public QObject {
+#include "model.hpp"
+
+class Env3Model : public Model {
 	Q_OBJECT
 	public:
 		Env3Model(QObject * parent = NULL);

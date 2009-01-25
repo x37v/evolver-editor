@@ -11,7 +11,7 @@ const unsigned int Env3Model::sustain_max = 100;
 const unsigned int Env3Model::release_max = 110;
 const unsigned int Env3Model::velocity_max = 100;
 
-Env3Model::Env3Model(QObject * parent) : QObject(parent){
+Env3Model::Env3Model(QObject * parent) : Model(parent){
 	mDestination = 0;
 	mDelay = 0;
 	mAmount = 0;
@@ -26,6 +26,7 @@ void Env3Model::set_destination(int val){
 	if(in_range_and_new<unsigned int>((unsigned int)val, mDestination, NUM_MODULATION_DESTINATIONS - 1)){
 		mDestination = val;
 		emit(destination_changed(mDestination));
+		send_program_param(49, mDestination);
 	}
 }
 
@@ -33,13 +34,15 @@ void Env3Model::set_amount(int val){
 	if(in_range_and_new<int>(val, mAmount, amount_max, amount_min)){
 		mAmount = val;
 		emit(amount_changed(mAmount));
+		send_program_param(48, mAmount + 99);
 	}
 }
 
 void Env3Model::set_delay(int val){
-	if(in_range_and_new<unsigned int>((unsigned int)val, mDecay, delay_max)){
+	if(in_range_and_new<unsigned int>((unsigned int)val, mDelay, delay_max)){
 		mDelay = val;
 		emit(delay_changed(mDelay));
+		send_program_param(112, mDelay);
 	}
 }
 
@@ -47,6 +50,7 @@ void Env3Model::set_attack(int val){
 	if(in_range_and_new<unsigned int>((unsigned int)val, mAttack, attack_max)){
 		mAttack = val;
 		emit(attack_changed(mAttack));
+		send_program_param(50, mAttack);
 	}
 }
 
@@ -54,6 +58,7 @@ void Env3Model::set_decay(int val){
 	if(in_range_and_new<unsigned int>((unsigned int)val, mDecay, decay_max)){
 		mDecay = val;
 		emit(decay_changed(mDecay));
+		send_program_param(51, mDecay);
 	}
 }
 
@@ -61,6 +66,7 @@ void Env3Model::set_sustain(int val){
 	if(in_range_and_new<unsigned int>((unsigned int)val, mSustain, sustain_max)){
 		mSustain = val;
 		emit(sustain_changed(mSustain));
+		send_program_param(52, mSustain);
 	}
 }
 
@@ -68,6 +74,7 @@ void Env3Model::set_release(int val){
 	if(in_range_and_new<unsigned int>((unsigned int)val, mRelease, release_max)){
 		mRelease = val;
 		emit(release_changed(mRelease));
+		send_program_param(53, mRelease);
 	}
 }
 
@@ -75,6 +82,7 @@ void Env3Model::set_velocity(int val){
 	if(in_range_and_new<unsigned int>((unsigned int)val, mVelocity, velocity_max)){
 		mVelocity = val;
 		emit(velocity_changed(mVelocity));
+		send_program_param(113, mRelease);
 	}
 }
 
