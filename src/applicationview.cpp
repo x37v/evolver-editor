@@ -13,12 +13,13 @@ ApplicationView::ApplicationView(QWidget * parent) : QWidget(parent){
 	mAudioAndEnvelopes = new AudioAndEnvelopeView(this);
 	mModulations = new ModulationView(this);
 
+	//make them scrollable
 	QScrollArea * tab0 = new QScrollArea(this);
 	QScrollArea * tab1 = new QScrollArea(this);
-
 	tab0->setWidget(mAudioAndEnvelopes);
 	tab1->setWidget(mModulations);
 
+	//let the tabs resize
 	tab0->setWidgetResizable(true);
 	tab1->setWidgetResizable(true);
 
