@@ -20,6 +20,11 @@ ApplicationModel::ApplicationModel(QObject * parent) : Model(parent){
 
 	QSignalMapper * aOscShapeMap = new QSignalMapper(this);
 	QSignalMapper * aOscSyncMap = new QSignalMapper(this);
+
+	QSignalMapper * dOscShapeMap = new QSignalMapper(this);
+	QSignalMapper * dOscFmInMap = new QSignalMapper(this);
+	QSignalMapper * dOscRingInMap = new QSignalMapper(this);
+	QSignalMapper * dOscShapeModMap = new QSignalMapper(this);
 	//allocate
 	for(unsigned int i = 0; i < 2; i++){
 		DigitalOscModel * d = new DigitalOscModel(this);
@@ -53,6 +58,15 @@ ApplicationModel::ApplicationModel(QObject * parent) : Model(parent){
 		QObject::connect(a, SIGNAL(sync_changed(bool)), aOscSyncMap, SLOT(map()));
 		aOscShapeMap->setMapping(a, i);
 		aOscSyncMap->setMapping(a, i);
+
+		QObject::connect(d, SIGNAL(shape_changed(int)), dOscShapeMap, SLOT(map()));
+		QObject::connect(d, SIGNAL(fm_in_changed(int)), dOscFmInMap, SLOT(map()));
+		QObject::connect(d, SIGNAL(ring_in_changed(int)), dOscRingInMap, SLOT(map()));
+		QObject::connect(d, SIGNAL(shape_mod_changed(int)), dOscShapeModMap, SLOT(map()));
+		dOscShapeMap->setMapping(d, i);
+		dOscFmInMap->setMapping(d, i);
+		dOscRingInMap->setMapping(d, i);
+		dOscShapeModMap->setMapping(d, i);
 	}
 	QObject::connect(oscFreqMap, SIGNAL(mapped(int)), this, SLOT(osc_set_freq(int)));
 	QObject::connect(oscTuneMap, SIGNAL(mapped(int)), this, SLOT(osc_set_tune(int)));
@@ -62,6 +76,12 @@ ApplicationModel::ApplicationModel(QObject * parent) : Model(parent){
 
 	QObject::connect(aOscShapeMap, SIGNAL(mapped(int)), this, SLOT(analog_osc_set_shape(int)));
 	QObject::connect(aOscSyncMap, SIGNAL(mapped(int)), this, SLOT(analog_osc_set_sync(int)));
+
+	QObject::connect(dOscShapeMap, SIGNAL(mapped(int)), this, SLOT(digital_osc_set_shape(int)));
+	QObject::connect(dOscFmInMap, SIGNAL(mapped(int)), this, SLOT(digital_osc_set_fm_in(int)));
+	QObject::connect(dOscRingInMap, SIGNAL(mapped(int)), this, SLOT(digital_osc_set_ring_in(int)));
+	QObject::connect(dOscShapeModMap, SIGNAL(mapped(int)), this, SLOT(digital_osc_set_shape_mod(int)));
+
 	for(unsigned int i = 0; i < 4; i++){
 		mLFOs.push_back(new LFOModel(this));
 		mMods.push_back(new ModRoutingModel(this));

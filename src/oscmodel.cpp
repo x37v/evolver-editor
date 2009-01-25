@@ -18,6 +18,7 @@ OscModel::OscModel(QObject * parent): QObject(parent){
 	mGlide = 0;
 	mLevel = 50;
 	mTune = 0;
+	mGlideMode = normal;
 }
 
 unsigned int OscModel::freq(){
