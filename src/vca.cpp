@@ -174,6 +174,10 @@ VCAView::VCAView(QWidget * parent) : QWidget(parent){
 	QObject::connect(mDecay,
 			SIGNAL(valueChanged(int)),
 			this,
+			SIGNAL(decay_changed(int)));
+	QObject::connect(mSustain,
+			SIGNAL(valueChanged(int)),
+			this,
 			SIGNAL(sustain_changed(int)));
 	QObject::connect(mRelease,
 			SIGNAL(valueChanged(int)),
