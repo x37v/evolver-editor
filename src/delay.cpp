@@ -40,23 +40,15 @@ void DelayModel::set_delay_time(unsigned int index, int time){
 	if (time >= 0 && 
 			(unsigned int)time <= delay_time_max &&
 			(unsigned int)time != mDelayTime[index]) {
+		int param_num = 35;
 		mDelayTime[index] = time;
 		emit(delay_time_changed(index, mDelayTime[index]));
-		if(mDelaySync[index] == off){
-			switch(index){
-				case 0:
-					send_program_param(35, mDelayTime[index]);
-					break;
-				case 1:
-					send_program_param(99, mDelayTime[index]);
-					break;
-				case 2:
-					send_program_param(101, mDelayTime[index]);
-					break;
-				default:
-					break;
-			}
-		}
+		if(index == 1)
+			param_num = 99;
+		else if(index == 2)
+			param_num = 101;
+		if(mDelaySync[index] == off)
+			send_program_param(param_num, mDelayTime[index]);
 	}
 }
 
@@ -66,21 +58,14 @@ void DelayModel::set_delay_level(unsigned int index, int level){
 	if(level >= 0 &&
 			(unsigned int)level <= delay_level_max &&
 			(unsigned int)level != mDelayLevel[index]){
+		uint8_t param_num = 36;
 		mDelayLevel[index] = level;
 		emit(delay_level_changed(index, mDelayLevel[index]));
-		switch(index){
-			case 0:
-				send_program_param(36, mDelayLevel[index]);
-				break;
-			case 1:
-				send_program_param(100, mDelayLevel[index]);
-				break;
-			case 2:
-				send_program_param(102, mDelayLevel[index]);
-				break;
-			default:
-				break;
-		}
+		if(index == 1)
+			param_num = 100;
+		else if(index == 2)
+			param_num = 102;
+		send_program_param(param_num, mDelayLevel[index]);
 	}
 }
 
@@ -89,30 +74,17 @@ void DelayModel::set_delay_sync(unsigned int index, int t){
 	if (index > 2)
 		return;
 	if(type != mDelaySync[index]){
+		uint8_t param_num = 35;
 		mDelaySync[index] = type;
 		emit(delay_sync_changed(index, mDelaySync[index]));
-		switch(index){
-			case 0:
-				if(mDelaySync[index] == off)
-					send_program_param(35, mDelayTime[index]);
-				else
-					send_program_param(35, mDelaySync[index] + 151);
-				break;
-			case 1:
-				if(mDelaySync[index] == off)
-					send_program_param(99, mDelayTime[index]);
-				else
-					send_program_param(99, mDelaySync[index] + 151);
-				break;
-			case 2:
-				if(mDelaySync[index] == off)
-					send_program_param(101, mDelayTime[index]);
-				else
-					send_program_param(101, mDelaySync[index] + 151);
-				break;
-			default:
-				break;
-		}
+		if(index == 1)
+			param_num = 99;
+		else if(index == 2)
+			param_num = 101;
+		if(mDelaySync[index] == off)
+			send_program_param(param_num, mDelayTime[index]);
+		else
+			send_program_param(param_num, mDelaySync[index] + 150);
 	}
 }
 
