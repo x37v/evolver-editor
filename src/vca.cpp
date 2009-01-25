@@ -19,7 +19,7 @@ const char * VCAModel::pan_type_names[] = {
 };
 const unsigned int VCAModel::num_pan_types = 7;
 
-VCAModel::VCAModel(QObject * parent) : QObject(parent){
+VCAModel::VCAModel(QObject * parent) : Model(parent){
 	mLevel = 0;
 	mEnvAmount = 100;
 	mAttack = 0;
@@ -34,6 +34,7 @@ void VCAModel::set_level(int val){
 	if(in_range_and_new<unsigned int>((unsigned int)val, mLevel, level_max)){
 		mLevel = val;
 		emit(level_changed(mLevel));
+		send_program_param(24, mLevel);
 	}
 }
 
@@ -41,6 +42,7 @@ void VCAModel::set_env_amount(int val){
 	if(in_range_and_new<unsigned int>((unsigned int)val, mEnvAmount, env_amount_max)){
 		mEnvAmount = val;
 		emit(env_amount_changed(mEnvAmount));
+		send_program_param(25, mEnvAmount);
 	}
 }
 
@@ -48,6 +50,7 @@ void VCAModel::set_attack(int val){
 	if(in_range_and_new<unsigned int>((unsigned int)val, mAttack, attack_max)){
 		mAttack = val;
 		emit(attack_changed(mAttack));
+		send_program_param(26, mAttack);
 	}
 }
 
@@ -55,6 +58,7 @@ void VCAModel::set_decay(int val){
 	if(in_range_and_new<unsigned int>((unsigned int)val, mDecay, decay_max)){
 		mDecay = val;
 		emit(decay_changed(mDecay));
+		send_program_param(27, mDecay);
 	}
 }
 
@@ -62,6 +66,7 @@ void VCAModel::set_sustain(int val){
 	if(in_range_and_new<unsigned int>((unsigned int)val, mSustain, sustain_max)){
 		mSustain = val;
 		emit(sustain_changed(mSustain));
+		send_program_param(28, mSustain);
 	}
 }
 
@@ -69,6 +74,7 @@ void VCAModel::set_release(int val){
 	if(in_range_and_new<unsigned int>((unsigned int)val, mRelease, release_max)){
 		mRelease = val;
 		emit(release_changed(mRelease));
+		send_program_param(29, mRelease);
 	}
 }
 
@@ -76,6 +82,7 @@ void VCAModel::set_velocity(int val){
 	if(in_range_and_new<unsigned int>((unsigned int)val, mVelocity, velocity_max)){
 		mVelocity = val;
 		emit(velocity_changed(mVelocity));
+		send_program_param(89, mVelocity);
 	}
 }
 
@@ -86,6 +93,7 @@ void VCAModel::set_pan(int val){
 	if(pan != mPanType){
 		mPanType = pan;
 		emit(pan_changed(mPanType));
+		send_program_param(30, mPanType);
 	}
 }
 

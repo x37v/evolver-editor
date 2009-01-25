@@ -1,8 +1,9 @@
 #ifndef VCA_HPP
 #define VCA_HPP
 
-#include <QObject>
-class VCAModel : public QObject {
+#include "model.hpp"
+
+class VCAModel : public Model {
 	Q_OBJECT
 	public:
 		VCAModel(QObject * parent = NULL);
