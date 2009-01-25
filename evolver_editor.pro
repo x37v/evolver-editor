@@ -8,6 +8,7 @@ DEPENDPATH += . include src
 INCLUDEPATH += . include
 MOC_DIR = moc
 OBJECTS_DIR = obj
+LIBS += -lporttime -lportmidi
 
 # Input
 HEADERS += include/common.hpp \
@@ -29,7 +30,8 @@ HEADERS += include/common.hpp \
 	include/miscmodulation.hpp \
 	include/audioandenvelopeview.hpp \
 	include/titledwidget.hpp \
-	include/modulationview.hpp
+	include/modulationview.hpp \
+	include/mididriver.hpp
 
 SOURCES += \
 	src/common.cpp \
@@ -51,5 +53,6 @@ SOURCES += \
 	src/miscmodulation.cpp \
 	src/audioandenvelopeview.cpp \
 	src/titledwidget.cpp \
-	src/modulationview.cpp
+	src/modulationview.cpp \
+	src/mididriver.cpp
 

@@ -48,13 +48,13 @@ class MiscModulationView : public QWidget {
 	public:
 		MiscModulationView(QWidget * parent = NULL);
 		void connect_to_model(MiscModulationModel * model);
+	private slots:
+		void update_mod_amount(int index);
+		void update_mod_dest(int index);
 	public slots:
 		void set_osc_slop(int value);
 		void set_mod_amount(unsigned int index, int value);
 		void set_mod_destination(unsigned int index, int value);
-	private slots:
-		void update_mod_amount(int index);
-		void update_mod_dest(int index);
 	signals:
 		void osc_slop_changed(int);
 		void mod_amount_changed(unsigned int index, int value);
