@@ -1,9 +1,9 @@
 #ifndef FEEDBACK_HPP
 #define FEEDBACK_HPP
 
-#include <QObject>
+#include "model.hpp"
 
-class FeedbackModel : public QObject {
+class FeedbackModel : public Model {
 	Q_OBJECT
 	public:
 		FeedbackModel(QObject * parent = NULL);

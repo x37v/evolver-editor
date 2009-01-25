@@ -4,7 +4,7 @@
 const unsigned int FeedbackModel::freq_max = 48;
 const unsigned int FeedbackModel::level_max = 100;
 
-FeedbackModel::FeedbackModel(QObject * parent) : QObject(parent){
+FeedbackModel::FeedbackModel(QObject * parent) : Model(parent){
 	mFreq = 0;
 	mLevel = 0;
 	mGrunge = false;
@@ -14,6 +14,7 @@ void FeedbackModel::set_freq(int f){
 	if(in_range_and_new<unsigned int>((unsigned int)f, mFreq, freq_max)){
 		mFreq = f;
 		emit(freq_changed(mFreq));
+		send_program_param(32, mFreq);
 	}
 }
 
@@ -21,6 +22,7 @@ void FeedbackModel::set_level(int l){
 	if(in_range_and_new<unsigned int>((unsigned int)l, mLevel, level_max)){
 		mLevel = l;
 		emit(level_changed(mLevel));
+		send_program_param(33, mLevel);
 	}
 }
 
@@ -28,6 +30,7 @@ void FeedbackModel::set_grunge(bool g){
 	if(g != mGrunge){
 		mGrunge = g;
 		emit(grunge_changed(mGrunge));
+		send_program_param(34, mGrunge);
 	}
 }
 
