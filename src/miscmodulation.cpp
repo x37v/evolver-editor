@@ -15,7 +15,7 @@ const unsigned int MiscModulationModel::osc_slop_max = 5;
 const int MiscModulationModel::amount_min = -99;
 const int MiscModulationModel::amount_max = 99;
 
-MiscModulationModel::MiscModulationModel(QObject * parent) : QObject(parent) {
+MiscModulationModel::MiscModulationModel(QObject * parent) : Model(parent) {
 	mOscSlop = 0;
 	for(unsigned int i = 0; i < num_modulation_sources; i++){
 		mAmounts.push_back(0);
@@ -29,6 +29,7 @@ void MiscModulationModel::set_osc_slop(int value){
 			(unsigned int)value != mOscSlop){
 		mOscSlop = value;
 		emit(osc_slop_changed(mOscSlop));
+		send_program_param(69, mOscSlop);
 	}
 }
 
@@ -37,6 +38,7 @@ void MiscModulationModel::set_mod_amount(unsigned int index, int value){
 		return;
 	mAmounts[index] = value;
 	emit(mod_amount_changed(index, value));
+	send_program_param(114 + (index * 2), value + 99);
 }
 
 void MiscModulationModel::set_mod_destination(unsigned int index, int value){
@@ -45,6 +47,7 @@ void MiscModulationModel::set_mod_destination(unsigned int index, int value){
 		return;
 	mDestinations[index] = value;
 	emit(mod_destination_changed(index, value));
+	send_program_param(115 + (index * 2), value);
 }
 
 

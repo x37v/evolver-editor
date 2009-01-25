@@ -1,10 +1,10 @@
 #ifndef MISC_MODULATION_HPP
 #define MISC_MODULATION_HPP
 
-#include <QObject>
+#include "model.hpp"
 #include <vector>
 
-class MiscModulationModel : public QObject {
+class MiscModulationModel : public Model {
 	Q_OBJECT
 	public:
 		MiscModulationModel(QObject * parent = NULL);
