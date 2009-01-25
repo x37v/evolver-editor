@@ -700,75 +700,149 @@ void MidiDriver::update_model_param(uint8_t index, uint8_t value){
 			break;
 		case 104:
 			//104    0 - 160 LFO 3 Frequency (same as LFO 1)
+			if(value <= 150){
+				invoke_method(mModel->lfos()->at(2), set_sync_type, Q_ARG(int, 0));
+				invoke_method(mModel->lfos()->at(2), set_freq, Q_ARG(int, value));
+			} else {
+				invoke_method(mModel->lfos()->at(2), set_sync_type, Q_ARG(int, value - 150));
+			}
 			break;
 		case 105:
 			//105    0-4     LFO 3 Shape (same as LFO 1)
+			invoke_method(mModel->lfos()->at(2), set_shape, Q_ARG(int, value));
 			break;
 		case 106:
 			//106    0 - 200 LFO 3 Amount (over 100 repeats with Key sync on)
+			if(value <= 100){
+				invoke_method(mModel->lfos()->at(2), set_amount, Q_ARG(int, value));
+				invoke_method(mModel->lfos()->at(2), set_key_sync, Q_ARG(bool, false));
+			} else {
+				invoke_method(mModel->lfos()->at(2), set_key_sync, Q_ARG(bool, true));
+				invoke_method(mModel->lfos()->at(2), set_amount, Q_ARG(int, value - 100));
+			}
 			break;
 		case 107:
 			//107    0 - 68  LFO 3 Destination (see destination table on page 60)
+			invoke_method(mModel->lfos()->at(2), set_destination, Q_ARG(int, value));
 			break;
 		case 108:
 			//108    0 - 160 LFO 4 Frequency (same as LFO 1)
+			if(value <= 150){
+				invoke_method(mModel->lfos()->at(3), set_sync_type, Q_ARG(int, 0));
+				invoke_method(mModel->lfos()->at(3), set_freq, Q_ARG(int, value));
+			} else {
+				invoke_method(mModel->lfos()->at(3), set_sync_type, Q_ARG(int, value - 150));
+			}
 			break;
 		case 109:
 			//109    0-4     LFO 4 Shape (same as LFO 1)
+			invoke_method(mModel->lfos()->at(3), set_shape, Q_ARG(int, value));
 			break;
 		case 110:
 			//110    0 - 200 LFO 4 Amount (over 100 repeats with Key sync on)
+			if(value <= 100){
+				invoke_method(mModel->lfos()->at(3), set_amount, Q_ARG(int, value));
+				invoke_method(mModel->lfos()->at(3), set_key_sync, Q_ARG(bool, false));
+			} else {
+				invoke_method(mModel->lfos()->at(3), set_key_sync, Q_ARG(bool, true));
+				invoke_method(mModel->lfos()->at(3), set_amount, Q_ARG(int, value - 100));
+			}
 			break;
 		case 111:
 			//111    0 - 68  LFO 4 Destination (see destination table on page 60)
+			invoke_method(mModel->lfos()->at(3), set_destination, Q_ARG(int, value));
 			break;
 		case 112:
 			//112    0 - 100 Envelope 3 Delay
+			invoke_method(mModel->env3(), set_delay, Q_ARG(int, value));
 			break;
 		case 113:
 			//113    0 - 100 Envelope 3 Velocity
+			invoke_method(mModel->env3(), set_velocity, Q_ARG(int, value));
 			break;
 		case 114:
 			//114    0 - 198 External Input Peak Amount; -99 to +99
+			invoke_method(mModel->misc_modulations(), set_mod_amount, 
+					Q_ARG(unsigned int, MiscModulationModel::in_peak), 
+					Q_ARG(int, (int)value - 99));
 			break;
 		case 115:
 			//115    0 - 68  External Input Peak Destination (see destination table on page 60)
+			invoke_method(mModel->misc_modulations(), set_mod_destination, 
+					Q_ARG(unsigned int, MiscModulationModel::in_peak), 
+					Q_ARG(int, value));
 			break;
 		case 116:
 			//116    0 - 198 External Input Envelope Follower Amount; -99 to +99
+			invoke_method(mModel->misc_modulations(), set_mod_amount, 
+					Q_ARG(unsigned int, MiscModulationModel::in_env_follow), 
+					Q_ARG(int, (int)value - 99));
 			break;
 		case 117:
 			//117    0 - 68  External Input Envelope Follower Destination (see destination table on page 60)
+			invoke_method(mModel->misc_modulations(), set_mod_destination, 
+					Q_ARG(unsigned int, MiscModulationModel::in_env_follow), 
+					Q_ARG(int, value));
 			break;
 		case 118:
 			//118    0 - 198 Velocity Amount; -99 to +99
+			invoke_method(mModel->misc_modulations(), set_mod_amount, 
+					Q_ARG(unsigned int, MiscModulationModel::velocity),
+					Q_ARG(int, (int)value - 99));
 			break;
 		case 119:
 			//119    0 - 68  Velocity Destination (see destination table on page 60)
+			invoke_method(mModel->misc_modulations(), set_mod_destination, 
+					Q_ARG(unsigned int, MiscModulationModel::velocity), 
+					Q_ARG(int, value));
 			break;
 		case 120:
 			//120    0 - 198 Mod Wheel Amount; -99 to +99
+			invoke_method(mModel->misc_modulations(), set_mod_amount, 
+					Q_ARG(unsigned int, MiscModulationModel::mod_wheel), 
+					Q_ARG(int, (int)value - 99));
 			break;
 		case 121:
 			//121    0 - 68  Mod Wheel Destination (see destination table on page 60)
+			invoke_method(mModel->misc_modulations(), set_mod_destination, 
+					Q_ARG(unsigned int, MiscModulationModel::mod_wheel), 
+					Q_ARG(int, value));
 			break;
 		case 122:
 			//122    0 - 198 Pressure Amount; -99 to +99
+			invoke_method(mModel->misc_modulations(), set_mod_amount, 
+					Q_ARG(unsigned int, MiscModulationModel::pressure), 
+					Q_ARG(int, (int)value - 99));
 			break;
 		case 123:
+			invoke_method(mModel->misc_modulations(), set_mod_destination, 
+					Q_ARG(unsigned int, MiscModulationModel::pressure), 
+					Q_ARG(int, value));
 			//123    0 - 68  Pressure Destination (see destination table on page 60)
 			break;
 		case 124:
 			//124    0 - 198 Breath Controller Amount; -99 to +99
+			invoke_method(mModel->misc_modulations(), set_mod_amount, 
+					Q_ARG(unsigned int, MiscModulationModel::breath), 
+					Q_ARG(int, (int)value - 99));
 			break;
 		case 125:
 			//125    0 - 68  Breath Controller Destination (see destination table on page 60)
+			invoke_method(mModel->misc_modulations(), set_mod_destination, 
+					Q_ARG(unsigned int, MiscModulationModel::breath), 
+					Q_ARG(int, value));
 			break;
 		case 126:
 			//126    0 - 198 Foot Controller Amount; -99 to +99
+			invoke_method(mModel->misc_modulations(), set_mod_amount, 
+					Q_ARG(unsigned int, MiscModulationModel::foot), 
+					Q_ARG(int, (int)value - 99));
 			break;
 		case 127:
 			//127    0 - 68  Foot Controller Destination (see destination table on page 60)
+			invoke_method(mModel->misc_modulations(), set_mod_destination, 
+					Q_ARG(unsigned int, MiscModulationModel::foot), 
+					Q_ARG(int, value));
 			break;
 	}
 }
