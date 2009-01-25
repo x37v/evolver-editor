@@ -23,6 +23,7 @@ class MidiDriver : public QThread {
 		void run();
 	protected:
 		void update_model_param(uint8_t index, uint8_t value);
+		void unpack_data(std::vector<uint8_t> packed, std::vector<uint8_t> &unpacked);
 	protected slots:
 		void poll();
 	private:

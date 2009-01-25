@@ -93,6 +93,14 @@ void MidiDriver::poll(){
 						case prog_param:
 							mCurrentCommand = prog_param;
 							break;
+						case prog_dump:
+							mCurrentCommand = prog_dump;
+							mInputBuffer.clear();
+							break;
+						case edit_dump:
+							mCurrentCommand = edit_dump;
+							mInputBuffer.clear();
+							break;
 						default:
 							mReading = false;
 					};
@@ -100,23 +108,45 @@ void MidiDriver::poll(){
 				default:
 					//after the header, this is our b.s.
 					unsigned int index = mReadingCount - 4;
-					if(mCurrentCommand == prog_param){
-						switch(index){
-							case 0:
-								mParamNumber = data;
+					switch(mCurrentCommand){
+						case prog_dump:
+							//XXX for now ditch bank and prog
+							if(index < 2)
 								break;
-							case 1:
-								mParamValue = data;
-								break;
-							case 2:
-								mParamValue |= (data << 4);
-								//update the shit
-								update_model_param(mParamNumber, mParamValue);
-								break;
-							default:
-								break;
-						}
-					}
+							//update the index for the prog_param, let it fall through
+							index -= 2;
+						case edit_dump:
+							mInputBuffer.push_back(data);
+							//there are 220 bytes of data in a dump..
+							if(index >= 219){
+								std::vector<uint8_t> unpacked;
+								//unpack && update our parameters
+								unpack_data(mInputBuffer, unpacked);
+								for(unsigned int i = 0; i < 127; i++)
+									update_model_param(i, unpacked[i]);
+								mReading = false;
+							}
+							break;
+						case prog_param:
+							switch(index){
+								case 0:
+									mParamNumber = data;
+									break;
+								case 1:
+									mParamValue = data;
+									break;
+								case 2:
+									mParamValue |= (data << 4);
+									//update the shit
+									update_model_param(mParamNumber, mParamValue);
+									break;
+								default:
+									break;
+							};
+							break;
+						default: 
+							break;
+					};
 					break;
 			};
 			//increment the count
@@ -878,3 +908,17 @@ void MidiDriver::update_model_param(uint8_t index, uint8_t value){
 			break;
 	}
 }
+
+//unpack our data
+void MidiDriver::unpack_data(std::vector<uint8_t> packed, std::vector<uint8_t> &unpacked){
+	uint8_t ms_bits = 0;
+	for(unsigned int i = 0; i < packed.size(); i++){
+		if(i % 8 == 0){
+			ms_bits = packed[i];
+		} else {
+			unsigned int bit_position = (i % 8) - 1;
+			unpacked.push_back(packed[i] | (((ms_bits >> bit_position) & 0x1)) << 7);
+		}
+	}
+}
+
