@@ -98,8 +98,21 @@ AnalogOscModel::AnalogOscModel(QObject * parent): OscModel(parent){
 	mWidth = 50;
 }
 
+AnalogOscModel::shape_t AnalogOscModel::shape(){
+	return mShape;
+}
+
+unsigned int AnalogOscModel::width(){
+	return mWidth;
+}
+
+bool AnalogOscModel::sync(){
+	return mSyncing;
+}
+
+
 void AnalogOscModel::set_shape(int s){
-	shapes shape = (shapes)s;
+	shape_t shape = (shape_t)s;
 	if(shape != mShape){
 		mShape = shape;
 		emit(shape_changed(mShape));
@@ -128,6 +141,23 @@ DigitalOscModel::DigitalOscModel(QObject * parent): OscModel(parent){
 	mShapeMod = none;
 }
 
+unsigned int DigitalOscModel::shape(){
+	return mShape;
+}
+
+unsigned int DigitalOscModel::fm_in(){
+	return mFmIn;
+}
+
+unsigned int DigitalOscModel::ring_in(){
+	return mRingIn;
+}
+
+DigitalOscModel::shape_mod_t DigitalOscModel::shape_mod(){
+	return mShapeMod;
+}
+
+
 
 void DigitalOscModel::set_shape(int shape){
 	if(in_range_and_new<unsigned int>((unsigned int)shape, mShape, 127)){
@@ -151,7 +181,7 @@ void DigitalOscModel::set_ring_in(int ring){
 }
 
 void DigitalOscModel::set_shape_mod(int m){
-	shape_mod mod = (shape_mod)m;
+	shape_mod_t mod = (shape_mod_t)m;
 	if(mod != mShapeMod){
 		mShapeMod = mod;
 		emit(shape_mod_changed(mShapeMod));

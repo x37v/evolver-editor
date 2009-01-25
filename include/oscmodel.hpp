@@ -47,14 +47,17 @@ class AnalogOscModel : public OscModel {
 	Q_OBJECT
 	public:
 		AnalogOscModel(QObject * parent);
-		enum shapes {
+		enum shape_t {
 			saw,
 			triangle,
 			saw_triangle,
 			pulse};
 		static const unsigned int width_max;
+		shape_t shape();
+		unsigned int width();
+		bool sync();
 	private:
-		shapes mShape;
+		shape_t mShape;
 		unsigned int mWidth;
 		//sync 2 -> 1
 		bool mSyncing;
@@ -73,7 +76,7 @@ class DigitalOscModel : public OscModel {
 	Q_OBJECT
 	public:
 		DigitalOscModel(QObject * parent);
-		enum shape_mod {
+		enum shape_mod_t {
 			none,
 			seq0,
 			seq1,
@@ -83,11 +86,15 @@ class DigitalOscModel : public OscModel {
 		static const unsigned int shape_max;
 		static const unsigned int fm_in_max;
 		static const unsigned int ring_in_max;
+		unsigned int shape();
+		unsigned int fm_in();
+		unsigned int ring_in();
+		shape_mod_t shape_mod();
 	private:
 		unsigned int mShape;
 		unsigned int mFmIn;
 		unsigned int mRingIn;
-		shape_mod mShapeMod;
+		shape_mod_t mShapeMod;
 	public slots:
 		void set_shape(int shape);
 		void set_fm_in(int fm);

@@ -152,24 +152,36 @@ void ApplicationModel::osc_set_glide_mode(int index){
 }
 
 void ApplicationModel::analog_osc_set_shape(int index){
+	if(mAnalogOscs[index]->shape() == AnalogOscModel::pulse)
+		send_program_param(2 + 4 * index, AnalogOscModel::pulse + mAnalogOscs[index]->width());
+	else
+		send_program_param(2 + 4 * index, mAnalogOscs[index]->shape());
 }
 
 void ApplicationModel::analog_osc_set_width(int index){
+	if(mAnalogOscs[index]->shape() == AnalogOscModel::pulse)
+		send_program_param(2 + 4 * index, AnalogOscModel::pulse + mAnalogOscs[index]->width());
 }
 
 void ApplicationModel::analog_osc_set_sync(int index){
+	if(index == 0)
+		send_program_param(65, mAnalogOscs[0]->sync());
 }
 
 void ApplicationModel::digital_osc_set_shape(int index){
+	send_program_param(10 + 4 * index, mDigitalOscs[index]->shape());
 }
 
 void ApplicationModel::digital_osc_set_fm_in(int index){
+	send_program_param(73 + 4 * index, mDigitalOscs[index]->fm_in());
 }
 
 void ApplicationModel::digital_osc_set_ring_in(int index){
+	send_program_param(75 + 4 * index, mDigitalOscs[index]->ring_in());
 }
 
 void ApplicationModel::digital_osc_set_shape_mod(int index){
+	send_program_param(74 + 4 * index, mDigitalOscs[index]->shape_mod());
 }
 
 
