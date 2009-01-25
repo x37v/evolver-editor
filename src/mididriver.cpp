@@ -11,6 +11,7 @@
 #include "delay.hpp"
 #include "feedback.hpp"
 #include "lfo.hpp"
+#include <string.h>
 #include <QTimer>
 
 const uint8_t MidiDriver::evolver_sysex_header[] = { 0x01, 0x20, 0x01 };
@@ -49,6 +50,31 @@ void MidiDriver::run(){
 	}
 }
 
+void MidiDriver::request_edit_buffer(){
+	if(mMidiOut){
+		uint8_t msg[8];
+		msg[0] = (uint8_t)MIDI_SYSEX_START;
+		memcpy(msg + 1, evolver_sysex_header, 3);
+		msg[4] = edit_dump_request;
+		msg[5] = (uint8_t)MIDI_SYSEX_END;
+		Pm_WriteSysEx(mMidiOut, 0, msg);
+	}
+}
+
+void MidiDriver::request_waveform_dump(int waveform){
+	if(waveform < 0 || waveform > 127)
+		return;
+	if(mMidiOut){
+		uint8_t msg[9];
+		msg[0] = (uint8_t)MIDI_SYSEX_START;
+		memcpy(msg + 1, evolver_sysex_header, 3);
+		msg[4] = wave_dump_request;
+		msg[5] = (uint8_t)waveform & 0x7F;
+		msg[6] = (uint8_t)MIDI_SYSEX_END;
+		Pm_WriteSysEx(mMidiOut, 0, msg);
+	}
+}
+
 void MidiDriver::poll(){
 	PmEvent msg;
 	PmError count;
@@ -66,7 +92,6 @@ void MidiDriver::poll(){
 			mReadingCount = 0;
 			mReading = true;
 		} else if (data == MIDI_SYSEX_END){
-			//XXX do something!
 			mReading = false;
 		} else if (mReading){
 			if(mReadingCount < 3){
@@ -87,6 +112,7 @@ void MidiDriver::poll(){
 							mInputBuffer.clear();
 							break;
 						default:
+							//XXX haven't implemented all the commands yet
 							mReading = false;
 					};
 			} else {

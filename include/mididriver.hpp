@@ -25,6 +25,9 @@ class MidiDriver : public QThread {
 		void update_model_param(uint8_t index, uint8_t value);
 		void unpack_data(std::vector<uint8_t> packed, std::vector<uint8_t> &unpacked);
 		static const uint8_t evolver_sysex_header[];
+	public slots:
+		void request_edit_buffer();
+		void request_waveform_dump(int index);
 	protected slots:
 		void poll();
 	private:
@@ -32,9 +35,11 @@ class MidiDriver : public QThread {
 			prog_param = 0x01,
 			prog_dump = 0x02,
 			edit_dump = 0x03,
-			wave_dump = 0x0a,
+			edit_dump_request = 0x06,
 			seq_param = 0x08,
 			main_param = 0x09,
+			wave_dump = 0x0a,
+			wave_dump_request = 0x0b,
 			main_param_dump = 0x0f,
 			prog_name_dump = 0x11
 		};

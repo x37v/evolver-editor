@@ -24,12 +24,16 @@ int main(int argc, char *argv[])
 	MidiDriver * driver = new MidiDriver(model, model);
 	view->connect_to_model(model);
 	driver->open_input(3);
+	driver->open_output(2);
 	//stop the thread when we're gonna quit
 	QObject::connect(&app,
 			SIGNAL(aboutToQuit()),
 			driver,
 			SLOT(quit()));
 	driver->start();
+
+	//XXX tmp
+	driver->request_edit_buffer();
 	
 	view->show();
    return app.exec();
