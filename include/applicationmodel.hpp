@@ -52,8 +52,10 @@ class ApplicationModel : public Model {
 		void lfo_set_freq(int index);
 		void lfo_set_amount(int index);
 		void lfo_set_shape(int index);
-		void lfo_set_key_sync(int index);
-		void lfo_set_sync_type(int index);
+		//uses amount
+		//void lfo_set_key_sync(int index);
+		//uses freq
+		//void lfo_set_sync_type(int index);
 		void lfo_set_destination(int index);
 
 		void mod_set_amount(int index);

@@ -82,10 +82,34 @@ ApplicationModel::ApplicationModel(QObject * parent) : Model(parent){
 	QObject::connect(dOscRingInMap, SIGNAL(mapped(int)), this, SLOT(digital_osc_set_ring_in(int)));
 	QObject::connect(dOscShapeModMap, SIGNAL(mapped(int)), this, SLOT(digital_osc_set_shape_mod(int)));
 
+	//key sync maps to amount, sync_type maps to freq
+	QSignalMapper * lfoFreqMap = new QSignalMapper(this);
+	QSignalMapper * lfoAmountMap = new QSignalMapper(this);
+	QSignalMapper * lfoShapeMap = new QSignalMapper(this);
+	QSignalMapper * lfoDestMap = new QSignalMapper(this);
+
 	for(unsigned int i = 0; i < 4; i++){
-		mLFOs.push_back(new LFOModel(this));
+		LFOModel * lfo = new LFOModel(this);
+		mLFOs.push_back(lfo);
 		mMods.push_back(new ModRoutingModel(this));
+
+		QObject::connect(lfo, SIGNAL(freq_changed(int)), lfoFreqMap, SLOT(map()));
+		QObject::connect(lfo, SIGNAL(sync_type_changed(int)), lfoFreqMap, SLOT(map()));
+		QObject::connect(lfo, SIGNAL(amount_changed(int)), lfoAmountMap, SLOT(map()));
+		QObject::connect(lfo, SIGNAL(key_sync_changed(bool)), lfoAmountMap, SLOT(map()));
+		QObject::connect(lfo, SIGNAL(shape_changed(int)), lfoShapeMap, SLOT(map()));
+		QObject::connect(lfo, SIGNAL(destination_changed(int)), lfoDestMap, SLOT(map()));
+
+		lfoFreqMap->setMapping(lfo, i);
+		lfoAmountMap->setMapping(lfo, i);
+		lfoShapeMap->setMapping(lfo, i);
+		lfoDestMap->setMapping(lfo, i);
 	}
+	QObject::connect(lfoFreqMap, SIGNAL(mapped(int)), this, SLOT(lfo_set_freq(int)));
+	QObject::connect(lfoAmountMap, SIGNAL(mapped(int)), this, SLOT(lfo_set_amount(int)));
+	QObject::connect(lfoShapeMap, SIGNAL(mapped(int)), this, SLOT(lfo_set_shape(int)));
+	QObject::connect(lfoDestMap, SIGNAL(mapped(int)), this, SLOT(lfo_set_destination(int)));
+
 	mFilter = new FilterModel(this);
 	mVCA = new VCAModel(this);
 	mEnv3 = new Env3Model(this);
@@ -252,21 +276,77 @@ void ApplicationModel::digital_osc_set_shape_mod(int index){
 
 
 void ApplicationModel::lfo_set_freq(int index){
+	int param_num = 40;
+	if(index == 1)
+		param_num = 44;
+	else if(index == 2)
+		param_num = 104;
+	else if(index == 3)
+		param_num = 108;
+
+	if(mLFOs[index]->sync_type() == LFOModel::off)
+		send_program_param(param_num, mLFOs[index]->freq());
+	else
+		send_program_param(param_num, mLFOs[index]->sync_type() + 150);
 }
 
 void ApplicationModel::lfo_set_amount(int index){
+	int param_num = 42;
+	if(index == 1)
+		param_num = 46;
+	else if(index == 2)
+		param_num = 106;
+	else if(index == 3)
+		param_num = 110;
+
+	if(mLFOs[index]->key_sync())
+		send_program_param(param_num, mLFOs[index]->amount() + 100);
+	else
+		send_program_param(param_num, mLFOs[index]->amount());
 }
 
 void ApplicationModel::lfo_set_shape(int index){
+	switch(index){
+		case 0:
+			send_program_param(41, mLFOs[index]->shape());
+			break;
+		case 1:
+			send_program_param(45, mLFOs[index]->shape());
+			break;
+		case 2:
+			send_program_param(105, mLFOs[index]->shape());
+			break;
+		case 3:
+			send_program_param(109, mLFOs[index]->shape());
+			break;
+		default:
+			break;
+	};
 }
 
-void ApplicationModel::lfo_set_key_sync(int index){
-}
+//void ApplicationModel::lfo_set_key_sync(int index){
+//}
 
-void ApplicationModel::lfo_set_sync_type(int index){
-}
+//void ApplicationModel::lfo_set_sync_type(int index){
+//}
 
 void ApplicationModel::lfo_set_destination(int index){
+	switch(index){
+		case 0:
+			send_program_param(43, mLFOs[index]->destination());
+			break;
+		case 1:
+			send_program_param(47, mLFOs[index]->destination());
+			break;
+		case 2:
+			send_program_param(107, mLFOs[index]->destination());
+			break;
+		case 3:
+			send_program_param(111, mLFOs[index]->destination());
+			break;
+		default:
+			break;
+	};
 }
 
 

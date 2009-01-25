@@ -134,7 +134,7 @@ LFOView::LFOView(QWidget * parent) : QWidget(parent){
 	mShapeSelect->addItem("tri");
 	mShapeSelect->addItem("rev saw");
 	mShapeSelect->addItem("saw");
-	mShapeSelect->addItem("square");
+	mShapeSelect->addItem("pulse");
 	mShapeSelect->addItem("random");
 
 	lab = new QLabel(this); lab->setText(QString("sync select"));
