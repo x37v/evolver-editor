@@ -8,7 +8,7 @@ DEPENDPATH += . include src
 INCLUDEPATH += . include
 MOC_DIR = moc
 OBJECTS_DIR = obj
-LIBS += -lporttime -lportmidi
+LIBS += -lporttime -lportmidi -lboost_program_options
 
 # Input
 HEADERS += include/common.hpp \

@@ -5,7 +5,6 @@
 #include "filter.hpp"
 #include "vca.hpp"
 #include "env3.hpp"
-#include <QApplication>
 #include "modulation_destinations.hpp"
 #include "applicationmodel.hpp"
 #include "applicationview.hpp"
@@ -16,6 +15,33 @@
 #include "miscmodulation.hpp"
 #include "mididriver.hpp"
 
+#include <QApplication>
+#include <QFile>
+#include <map>
+#include <iostream>
+using std::cout;
+using std::endl;
+
+#include <boost/program_options.hpp>
+namespace po = boost::program_options;
+
+//print out a list of the midi inputs and outputs
+void print_midi_io(MidiDriver * driver){
+	const std::map<unsigned int, QString> * i = driver->input_map();
+	const std::map<unsigned int, QString> * o = driver->output_map();
+
+	cout << "Midi Input Devices" << endl;
+	cout << "\tindex\tname" << endl;
+	for(std::map<unsigned int, QString>::const_iterator it = i->begin(); it != i->end(); it++)
+		cout << "\t" << it->first << "\t" << it->second.toStdString() << endl;
+
+	cout << endl << "Midi Output Devices" << endl;
+	cout << "\tindex\tname" << endl;
+	for(std::map<unsigned int, QString>::const_iterator it = o->begin(); it != o->end(); it++)
+		cout << "\t" << it->first << "\t" << it->second.toStdString() << endl;
+}
+
+
 int main(int argc, char *argv[])
 {
    QApplication app(argc, argv);
@@ -24,17 +50,83 @@ int main(int argc, char *argv[])
 	MidiDriver * driver = new MidiDriver(model, model);
 	model->set_midi_driver(driver);
 	view->connect_to_model(model);
-	driver->open_input(3);
-	driver->open_output(2);
+
+	//update the list of midi i/o devices
+	driver->update_device_list();
+
+	try {
+		// Declare the supported options.
+		po::options_description desc("Evolver Editor options");
+		po::variables_map vm;        
+		po::positional_options_description p;
+
+		desc.add_options()
+			("help,h", "Print this help message.")
+			("list-midiio,l", "List the midi input and output devices that we can connect to.")
+			("midiin,i", po::value<unsigned int>(), "Specify a port number to use for MIDI input messages.")
+			("midiout,o", po::value<unsigned int>(), "Specify a port number to use for MIDI output messages.")
+			("style-sheet,s", po::value<std::string>(), "Specify a style sheet file to use for the GUI.")
+			;
+
+		po::store(po::command_line_parser(argc, argv).options(desc).positional(p).run(), vm);
+		po::notify(vm);    
+
+		if (vm.count("help")) {
+			cout << endl << desc << endl;
+			return 0;
+		}
+		if (vm.count("list-midiio")) {
+			cout << endl;
+			print_midi_io(driver);
+			return 0;
+		}
+
+		//connect our midi i/o
+		if(vm.count("midiin")){
+			if(driver->input_map()->find(vm["midiin"].as<unsigned int>()) == driver->input_map()->end()){
+				cout << endl << "Midi input device select is not valid" << endl << endl;
+				cout << "Select from one of the midi input indices below" << endl << endl;
+				print_midi_io(driver);
+				return -1;
+			} else
+				driver->open_input(vm["midiin"].as<unsigned int>());
+		}
+		if(vm.count("midiout")){
+			if(driver->output_map()->find(vm["midiout"].as<unsigned int>()) == driver->output_map()->end()){
+				cout << endl << "Midi output device select is not valid" << endl << endl;
+				cout << "Select from one of the midi output indices below" << endl << endl;
+				print_midi_io(driver);
+				return -1;
+			} else
+				driver->open_output(vm["midiout"].as<unsigned int>());
+		}
+
+		//set the style sheet
+		bool styled = false;
+		if(vm.count("style-sheet")){
+			QFile file(QString(vm["style-sheet"].as<std::string>().c_str()));
+			if(file.open(QFile::ReadOnly)){
+				QString styleSheet = QLatin1String(file.readAll());
+				app.setStyleSheet(styleSheet);
+				styled = true;
+			} else {
+				qWarning("Cannot open style sheet: %s\n"
+						"Application will use default style.", vm["style-sheet"].as<std::string>().c_str());
+			}
+		} 
+	} catch(std::exception& e) {
+		std::string str("Error in command line arguments: ");
+		str.append(e.what());
+		qFatal(str.c_str());
+		return app.exec();
+	}
+
 	//stop the thread when we're gonna quit
 	QObject::connect(&app,
 			SIGNAL(aboutToQuit()),
 			driver,
 			SLOT(quit()));
 	driver->start();
-
-	//XXX tmp
-	//driver->request_edit_buffer();
 	
 	view->show();
    return app.exec();
