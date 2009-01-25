@@ -29,10 +29,11 @@ class MidiDriver : public QThread {
 		void update_model_param(uint8_t index, uint8_t value);
 		void unpack_data(std::vector<uint8_t> packed, std::vector<uint8_t> &unpacked);
 		static const uint8_t evolver_sysex_header[];
-		void send_program_param(uint8_t index, uint8_t value);
 	public slots:
 		void request_edit_buffer();
 		void request_waveform_dump(int index);
+		void send_program_param(uint8_t index, uint8_t value);
+		void update_device_list();
 	protected slots:
 		void poll();
 	private:

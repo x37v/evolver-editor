@@ -33,7 +33,7 @@ int main(int argc, char *argv[])
 	driver->start();
 
 	//XXX tmp
-	driver->request_edit_buffer();
+	//driver->request_edit_buffer();
 	
 	view->show();
    return app.exec();

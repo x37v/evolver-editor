@@ -31,15 +31,8 @@ MidiDriver::MidiDriver(ApplicationModel * model, QObject * parent) : QThread(par
 	mTimer = new QTimer;
 	connect(mTimer, SIGNAL(timeout()), this, SLOT(poll()));
 
-	/* list device information */
-	for (int i = 0; i < Pm_CountDevices(); i++) {
-        const PmDeviceInfo *info = Pm_GetDeviceInfo(i);
-        //printf("%d: %s, %s", i, info->interf, info->name);
-        if (info->input)
-			  mInputMap[(unsigned int) i] = QString(info->name);
-        if (info->output)
-			  mOutputMap[(unsigned int) i] = QString(info->name);
-    }
+	update_device_list();
+
 	setTerminationEnabled();
 }
 
@@ -939,6 +932,20 @@ void MidiDriver::send_program_param(uint8_t index, uint8_t value){
 		msg[8] = (uint8_t)MIDI_SYSEX_END;
 		Pm_WriteSysEx(mMidiOut, 0, msg);
 	}
+}
+
+void MidiDriver::update_device_list(){
+	mInputMap.clear();
+	mOutputMap.clear();
+	/* list device information */
+	for (int i = 0; i < Pm_CountDevices(); i++) {
+        const PmDeviceInfo *info = Pm_GetDeviceInfo(i);
+        //printf("%d: %s, %s", i, info->interf, info->name);
+        if (info->input)
+			  mInputMap[(unsigned int) i] = QString(info->name);
+        if (info->output)
+			  mOutputMap[(unsigned int) i] = QString(info->name);
+    }
 }
 
 //unpack our data
