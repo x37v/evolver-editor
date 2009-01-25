@@ -46,8 +46,8 @@ const std::map<unsigned int, QString> * MidiDriver::output_map(){
 
 void MidiDriver::run(){
 	if(mMidiIn){
-		//every 1 ms
-		mTimer->start(1);
+		//ms
+		mTimer->start(2);
 		exec();
 	}
 }
@@ -82,24 +82,23 @@ void MidiDriver::poll(){
 	PmError count;
 	count = Pm_Read(mMidiIn, &msg, 1);
 
-	if (count == 0) 
-		return;
-	/* ignore real-time messages */
-	if (is_real_time_msg(Pm_MessageStatus(msg.message))) 
-		return;
-	/* write 4 bytes of data until you reach an eox */
-	for (unsigned int shift = 0; shift < 32; shift += 8) {
-		uint8_t data = (msg.message >> shift) & 0xFF;
-		if(data == MIDI_SYSEX_START){
-			mReadingCount = 0;
-			mReading = true;
-		} else if (data == MIDI_SYSEX_END){
-			mReading = false;
-		} else if (mReading){
-			if(mReadingCount < 3){
-				if(data != evolver_sysex_header[mReadingCount])
-					mReading = false;
-			} else if(mReadingCount == 3) {
+	while(count > 0){
+		/* ignore real-time messages */
+		if (is_real_time_msg(Pm_MessageStatus(msg.message))) 
+			return;
+		/* write 4 bytes of data until you reach an eox */
+		for (unsigned int shift = 0; shift < 32; shift += 8) {
+			uint8_t data = (msg.message >> shift) & 0xFF;
+			if(data == MIDI_SYSEX_START){
+				mReadingCount = 0;
+				mReading = true;
+			} else if (data == MIDI_SYSEX_END){
+				mReading = false;
+			} else if (mReading){
+				if(mReadingCount < 3){
+					if(data != evolver_sysex_header[mReadingCount])
+						mReading = false;
+				} else if(mReadingCount == 3) {
 					//command
 					switch(data){
 						case prog_param:
@@ -117,52 +116,55 @@ void MidiDriver::poll(){
 							//XXX haven't implemented all the commands yet
 							mReading = false;
 					};
-			} else {
-				//after the header, this is our b.s.
-				unsigned int index = mReadingCount - 4;
-				switch(mCurrentCommand){
-					case prog_dump:
-						//XXX for now ditch bank and prog
-						if(index < 2)
+				} else {
+					//after the header, this is our b.s.
+					unsigned int index = mReadingCount - 4;
+					switch(mCurrentCommand){
+						case prog_dump:
+							//XXX for now ditch bank and prog
+							if(index < 2)
+								break;
+							//update the index for the prog_param, let it fall through
+							index -= 2;
+						case edit_dump:
+							mInputBuffer.push_back(data);
+							//there are 220 bytes of data in a dump..
+							if(index >= 219){
+								mReading = false;
+								//unpack && update our parameters
+								std::vector<uint8_t> unpacked;
+								unpack_data(mInputBuffer, unpacked);
+								for(unsigned int i = 0; i < 127; i++)
+									update_model_param(i, unpacked[i]);
+							}
 							break;
-						//update the index for the prog_param, let it fall through
-						index -= 2;
-					case edit_dump:
-						mInputBuffer.push_back(data);
-						//there are 220 bytes of data in a dump..
-						if(index >= 219){
-							mReading = false;
-							//unpack && update our parameters
-							std::vector<uint8_t> unpacked;
-							unpack_data(mInputBuffer, unpacked);
-							for(unsigned int i = 0; i < 127; i++)
-								update_model_param(i, unpacked[i]);
-						}
-						break;
-					case prog_param:
-						switch(index){
-							case 0:
-								mInputParamNumber = data;
-								break;
-							case 1:
-								mInputParamValue = data;
-								break;
-							case 2:
-								mInputParamValue |= (data << 4);
-								//update the shit
-								update_model_param(mInputParamNumber, mInputParamValue);
-								break;
-							default:
-								break;
-						};
-						break;
-					default: 
-						break;
-				};
+						case prog_param:
+							switch(index){
+								case 0:
+									mInputParamNumber = data;
+									break;
+								case 1:
+									mInputParamValue = data;
+									break;
+								case 2:
+									mInputParamValue |= (data << 4);
+									//update the shit
+									update_model_param(mInputParamNumber, mInputParamValue);
+									break;
+								default:
+									break;
+							};
+							break;
+						default: 
+							break;
+					};
+				}
+				//increment the count
+				mReadingCount++;
 			}
-			//increment the count
-			mReadingCount++;
 		}
+		//read some more
+		count = Pm_Read(mMidiIn, &msg, 1);
 	}
 }
 
