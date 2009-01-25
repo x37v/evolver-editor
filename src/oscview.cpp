@@ -22,7 +22,7 @@ OscView::OscView(QWidget * parent) : QWidget(parent){
 	mLevelSlider->setRange(0, OscModel::level_max);
 	mGlideMode->addItem("normal");
 	mGlideMode->addItem("fingered");
-	mGlideMode->addItem("off");
+	mGlideMode->addItem("midi off");
 
 	//connect signals out
 	QObject::connect(mFreqSlider,
