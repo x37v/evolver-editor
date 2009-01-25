@@ -29,3 +29,18 @@ Building/Installing:
 		qmake && make
 		sudo make install
 
+Running:
+	Use the -h switch to find out the command line options.
+
+	To get data from the evolver you have to connect the midi out of the evolver
+	to the software, use the -i command line switch to specify the device to use
+	for that.
+
+	To send data to the evolver you have to connect the midi out from this software
+	to your evolver, use the -o command line switch to do that.
+
+	Example:
+		I will use evolver_editor -l to list the midi i/o devices and then when
+		I've found the ones I want to connect to, lets say input index 3 and
+		output index 2, I run the software using the following command:
+		./evolver_editor -i 3 -o 2
