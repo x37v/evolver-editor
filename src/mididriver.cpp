@@ -512,7 +512,15 @@ void MidiDriver::update_model_param(uint8_t index, uint8_t value){
 			break;
 		case 64:
 			//64     0 - 200  Glide, Oscillator 1; 101 – 199 = Fingered; 200 = osc midi off
-			invoke_method(mModel->analog_oscs()->at(0), set_glide, Q_ARG(int, value));
+			if(value <= 100){
+				invoke_method(mModel->analog_oscs()->at(0), set_glide, Q_ARG(int, value));
+				invoke_method(mModel->analog_oscs()->at(0), set_glide_mode, Q_ARG(int, OscModel::normal));
+			} else if (value == 200) 
+				invoke_method(mModel->analog_oscs()->at(0), set_glide_mode, Q_ARG(int, OscModel::off));
+			else {
+				invoke_method(mModel->analog_oscs()->at(0), set_glide, Q_ARG(int, (int)value - 99));
+				invoke_method(mModel->analog_oscs()->at(0), set_glide_mode, Q_ARG(int, OscModel::fingered));
+			}
 			break;
 		case 65:
 			//65     0-1      Sync; 0 = off, 1 = on
@@ -528,7 +536,15 @@ void MidiDriver::update_model_param(uint8_t index, uint8_t value){
 			break;
 		case 68:
 			//68     0 - 200  Glide, Oscillator 2; 101 – 199 = Fingered; 200 = osc midi off
-			invoke_method(mModel->analog_oscs()->at(1), set_glide, Q_ARG(int, value));
+			if(value <= 100){
+				invoke_method(mModel->analog_oscs()->at(1), set_glide, Q_ARG(int, value));
+				invoke_method(mModel->analog_oscs()->at(1), set_glide_mode, Q_ARG(int, OscModel::normal));
+			} else if (value == 200) 
+				invoke_method(mModel->analog_oscs()->at(1), set_glide_mode, Q_ARG(int, OscModel::off));
+			else {
+				invoke_method(mModel->analog_oscs()->at(1), set_glide, Q_ARG(int, (int)value - 99));
+				invoke_method(mModel->analog_oscs()->at(1), set_glide_mode, Q_ARG(int, OscModel::fingered));
+			}
 			break;
 		case 69:
 			//69     0-5      Oscillator Slop
@@ -550,7 +566,15 @@ void MidiDriver::update_model_param(uint8_t index, uint8_t value){
 			break;
 		case 72:
 			//72     0 - 200 Glide, Oscillator 3; 101 – 199 = Fingered; 200 = osc midi off
-			invoke_method(mModel->digital_oscs()->at(0), set_glide, Q_ARG(int, value));
+			if(value <= 100){
+				invoke_method(mModel->digital_oscs()->at(0), set_glide, Q_ARG(int, value));
+				invoke_method(mModel->digital_oscs()->at(0), set_glide_mode, Q_ARG(int, OscModel::normal));
+			} else if (value == 200) 
+				invoke_method(mModel->digital_oscs()->at(0), set_glide_mode, Q_ARG(int, OscModel::off));
+			else {
+				invoke_method(mModel->digital_oscs()->at(0), set_glide, Q_ARG(int, (int)value - 99));
+				invoke_method(mModel->digital_oscs()->at(0), set_glide_mode, Q_ARG(int, OscModel::fingered));
+			}
 			break;
 		case 73:
 			//73     0 - 100 FM, Oscillator 4 to Oscillator 3
@@ -566,7 +590,15 @@ void MidiDriver::update_model_param(uint8_t index, uint8_t value){
 			break;
 		case 76:
 			//76     0 - 200 Glide, Oscillator 4; 101 – 199 = Fingered; 200 = osc midi off
-			invoke_method(mModel->digital_oscs()->at(1), set_glide, Q_ARG(int, value));
+			if(value <= 100){
+				invoke_method(mModel->digital_oscs()->at(1), set_glide, Q_ARG(int, value));
+				invoke_method(mModel->digital_oscs()->at(1), set_glide_mode, Q_ARG(int, OscModel::normal));
+			} else if (value == 200) 
+				invoke_method(mModel->digital_oscs()->at(1), set_glide_mode, Q_ARG(int, OscModel::off));
+			else {
+				invoke_method(mModel->digital_oscs()->at(1), set_glide, Q_ARG(int, (int)value - 99));
+				invoke_method(mModel->digital_oscs()->at(1), set_glide_mode, Q_ARG(int, OscModel::fingered));
+			}
 			break;
 		case 77:
 			//77     0 - 100 FM, Oscillator 3 to Oscillator 4

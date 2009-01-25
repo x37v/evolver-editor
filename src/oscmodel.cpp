@@ -36,6 +36,15 @@ void OscModel::set_tune(int tune){
 }
 
 void OscModel::set_glide(int glide){
+	if(mGlideMode == fingered){
+		if(glide < 2) {
+			glide = 2;
+			mGlide = 0;
+		} else if (glide == 100){
+			glide = 99;
+			mGlide = 100;
+		}
+	}
 	if(in_range_and_new<unsigned int>((unsigned int)glide, mGlide, glide_max)){
 		mGlide = glide;
 		emit(glide_changed(mGlide));
@@ -54,6 +63,12 @@ void OscModel::set_glide_mode(int m){
 	if(mode != mGlideMode){
 		mGlideMode = mode;
 		emit(glide_mode_changed(mGlideMode));
+		if(mGlideMode == fingered){
+			if(mGlide < 2)
+				set_glide(2);
+			else if(mGlide > 99)
+				set_glide(99);
+		}
 	}
 }
 
