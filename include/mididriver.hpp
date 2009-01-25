@@ -5,6 +5,8 @@
 #include "portmidi.h"
 #include "porttime.h"
 #include <vector>
+#include <map>
+#include <QString>
 
 class ApplicationModel;
 class QTimer;
@@ -21,6 +23,8 @@ class MidiDriver : public QThread {
 		void close_output();
 		void close();
 		void run();
+		const std::map<unsigned int, QString> * input_map();
+		const std::map<unsigned int, QString> * output_map();
 	protected:
 		void update_model_param(uint8_t index, uint8_t value);
 		void unpack_data(std::vector<uint8_t> packed, std::vector<uint8_t> &unpacked);
@@ -54,6 +58,8 @@ class MidiDriver : public QThread {
 		unsigned int mParamNumber;
 		uint8_t mParamValue;
 		QTimer * mTimer;
+		std::map<unsigned int, QString> mInputMap;
+		std::map<unsigned int, QString> mOutputMap;
 };
 
 #endif

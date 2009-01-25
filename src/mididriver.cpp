@@ -34,12 +34,21 @@ MidiDriver::MidiDriver(ApplicationModel * model, QObject * parent) : QThread(par
 	/* list device information */
 	for (int i = 0; i < Pm_CountDevices(); i++) {
         const PmDeviceInfo *info = Pm_GetDeviceInfo(i);
-        printf("%d: %s, %s", i, info->interf, info->name);
-        if (info->input) printf(" (input)");
-        if (info->output) printf(" (output)");
-        printf("\n");
+        //printf("%d: %s, %s", i, info->interf, info->name);
+        if (info->input)
+			  mInputMap[(unsigned int) i] = QString(info->name);
+        if (info->output)
+			  mOutputMap[(unsigned int) i] = QString(info->name);
     }
 	setTerminationEnabled();
+}
+
+const std::map<unsigned int, QString> * MidiDriver::input_map(){
+	return &mInputMap;
+}
+
+const std::map<unsigned int, QString> * MidiDriver::output_map(){
+	return &mOutputMap;
 }
 
 void MidiDriver::run(){
@@ -65,7 +74,7 @@ void MidiDriver::request_waveform_dump(int waveform){
 	if(waveform < 0 || waveform > 127)
 		return;
 	if(mMidiOut){
-		uint8_t msg[9];
+		uint8_t msg[8];
 		msg[0] = (uint8_t)MIDI_SYSEX_START;
 		memcpy(msg + 1, evolver_sysex_header, 3);
 		msg[4] = wave_dump_request;
