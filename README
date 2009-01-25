@@ -1,0 +1,31 @@
+This is an editor for the Dave Smith Instrument's Evolver synthesizer.
+It was developed for the tabletop version, but I figure it should work for the
+keyboard version as well.
+
+Author/contact:
+	By Alex Norman (http://x37v.info) 
+	If you have bug reports/fixes, improvements, comments please contact me at:
+	alex@x37v.info
+
+Donations:
+	If you find this useful I would really appreciate your support through a
+	small donation.  As a note, the proprietary windoze/mac only version costs
+	$49.  There is more info about donations here: http://x37v.info/donate/
+
+Licence:
+	This software is licenced GPL v3, see the file "COPYING" for more
+	information.
+
+Requirements:
+	This software depends on libportmidi/libporttime, QT4 and
+	libboost_program_options.
+	on ubuntu: libportmidi-dev libboost-program-options-dev libqt4-dev
+
+Building/Installing:
+	If you want to install somewhere other than /usr/local/bin then edit:
+	evolver_editor.pro 
+	Then, you generate the makefile using 'qmake', build the binary using 'make'
+	and then install it [if you want] using 'make install'.
+		qmake && make
+		sudo make install
+

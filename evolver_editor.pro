@@ -4,11 +4,29 @@
 
 TEMPLATE = app
 TARGET = evolver_editor
+
+#where it will install
+target.path = /usr/local/bin
+
+#change to release if you want to be optimized
+CONFIG += qt debug
+
+VERSION = 0.1
+
+LIBS += -lporttime -lportmidi -lboost_program_options
 DEPENDPATH += . include src
 INCLUDEPATH += . include
 MOC_DIR = moc
 OBJECTS_DIR = obj
-LIBS += -lporttime -lportmidi -lboost_program_options
+
+UPLOAD_BASE = x37v.info:x37v.info/projects/evolver_editor/
+
+upload.target = upload
+upload.depends = dist
+upload.commands = rsync -v $$sprintf(%1%2.tar.gz, $$TARGET, $$VERSION) $$sprintf(%1/files/, $$UPLOAD_BASE)
+
+INSTALLS += target
+QMAKE_EXTRA_TARGETS += upload 
 
 # Input
 HEADERS += include/common.hpp \
@@ -58,3 +76,5 @@ SOURCES += \
 	src/modulationview.cpp \
 	src/mididriver.cpp
 
+DISTFILES += README
+DISTFILES += COPYING
