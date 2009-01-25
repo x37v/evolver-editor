@@ -13,10 +13,6 @@
 #include "lfo.hpp"
 #include <QTimer>
 
-#include <iostream>
-using std::endl;
-using std::cout;
-
 #define is_real_time_msg(msg) ((0xF0 & Pm_MessageStatus(msg)) == 0xF8)
 #define MIDI_SYSEX_START 0xF0
 #define MIDI_SYSEX_END 0xF7
