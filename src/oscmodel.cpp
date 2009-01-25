@@ -9,7 +9,8 @@ const int OscModel::tune_min = -50;
 
 const unsigned int AnalogOscModel::width_max = 99;
 
-const unsigned int DigitalOscModel::shape_max = 127;
+const unsigned int DigitalOscModel::shape_min = 1;
+const unsigned int DigitalOscModel::shape_max = 128;
 const unsigned int DigitalOscModel::fm_in_max = 100;
 const unsigned int DigitalOscModel::ring_in_max = 100;
 
@@ -161,7 +162,7 @@ DigitalOscModel::shape_mod_t DigitalOscModel::shape_mod(){
 
 
 void DigitalOscModel::set_shape(int shape){
-	if(in_range_and_new<unsigned int>((unsigned int)shape, mShape, 127)){
+	if(in_range_and_new<unsigned int>((unsigned int)shape, mShape, shape_max, shape_min)){
 		mShape = shape;
 		emit(shape_changed(mShape));
 	}

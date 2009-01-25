@@ -266,7 +266,7 @@ void MidiDriver::update_model_param(uint8_t index, uint8_t value){
 			break;
 		case 10:
 			//10     0 - 127 Oscillator 3 Shape 1 - 128
-			invoke_method(mModel->digital_oscs()->at(0), set_shape, Q_ARG(int, value));
+			invoke_method(mModel->digital_oscs()->at(0), set_shape, Q_ARG(int, value + 1));
 			break;
 		case 11:
 			//11     0 - 100 Oscillator 3 Level
@@ -282,7 +282,7 @@ void MidiDriver::update_model_param(uint8_t index, uint8_t value){
 			break;
 		case 14:
 			//14 0 - 127 Oscillator 4 Shape 1 - 128
-			invoke_method(mModel->digital_oscs()->at(1), set_shape, Q_ARG(int, value));
+			invoke_method(mModel->digital_oscs()->at(1), set_shape, Q_ARG(int, value + 1));
 			break;
 		case 15:
 			//15 0 - 100 Oscillator 4 Level

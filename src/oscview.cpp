@@ -274,7 +274,7 @@ DigitalOscView::DigitalOscView(QWidget * parent) : OscView(parent){
 	mRingInSlider = new SliderSpinBox(parent);
 	mShapeSeqSelect = new QComboBox(parent);
 
-	mShapeSlider->setRange(0, DigitalOscModel::shape_max);
+	mShapeSlider->setRange(DigitalOscModel::shape_min, DigitalOscModel::shape_max);
 	mFmInSlider->setRange(0, DigitalOscModel::fm_in_max);
 	mRingInSlider->setRange(0, DigitalOscModel::ring_in_max);
 

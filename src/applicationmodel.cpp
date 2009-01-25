@@ -235,7 +235,7 @@ void ApplicationModel::analog_osc_set_sync(int index){
 }
 
 void ApplicationModel::digital_osc_set_shape(int index){
-	send_program_param(10 + 4 * index, mDigitalOscs[index]->shape());
+	send_program_param(10 + 4 * index, mDigitalOscs[index]->shape() - 1);
 }
 
 void ApplicationModel::digital_osc_set_fm_in(int index){

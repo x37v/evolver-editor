@@ -83,6 +83,7 @@ class DigitalOscModel : public OscModel {
 			seq2,
 			seq3
 		};
+		static const unsigned int shape_min;
 		static const unsigned int shape_max;
 		static const unsigned int fm_in_max;
 		static const unsigned int ring_in_max;
