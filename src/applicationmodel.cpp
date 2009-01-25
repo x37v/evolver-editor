@@ -88,10 +88,15 @@ ApplicationModel::ApplicationModel(QObject * parent) : Model(parent){
 	QSignalMapper * lfoShapeMap = new QSignalMapper(this);
 	QSignalMapper * lfoDestMap = new QSignalMapper(this);
 
+	QSignalMapper * modDestMap = new QSignalMapper(this);
+	QSignalMapper * modSrcMap = new QSignalMapper(this);
+	QSignalMapper * modAmtMap = new QSignalMapper(this);
+
 	for(unsigned int i = 0; i < 4; i++){
 		LFOModel * lfo = new LFOModel(this);
+		ModRoutingModel * mod = new ModRoutingModel(this);
 		mLFOs.push_back(lfo);
-		mMods.push_back(new ModRoutingModel(this));
+		mMods.push_back(mod);
 
 		QObject::connect(lfo, SIGNAL(freq_changed(int)), lfoFreqMap, SLOT(map()));
 		QObject::connect(lfo, SIGNAL(sync_type_changed(int)), lfoFreqMap, SLOT(map()));
@@ -100,15 +105,27 @@ ApplicationModel::ApplicationModel(QObject * parent) : Model(parent){
 		QObject::connect(lfo, SIGNAL(shape_changed(int)), lfoShapeMap, SLOT(map()));
 		QObject::connect(lfo, SIGNAL(destination_changed(int)), lfoDestMap, SLOT(map()));
 
+		QObject::connect(mod, SIGNAL(amount_changed(int)), modAmtMap, SLOT(map()));
+		QObject::connect(mod, SIGNAL(source_changed(int)), modSrcMap, SLOT(map()));
+		QObject::connect(mod, SIGNAL(destination_changed(int)), modDestMap, SLOT(map()));
+
 		lfoFreqMap->setMapping(lfo, i);
 		lfoAmountMap->setMapping(lfo, i);
 		lfoShapeMap->setMapping(lfo, i);
 		lfoDestMap->setMapping(lfo, i);
+
+		modAmtMap->setMapping(mod, i);
+		modSrcMap->setMapping(mod, i);
+		modDestMap->setMapping(mod, i);
 	}
 	QObject::connect(lfoFreqMap, SIGNAL(mapped(int)), this, SLOT(lfo_set_freq(int)));
 	QObject::connect(lfoAmountMap, SIGNAL(mapped(int)), this, SLOT(lfo_set_amount(int)));
 	QObject::connect(lfoShapeMap, SIGNAL(mapped(int)), this, SLOT(lfo_set_shape(int)));
 	QObject::connect(lfoDestMap, SIGNAL(mapped(int)), this, SLOT(lfo_set_destination(int)));
+
+	QObject::connect(modAmtMap, SIGNAL(mapped(int)), this, SLOT(mod_set_amount(int)));
+	QObject::connect(modSrcMap, SIGNAL(mapped(int)), this, SLOT(mod_set_source(int)));
+	QObject::connect(modDestMap, SIGNAL(mapped(int)), this, SLOT(mod_set_destination(int)));
 
 	mFilter = new FilterModel(this);
 	mVCA = new VCAModel(this);
@@ -351,11 +368,23 @@ void ApplicationModel::lfo_set_destination(int index){
 
 
 void ApplicationModel::mod_set_amount(int index){
+	if(index == 0)
+		send_program_param(86, mMods[index]->amount() + 99);
+	else
+		send_program_param(91 + 3 * (index - 1), mMods[index]->amount() + 99);
 }
 
 void ApplicationModel::mod_set_source(int index){
+	if(index == 0)
+		send_program_param(85, mMods[index]->source());
+	else
+		send_program_param(90 + 3 * (index - 1), mMods[index]->source());
 }
 
 void ApplicationModel::mod_set_destination(int index){
+	if(index == 0)
+		send_program_param(87, mMods[index]->destination());
+	else
+		send_program_param(92 + 3 * (index - 1), mMods[index]->destination());
 }
 

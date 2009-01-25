@@ -14,6 +14,9 @@ class ModRoutingModel : public QObject {
 		ModRoutingModel(QObject * parent = NULL);
 		const static int amount_max;
 		const static int amount_min;
+		int amount();
+		unsigned int source();
+		unsigned int destination();
 	signals:
 		void amount_changed(int);
 		void destination_changed(int);

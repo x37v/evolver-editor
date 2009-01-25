@@ -12,6 +12,19 @@ const int ModRoutingModel::amount_min = -99;
 ModRoutingModel::ModRoutingModel(QObject * parent) : QObject(parent){
 }
 
+int ModRoutingModel::amount(){
+	return mAmount;
+}
+
+unsigned int ModRoutingModel::source(){
+	return mSource;
+}
+
+unsigned int ModRoutingModel::destination(){
+	return mDestination;
+}
+
+
 void ModRoutingModel::set_amount(int amount){
 	if(amount >= amount_min && amount <= amount_max && amount != mAmount){
 		mAmount = amount;
