@@ -1,9 +1,9 @@
 #ifndef DELAY_HPP
 #define DELAY_HPP
 
-#include <QObject>
+#include "model.hpp"
 
-class DelayModel : public QObject {
+class DelayModel : public Model {
 	Q_OBJECT
 	public:
 		DelayModel(QObject * parent = NULL);

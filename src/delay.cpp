@@ -24,7 +24,7 @@ const char* DelayModel::delay_type_names[]  = {
 	"1/6 step"
 };
 
-DelayModel::DelayModel(QObject * parent) : QObject(parent) {
+DelayModel::DelayModel(QObject * parent) : Model(parent) {
 	for(unsigned int i = 0; i < 3; i++){
 		mDelaySync[i] = off;
 		mDelayLevel[i] = 0;
@@ -42,6 +42,21 @@ void DelayModel::set_delay_time(unsigned int index, int time){
 			(unsigned int)time != mDelayTime[index]) {
 		mDelayTime[index] = time;
 		emit(delay_time_changed(index, mDelayTime[index]));
+		if(mDelaySync[index] == off){
+			switch(index){
+				case 0:
+					send_program_param(35, mDelayTime[index]);
+					break;
+				case 1:
+					send_program_param(99, mDelayTime[index]);
+					break;
+				case 2:
+					send_program_param(101, mDelayTime[index]);
+					break;
+				default:
+					break;
+			}
+		}
 	}
 }
 
@@ -53,6 +68,19 @@ void DelayModel::set_delay_level(unsigned int index, int level){
 			(unsigned int)level != mDelayLevel[index]){
 		mDelayLevel[index] = level;
 		emit(delay_level_changed(index, mDelayLevel[index]));
+		switch(index){
+			case 0:
+				send_program_param(36, mDelayLevel[index]);
+				break;
+			case 1:
+				send_program_param(100, mDelayLevel[index]);
+				break;
+			case 2:
+				send_program_param(102, mDelayLevel[index]);
+				break;
+			default:
+				break;
+		}
 	}
 }
 
@@ -63,6 +91,28 @@ void DelayModel::set_delay_sync(unsigned int index, int t){
 	if(type != mDelaySync[index]){
 		mDelaySync[index] = type;
 		emit(delay_sync_changed(index, mDelaySync[index]));
+		switch(index){
+			case 0:
+				if(mDelaySync[index] == off)
+					send_program_param(35, mDelayTime[index]);
+				else
+					send_program_param(35, mDelaySync[index] + 151);
+				break;
+			case 1:
+				if(mDelaySync[index] == off)
+					send_program_param(99, mDelayTime[index]);
+				else
+					send_program_param(99, mDelaySync[index] + 151);
+				break;
+			case 2:
+				if(mDelaySync[index] == off)
+					send_program_param(101, mDelayTime[index]);
+				else
+					send_program_param(101, mDelaySync[index] + 151);
+				break;
+			default:
+				break;
+		}
 	}
 }
 
@@ -72,6 +122,7 @@ void DelayModel::set_feedback_level(int level){
 			(unsigned int)level != mFeedbackLevel){
 		mFeedbackLevel = level;
 		emit(feedback_level_changed(mFeedbackLevel));
+		send_program_param(37, mFeedbackLevel);
 	}
 }
 
@@ -81,6 +132,7 @@ void DelayModel::set_filter_feedback_level(int level){
 			(unsigned int)level != mFilterFeedbackLevel){
 		mFilterFeedbackLevel = level;
 		emit(filter_feedback_level_changed(mFilterFeedbackLevel));
+		send_program_param(38, mFilterFeedbackLevel);
 	}
 }
 
