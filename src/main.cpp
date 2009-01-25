@@ -119,6 +119,12 @@ int main(int argc, char *argv[])
 				return -1;
 			} else
 				driver->open_output(vm["midiout"].as<unsigned int>());
+		} else {
+			cout << "For now you must provide a midi output device on the command line to use this software" << endl;
+			cout << "You'll most likely want to connect a midi input device as well" << endl;
+			cout << "Eventually there will be a GUI way to do this" << endl;
+			cout << endl << desc << endl;
+			return -1;
 		}
 
 		//set the style sheet
