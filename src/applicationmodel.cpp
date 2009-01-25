@@ -75,18 +75,80 @@ MiscModulationModel * ApplicationModel::misc_modulations(){
 
 
 void ApplicationModel::osc_set_freq(int index){
+	if(index < 2)
+		send_program_param(index * 4, mAnalogOscs[index]->freq());
+	else
+		send_program_param(index * 4, mDigitalOscs[index - 2]->freq());
 }
 
 void ApplicationModel::osc_set_tune(int index){
+	if(index < 2)
+		send_program_param(1 + index * 4, mAnalogOscs[index]->tune());
+	else
+		send_program_param(1 + index * 4, mDigitalOscs[index - 2]->tune());
 }
 
 void ApplicationModel::osc_set_glide(int index){
+	if (index < 2){
+		switch(mAnalogOscs[index]->glide_mode()){
+			case OscModel::normal:
+				send_program_param(64 + 4 * index, mAnalogOscs[index]->glide());
+				break;
+			case OscModel::fingered:
+				send_program_param(64 + 4 * index, 98 + mAnalogOscs[index]->glide());
+				break;
+			case OscModel::off:
+				send_program_param(64 + 4 * index, 200);
+				break;
+		};
+	} else {
+		switch(mDigitalOscs[(index - 2)]->glide_mode()){
+			case OscModel::normal:
+				send_program_param(72 + 4 * (index - 2), mDigitalOscs[(index - 2)]->glide());
+				break;
+			case OscModel::fingered:
+				send_program_param(72 + 4 * (index - 2), 98 + mDigitalOscs[(index - 2)]->glide());
+				break;
+			case OscModel::off:
+				send_program_param(72 + 4 * (index - 2), 200);
+				break;
+		};
+	}
 }
 
 void ApplicationModel::osc_set_level(int index){
+	if(index < 2)
+		send_program_param(3 + index * 4, mAnalogOscs[index]->level());
+	else
+		send_program_param(3 + index * 4, mDigitalOscs[index - 2]->level());
 }
 
 void ApplicationModel::osc_set_glide_mode(int index){
+	if (index < 2){
+		switch(mAnalogOscs[index]->glide_mode()){
+			case OscModel::normal:
+				send_program_param(64 + 4 * index, mAnalogOscs[index]->glide());
+				break;
+			case OscModel::fingered:
+				send_program_param(64 + 4 * index, 98 + mAnalogOscs[index]->glide());
+				break;
+			case OscModel::off:
+				send_program_param(64 + 4 * index, 200);
+				break;
+		};
+	} else {
+		switch(mDigitalOscs[(index - 2)]->glide_mode()){
+			case OscModel::normal:
+				send_program_param(72 + 4 * (index - 2), mDigitalOscs[(index - 2)]->glide());
+				break;
+			case OscModel::fingered:
+				send_program_param(72 + 4 * (index - 2), 98 + mDigitalOscs[(index - 2)]->glide());
+				break;
+			case OscModel::off:
+				send_program_param(72 + 4 * (index - 2), 200);
+				break;
+		};
+	}
 }
 
 void ApplicationModel::analog_osc_set_shape(int index){

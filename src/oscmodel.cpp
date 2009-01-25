@@ -20,6 +20,26 @@ OscModel::OscModel(QObject * parent): QObject(parent){
 	mTune = 0;
 }
 
+unsigned int OscModel::freq(){
+	return mFreq;
+}
+
+unsigned int OscModel::glide(){
+	return mGlide;
+}
+
+OscModel::glide_mode_t OscModel::glide_mode(){
+	return mGlideMode;
+}
+
+unsigned int OscModel::level(){
+	return mLevel;
+}
+
+int OscModel::tune(){
+	return mTune;
+}
+
 void OscModel::set_freq(int freq){
 	if(in_range_and_new<unsigned int>((unsigned int)freq, mFreq, freq_max)){
 		mFreq = freq;
@@ -59,7 +79,7 @@ void OscModel::set_level(int level){
 }
 
 void OscModel::set_glide_mode(int m){
-	glide_mode mode = (glide_mode)m;
+	glide_mode_t mode = (glide_mode_t)m;
 	if(mode != mGlideMode){
 		mGlideMode = mode;
 		emit(glide_mode_changed(mGlideMode));

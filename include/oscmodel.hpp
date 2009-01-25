@@ -13,17 +13,22 @@ class OscModel : public QObject {
 		static const unsigned int level_max;
 		static const int tune_max;
 		static const int tune_min;
-		enum glide_mode {
+		enum glide_mode_t {
 			normal,
 			fingered,
 			off
 		};
+		unsigned int freq();
+		unsigned int glide();
+		glide_mode_t glide_mode();
+		unsigned int level();
+		int tune();
 	private:
 		unsigned int mFreq;
 		unsigned int mGlide;
 		unsigned int mLevel;
 		int mTune;
-		glide_mode mGlideMode;
+		glide_mode_t mGlideMode;
 	signals:
 		void freq_changed(int);
 		void tune_changed(int);
