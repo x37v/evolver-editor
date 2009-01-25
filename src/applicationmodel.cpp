@@ -9,13 +9,46 @@
 #include "feedback.hpp"
 #include "miscaudio.hpp"
 #include "miscmodulation.hpp"
+#include <QSignalMapper>
 
 ApplicationModel::ApplicationModel(QObject * parent) : Model(parent){
+	QSignalMapper * oscFreqMap = new QSignalMapper(this);
+	QSignalMapper * oscTuneMap = new QSignalMapper(this);
+	QSignalMapper * oscGlideMap = new QSignalMapper(this);
+	QSignalMapper * oscLevelMap = new QSignalMapper(this);
+	QSignalMapper * oscGlideMode = new QSignalMapper(this);
 	//allocate
 	for(unsigned int i = 0; i < 2; i++){
-		mDigitalOscs.push_back(new DigitalOscModel(this));
-		mAnalogOscs.push_back(new AnalogOscModel(this));
+		DigitalOscModel * d = new DigitalOscModel(this);
+		AnalogOscModel * a = new AnalogOscModel(this);
+		mDigitalOscs.push_back(d);
+		mAnalogOscs.push_back(a);
+		QObject::connect(a, SIGNAL(freq_changed(int)), oscFreqMap, SLOT(map()));
+		QObject::connect(d, SIGNAL(freq_changed(int)), oscFreqMap, SLOT(map()));
+		QObject::connect(a, SIGNAL(tune_changed(int)), oscTuneMap, SLOT(map()));
+		QObject::connect(d, SIGNAL(tune_changed(int)), oscTuneMap, SLOT(map()));
+		QObject::connect(a, SIGNAL(glide_changed(int)), oscGlideMap, SLOT(map()));
+		QObject::connect(d, SIGNAL(glide_changed(int)), oscGlideMap, SLOT(map()));
+		QObject::connect(a, SIGNAL(level_changed(int)), oscLevelMap, SLOT(map()));
+		QObject::connect(d, SIGNAL(level_changed(int)), oscLevelMap, SLOT(map()));
+		QObject::connect(a, SIGNAL(glide_mode_changed(int)), oscGlideMode, SLOT(map()));
+		QObject::connect(d, SIGNAL(glide_mode_changed(int)), oscGlideMode, SLOT(map()));
+		oscFreqMap->setMapping(a, i);
+		oscFreqMap->setMapping(d, i + 2);
+		oscTuneMap->setMapping(a, i);
+		oscTuneMap->setMapping(d, i + 2);
+		oscGlideMap->setMapping(a, i);
+		oscGlideMap->setMapping(d, i + 2);
+		oscLevelMap->setMapping(a, i);
+		oscLevelMap->setMapping(d, i + 2);
+		oscGlideMode->setMapping(a, i);
+		oscGlideMode->setMapping(d, i + 2);
 	}
+	QObject::connect(oscFreqMap, SIGNAL(mapped(int)), this, SLOT(osc_set_freq(int)));
+	QObject::connect(oscTuneMap, SIGNAL(mapped(int)), this, SLOT(osc_set_tune(int)));
+	QObject::connect(oscGlideMap, SIGNAL(mapped(int)), this, SLOT(osc_set_glide(int)));
+	QObject::connect(oscLevelMap, SIGNAL(mapped(int)), this, SLOT(osc_set_level(int)));
+	QObject::connect(oscGlideMode, SIGNAL(mapped(int)), this, SLOT(osc_set_glide_mode(int)));
 	for(unsigned int i = 0; i < 4; i++){
 		mLFOs.push_back(new LFOModel(this));
 		mMods.push_back(new ModRoutingModel(this));
@@ -83,9 +116,9 @@ void ApplicationModel::osc_set_freq(int index){
 
 void ApplicationModel::osc_set_tune(int index){
 	if(index < 2)
-		send_program_param(1 + index * 4, mAnalogOscs[index]->tune());
+		send_program_param(1 + index * 4, mAnalogOscs[index]->tune() + 50);
 	else
-		send_program_param(1 + index * 4, mDigitalOscs[index - 2]->tune());
+		send_program_param(1 + index * 4, mDigitalOscs[index - 2]->tune() + 50);
 }
 
 void ApplicationModel::osc_set_glide(int index){
@@ -95,7 +128,7 @@ void ApplicationModel::osc_set_glide(int index){
 				send_program_param(64 + 4 * index, mAnalogOscs[index]->glide());
 				break;
 			case OscModel::fingered:
-				send_program_param(64 + 4 * index, 98 + mAnalogOscs[index]->glide());
+				send_program_param(64 + 4 * index, 99 + mAnalogOscs[index]->glide());
 				break;
 			case OscModel::off:
 				send_program_param(64 + 4 * index, 200);
@@ -107,7 +140,7 @@ void ApplicationModel::osc_set_glide(int index){
 				send_program_param(72 + 4 * (index - 2), mDigitalOscs[(index - 2)]->glide());
 				break;
 			case OscModel::fingered:
-				send_program_param(72 + 4 * (index - 2), 98 + mDigitalOscs[(index - 2)]->glide());
+				send_program_param(72 + 4 * (index - 2), 99 + mDigitalOscs[(index - 2)]->glide());
 				break;
 			case OscModel::off:
 				send_program_param(72 + 4 * (index - 2), 200);
@@ -130,7 +163,7 @@ void ApplicationModel::osc_set_glide_mode(int index){
 				send_program_param(64 + 4 * index, mAnalogOscs[index]->glide());
 				break;
 			case OscModel::fingered:
-				send_program_param(64 + 4 * index, 98 + mAnalogOscs[index]->glide());
+				send_program_param(64 + 4 * index, 99 + mAnalogOscs[index]->glide());
 				break;
 			case OscModel::off:
 				send_program_param(64 + 4 * index, 200);
@@ -142,7 +175,7 @@ void ApplicationModel::osc_set_glide_mode(int index){
 				send_program_param(72 + 4 * (index - 2), mDigitalOscs[(index - 2)]->glide());
 				break;
 			case OscModel::fingered:
-				send_program_param(72 + 4 * (index - 2), 98 + mDigitalOscs[(index - 2)]->glide());
+				send_program_param(72 + 4 * (index - 2), 99 + mDigitalOscs[(index - 2)]->glide());
 				break;
 			case OscModel::off:
 				send_program_param(72 + 4 * (index - 2), 200);
