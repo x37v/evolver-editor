@@ -119,12 +119,12 @@ void MidiDriver::poll(){
 							mInputBuffer.push_back(data);
 							//there are 220 bytes of data in a dump..
 							if(index >= 219){
-								std::vector<uint8_t> unpacked;
+								mReading = false;
 								//unpack && update our parameters
+								std::vector<uint8_t> unpacked;
 								unpack_data(mInputBuffer, unpacked);
 								for(unsigned int i = 0; i < 127; i++)
 									update_model_param(i, unpacked[i]);
-								mReading = false;
 							}
 							break;
 						case prog_param:
