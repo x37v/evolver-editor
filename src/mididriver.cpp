@@ -149,15 +149,15 @@ void MidiDriver::poll(){
 					case prog_param:
 						switch(index){
 							case 0:
-								mParamNumber = data;
+								mInputParamNumber = data;
 								break;
 							case 1:
-								mParamValue = data;
+								mInputParamValue = data;
 								break;
 							case 2:
-								mParamValue |= (data << 4);
+								mInputParamValue |= (data << 4);
 								//update the shit
-								update_model_param(mParamNumber, mParamValue);
+								update_model_param(mInputParamNumber, mInputParamValue);
 								break;
 							default:
 								break;
@@ -924,6 +924,20 @@ void MidiDriver::update_model_param(uint8_t index, uint8_t value){
 					Q_ARG(unsigned int, MiscModulationModel::foot), 
 					Q_ARG(int, value));
 			break;
+	}
+}
+
+void MidiDriver::send_program_param(uint8_t index, uint8_t value){
+	if(mMidiOut){
+		uint8_t msg[10];
+		msg[0] = (uint8_t)MIDI_SYSEX_START;
+		memcpy(msg + 1, evolver_sysex_header, 3);
+		msg[4] = prog_param;
+		msg[5] = index & 0x7F;
+		msg[6] = value & 0x0F;
+		msg[7] = (value >> 4) & 0x0F;
+		msg[8] = (uint8_t)MIDI_SYSEX_END;
+		Pm_WriteSysEx(mMidiOut, 0, msg);
 	}
 }
 
