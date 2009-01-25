@@ -17,6 +17,9 @@ ApplicationModel::ApplicationModel(QObject * parent) : Model(parent){
 	QSignalMapper * oscGlideMap = new QSignalMapper(this);
 	QSignalMapper * oscLevelMap = new QSignalMapper(this);
 	QSignalMapper * oscGlideMode = new QSignalMapper(this);
+
+	QSignalMapper * aOscShapeMap = new QSignalMapper(this);
+	QSignalMapper * aOscSyncMap = new QSignalMapper(this);
 	//allocate
 	for(unsigned int i = 0; i < 2; i++){
 		DigitalOscModel * d = new DigitalOscModel(this);
@@ -43,12 +46,22 @@ ApplicationModel::ApplicationModel(QObject * parent) : Model(parent){
 		oscLevelMap->setMapping(d, i + 2);
 		oscGlideMode->setMapping(a, i);
 		oscGlideMode->setMapping(d, i + 2);
+
+		//shape and width do the same thing really, so just use one map
+		QObject::connect(a, SIGNAL(shape_changed(int)), aOscShapeMap, SLOT(map()));
+		QObject::connect(a, SIGNAL(width_changed(int)), aOscShapeMap, SLOT(map()));
+		QObject::connect(a, SIGNAL(sync_changed(bool)), aOscSyncMap, SLOT(map()));
+		aOscShapeMap->setMapping(a, i);
+		aOscSyncMap->setMapping(a, i);
 	}
 	QObject::connect(oscFreqMap, SIGNAL(mapped(int)), this, SLOT(osc_set_freq(int)));
 	QObject::connect(oscTuneMap, SIGNAL(mapped(int)), this, SLOT(osc_set_tune(int)));
 	QObject::connect(oscGlideMap, SIGNAL(mapped(int)), this, SLOT(osc_set_glide(int)));
 	QObject::connect(oscLevelMap, SIGNAL(mapped(int)), this, SLOT(osc_set_level(int)));
 	QObject::connect(oscGlideMode, SIGNAL(mapped(int)), this, SLOT(osc_set_glide_mode(int)));
+
+	QObject::connect(aOscShapeMap, SIGNAL(mapped(int)), this, SLOT(analog_osc_set_shape(int)));
+	QObject::connect(aOscSyncMap, SIGNAL(mapped(int)), this, SLOT(analog_osc_set_sync(int)));
 	for(unsigned int i = 0; i < 4; i++){
 		mLFOs.push_back(new LFOModel(this));
 		mMods.push_back(new ModRoutingModel(this));
