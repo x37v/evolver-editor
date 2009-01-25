@@ -24,6 +24,7 @@ class MidiDriver : public QThread {
 	protected:
 		void update_model_param(uint8_t index, uint8_t value);
 		void unpack_data(std::vector<uint8_t> packed, std::vector<uint8_t> &unpacked);
+		static const uint8_t evolver_sysex_header[];
 	protected slots:
 		void poll();
 	private:

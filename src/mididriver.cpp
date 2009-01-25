@@ -13,6 +13,8 @@
 #include "lfo.hpp"
 #include <QTimer>
 
+const uint8_t MidiDriver::evolver_sysex_header[] = { 0x01, 0x20, 0x01 };
+
 #define is_real_time_msg(msg) ((0xF0 & Pm_MessageStatus(msg)) == 0xF8)
 #define MIDI_SYSEX_START 0xF0
 #define MIDI_SYSEX_END 0xF7
@@ -67,23 +69,10 @@ void MidiDriver::poll(){
 			//XXX do something!
 			mReading = false;
 		} else if (mReading){
-			switch(mReadingCount){
-				case 0:
-					//DSI Id
-					if(data != 0x01)
-						mReading = false;
-					break;
-				case 1:
-					//Evolver Id
-					if(data != 0x20)
-						mReading = false;
-					break;
-				case 2:
-					//File Version
-					if(data != 0x01)
-						mReading = false;
-					break;
-				case 3:
+			if(mReadingCount < 3){
+				if(data != evolver_sysex_header[mReadingCount])
+					mReading = false;
+			} else if(mReadingCount == 3) {
 					//command
 					switch(data){
 						case prog_param:
@@ -100,51 +89,49 @@ void MidiDriver::poll(){
 						default:
 							mReading = false;
 					};
-					break;
-				default:
-					//after the header, this is our b.s.
-					unsigned int index = mReadingCount - 4;
-					switch(mCurrentCommand){
-						case prog_dump:
-							//XXX for now ditch bank and prog
-							if(index < 2)
+			} else {
+				//after the header, this is our b.s.
+				unsigned int index = mReadingCount - 4;
+				switch(mCurrentCommand){
+					case prog_dump:
+						//XXX for now ditch bank and prog
+						if(index < 2)
+							break;
+						//update the index for the prog_param, let it fall through
+						index -= 2;
+					case edit_dump:
+						mInputBuffer.push_back(data);
+						//there are 220 bytes of data in a dump..
+						if(index >= 219){
+							mReading = false;
+							//unpack && update our parameters
+							std::vector<uint8_t> unpacked;
+							unpack_data(mInputBuffer, unpacked);
+							for(unsigned int i = 0; i < 127; i++)
+								update_model_param(i, unpacked[i]);
+						}
+						break;
+					case prog_param:
+						switch(index){
+							case 0:
+								mParamNumber = data;
 								break;
-							//update the index for the prog_param, let it fall through
-							index -= 2;
-						case edit_dump:
-							mInputBuffer.push_back(data);
-							//there are 220 bytes of data in a dump..
-							if(index >= 219){
-								mReading = false;
-								//unpack && update our parameters
-								std::vector<uint8_t> unpacked;
-								unpack_data(mInputBuffer, unpacked);
-								for(unsigned int i = 0; i < 127; i++)
-									update_model_param(i, unpacked[i]);
-							}
-							break;
-						case prog_param:
-							switch(index){
-								case 0:
-									mParamNumber = data;
-									break;
-								case 1:
-									mParamValue = data;
-									break;
-								case 2:
-									mParamValue |= (data << 4);
-									//update the shit
-									update_model_param(mParamNumber, mParamValue);
-									break;
-								default:
-									break;
-							};
-							break;
-						default: 
-							break;
-					};
-					break;
-			};
+							case 1:
+								mParamValue = data;
+								break;
+							case 2:
+								mParamValue |= (data << 4);
+								//update the shit
+								update_model_param(mParamNumber, mParamValue);
+								break;
+							default:
+								break;
+						};
+						break;
+					default: 
+						break;
+				};
+			}
 			//increment the count
 			mReadingCount++;
 		}
