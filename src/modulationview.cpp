@@ -3,6 +3,7 @@
 #include "lfo.hpp"
 #include "modulators.hpp"
 #include "miscmodulation.hpp"
+#include "titledwidget.hpp"
 #include <QGridLayout>
 #include <QLabel>
 #include <QSplitter>
@@ -12,7 +13,7 @@ ModulationView::ModulationView(QWidget * parent) : QWidget(parent){
 	QVBoxLayout * topLayout = new QVBoxLayout(this);
 	QGridLayout * lfoLayout = new QGridLayout;
 	QGridLayout * modLayout = new QGridLayout;
-	mMiscModulation = new MiscModulationView(this);
+	mMiscModulation = new MiscModulationView;
 
 	//allocate the lfos and modulators
 	for(unsigned int i = 0; i < 4; i++){
@@ -39,13 +40,13 @@ ModulationView::ModulationView(QWidget * parent) : QWidget(parent){
 	lfoLayout->addLayout(lLabels, 1, 0);
 
 	QWidget * lfos = new QWidget(this);
-	QWidget * mods = new QWidget(this);
+	QWidget * mods = new QWidget;
 	lfos->setLayout(lfoLayout);
 	mods->setLayout(modLayout);
 
 	QSplitter * bottomSplitter = new QSplitter(Qt::Horizontal, this);
-	bottomSplitter->addWidget(mods);
-	bottomSplitter->addWidget(mMiscModulation);
+	bottomSplitter->addWidget(new TitledWidget(QString("mod routing"), mods, this));
+	bottomSplitter->addWidget(new TitledWidget(QString("misc modulations"), mMiscModulation, this));
 
 	QSplitter * vertSplitter = new QSplitter(Qt::Vertical, this);
 	vertSplitter->addWidget(lfos);

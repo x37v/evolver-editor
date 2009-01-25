@@ -59,6 +59,8 @@ AudioAndEnvelopeView::AudioAndEnvelopeView(QWidget * parent) : QWidget(parent){
 	oscLayout->addWidget(new QLabel("digital osc 1", this), 2, 1, Qt::AlignCenter);
 	oscLayout->addWidget(new QLabel("digital osc 2", this), 2, 2, Qt::AlignCenter);
 	oscLayout->setRowStretch(10,1);
+	oscLayout->setSpacing(2);
+	oscLayout->setContentsMargins(1,1,1,1);
 
 	QWidget * oscs = new QWidget(this);
 	oscs->setLayout(oscLayout);
