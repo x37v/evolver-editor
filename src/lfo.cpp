@@ -15,6 +15,30 @@ LFOModel::LFOModel(QObject * parent) : QObject(parent){
 	mDestination = 0;
 }
 
+unsigned int LFOModel::freq(){
+	return mFreq;
+}
+
+unsigned int LFOModel::amount(){
+	return mAmount;
+}
+
+LFOModel::shape_t LFOModel::shape(){
+	return mShape;
+}
+
+bool LFOModel::key_sync(){
+	return mKeySync;
+}
+
+LFOModel::sync_types LFOModel::sync_type(){
+	return mSyncType;
+}
+
+unsigned int LFOModel::destination(){
+	return mDestination;
+}
+
 void LFOModel::set_freq(int freq){
 	if(in_range_and_new<unsigned int>((unsigned int)freq, mFreq, freq_max)){
 		mFreq = (unsigned int)freq;
@@ -30,7 +54,7 @@ void LFOModel::set_amount(int amount){
 }
 
 void LFOModel::set_shape(int s){
-	shapes shape = (shapes)s;
+	shape_t shape = (shape_t)s;
 	if(shape != mShape){
 		mShape = shape;
 		emit(shape_changed(mShape));

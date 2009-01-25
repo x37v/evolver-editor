@@ -9,7 +9,7 @@ class LFOModel : public QObject {
 		LFOModel(QObject * parent = NULL);
 		static const unsigned int freq_max;
 		static const unsigned int amount_max;
-		enum shapes {
+		enum shape_t {
 			triangle,
 			rev_saw,
 			saw,
@@ -29,6 +29,12 @@ class LFOModel : public QObject {
 			eight_per_step,
 			sixteen_per_step
 		};
+		unsigned int freq();
+		unsigned int amount();
+		shape_t shape();
+		bool key_sync();
+		sync_types sync_type();
+		unsigned int destination();
 	public slots:
 		void set_freq(int freq);
 		void set_amount(int amount);
@@ -46,7 +52,7 @@ class LFOModel : public QObject {
 	private:
 		unsigned int mAmount;
 		unsigned int mFreq;
-		shapes mShape;
+		shape_t mShape;
 		bool mKeySync;
 		sync_types mSyncType;
 		unsigned int mDestination;
