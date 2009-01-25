@@ -22,6 +22,7 @@ int main(int argc, char *argv[])
 	ApplicationModel * model = new ApplicationModel(&app);
 	ApplicationView * view = new ApplicationView();
 	MidiDriver * driver = new MidiDriver(model, model);
+	model->set_midi_driver(driver);
 	view->connect_to_model(model);
 	driver->open_input(3);
 	driver->open_output(2);

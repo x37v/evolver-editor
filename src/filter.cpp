@@ -15,7 +15,7 @@ const unsigned int FilterModel::env_release_max = 110;
 const unsigned int FilterModel::env_velocity_max = 100;
 const unsigned int FilterModel::hpf_freq_max = 99;
 
-FilterModel::FilterModel(QObject * parent) : QObject(parent) {
+FilterModel::FilterModel(QObject * parent) : Model(parent) {
 	mMode = two_pole;
 	mCutFreq = cut_freq_max;
 	mResonance = 0;
@@ -40,6 +40,7 @@ void FilterModel::set_mode(int val){
 	if(val != mMode){
 		mMode = (lpf_mode)val;
 		emit(mode_changed(mMode));
+		send_program_param(80, mMode);
 	}
 }
 
@@ -47,6 +48,7 @@ void FilterModel::set_cutoff(int val){
 	if(in_range_and_new<unsigned int>((unsigned int)val, mCutFreq, cut_freq_max)){
 		mCutFreq = val;
 		emit(cutoff_changed(mCutFreq));
+		send_program_param(16, mCutFreq);
 	}
 }
 
@@ -54,6 +56,7 @@ void FilterModel::set_resonance(int val){
 	if(in_range_and_new<unsigned int>((unsigned int)val, mResonance, resonance_max)){
 		mResonance = val;
 		emit(resonance_changed(mResonance));
+		send_program_param(22, mResonance);
 	}
 }
 
@@ -61,6 +64,7 @@ void FilterModel::set_key_amount(int val){
 	if(in_range_and_new<unsigned int>((unsigned int)val, mKeyAmount, key_amount_max)){
 		mKeyAmount = val;
 		emit(key_amount_changed(mKeyAmount));
+		send_program_param(23, mKeyAmount);
 	}
 }
 
@@ -68,6 +72,7 @@ void FilterModel::set_audio_mod(int val){
 	if(in_range_and_new<unsigned int>((unsigned int)val, mAudioMod, audio_mod_max)){
 		mAudioMod = val;
 		emit(audio_mod_changed(mAudioMod));
+		send_program_param(82, mAudioMod);
 	}
 }
 
@@ -75,6 +80,7 @@ void FilterModel::set_split(int val){
 	if(in_range_and_new<unsigned int>((unsigned int)val, mSplit, split_max)){
 		mSplit = val;
 		emit(split_changed(mSplit));
+		send_program_param(83, mSplit);
 	}
 }
 
@@ -82,6 +88,7 @@ void FilterModel::set_env_amount(int val){
 	if(in_range_and_new<int>(val, mEnvAmt, env_amount_max, env_amount_min)){
 		mEnvAmt = val;
 		emit(env_amount_changed(mEnvAmt));
+		send_program_param(17, mEnvAmt + 99);
 	}
 }
 
@@ -89,6 +96,7 @@ void FilterModel::set_env_attack(int val){
 	if(in_range_and_new<unsigned int>((unsigned int)val, mEnvAttack, env_attack_max)){
 		mEnvAttack = val;
 		emit(env_attack_changed(mEnvAttack));
+		send_program_param(18, mEnvAttack);
 	}
 }
 
@@ -96,6 +104,7 @@ void FilterModel::set_env_decay(int val){
 	if(in_range_and_new<unsigned int>((unsigned int)val, mEnvDecay, env_decay_max)){
 		mEnvDecay = val;
 		emit(env_decay_changed(mEnvDecay));
+		send_program_param(19, mEnvDecay);
 	}
 }
 
@@ -103,6 +112,7 @@ void FilterModel::set_env_sustain(int val){
 	if(in_range_and_new<unsigned int>((unsigned int)val, mEnvSustain, env_sustain_max)){
 		mEnvSustain = val;
 		emit(env_sustain_changed(mEnvSustain));
+		send_program_param(20, mEnvSustain);
 	}
 }
 
@@ -110,6 +120,7 @@ void FilterModel::set_env_release(int val){
 	if(in_range_and_new<unsigned int>((unsigned int)val, mEnvRelease, env_release_max)){
 		mEnvRelease = val;
 		emit(env_release_changed(mEnvRelease));
+		send_program_param(21, mEnvRelease);
 	}
 }
 
@@ -117,6 +128,7 @@ void FilterModel::set_env_velocity(int val){
 	if(in_range_and_new<unsigned int>((unsigned int)val, mEnvVelocity, env_velocity_max)){
 		mEnvVelocity = val;
 		emit(env_velocity_changed(mEnvVelocity));
+		send_program_param(81, mEnvVelocity);
 	}
 }
 
@@ -126,6 +138,10 @@ void FilterModel::set_hpf_mode(int val){
 	if(val != mHPFMode){
 		mHPFMode = (hpf_mode)val;
 		emit(hpf_mode_changed(mHPFMode));
+		if(mHPFMode == after_lpf)
+			send_program_param(84, mHPFFreq);
+		else
+			send_program_param(84, mHPFFreq + 100);
 	}
 }
 
@@ -133,6 +149,10 @@ void FilterModel::set_hpf_cutoff(int val){
 	if(in_range_and_new<unsigned int>((unsigned int)val, mHPFFreq, hpf_freq_max)){
 		mHPFFreq = val;
 		emit(hpf_cutoff_changed(mHPFFreq));
+		if(mHPFMode == after_lpf)
+			send_program_param(84, mHPFFreq);
+		else
+			send_program_param(84, mHPFFreq + 100);
 	}
 }
 

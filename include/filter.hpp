@@ -1,9 +1,9 @@
 #ifndef FILTER_HPP
 #define FILTER_HPP
 
-#include <QObject>
+#include "model.hpp"
 
-class FilterModel : public QObject {
+class FilterModel : public Model {
 	Q_OBJECT
 	public:
 		FilterModel(QObject * parent = NULL);

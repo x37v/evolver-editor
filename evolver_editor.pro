@@ -12,6 +12,7 @@ LIBS += -lporttime -lportmidi
 
 # Input
 HEADERS += include/common.hpp \
+	include/model.hpp \
 	include/sliderspinbox.hpp \
 	include/oscmodel.hpp \
 	include/oscview.hpp \
@@ -34,6 +35,7 @@ HEADERS += include/common.hpp \
 	include/mididriver.hpp
 
 SOURCES += \
+	src/model.cpp \
 	src/common.cpp \
 	src/sliderspinbox.cpp \
 	src/main.cpp \
