@@ -1,10 +1,10 @@
 #ifndef MISC_AUDIO_HPP
 #define MISC_AUDIO_HPP
 
+#include "model.hpp"
 //this is for stuff that doesn't fit anywhere else
-#include <QObject>
 
-class MiscAudioModel : public QObject {
+class MiscAudioModel : public Model {
 	Q_OBJECT
 	public:
 		MiscAudioModel(QObject * parent = NULL);

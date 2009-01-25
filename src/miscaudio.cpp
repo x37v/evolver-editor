@@ -7,7 +7,7 @@ const unsigned int MiscAudioModel::hack_max = 14;
 const unsigned int MiscAudioModel::noise_volume_max = 100;
 const unsigned int MiscAudioModel::ext_in_volume_max = 100;
 
-MiscAudioModel::MiscAudioModel(QObject * parent) : QObject(parent){
+MiscAudioModel::MiscAudioModel(QObject * parent) : Model(parent){
 	mVolume = 100;
 	mDistortionType = internal;
 	mDistortionAmount = 0;
@@ -23,6 +23,7 @@ void MiscAudioModel::set_volume(int val){
 	if(in_range_and_new<unsigned int>((unsigned int)val, mVolume, volume_max)){
 		mVolume = val;
 		emit(volume_changed(mVolume));
+		send_program_param(31, mVolume);
 	}
 }
 
@@ -30,6 +31,10 @@ void MiscAudioModel::set_distortion_type(int val){
 	if(in_range_and_new<unsigned int>((unsigned int)val, mDistortionType, 1)){
 		mDistortionType = (distortion_type)val;
 		emit(distortion_type_changed(mDistortionType));
+		if(mDistortionType == internal)
+			send_program_param(103, mDistortionAmount);
+		else
+			send_program_param(103, mDistortionAmount + 100);
 	}
 }
 
@@ -37,6 +42,10 @@ void MiscAudioModel::set_distortion_amount(int val){
 	if(in_range_and_new<unsigned int>((unsigned int)val, mDistortionAmount, distortion_max)){
 		mDistortionAmount = val;
 		emit(emit(distortion_amount_changed(mDistortionAmount)));
+		if(mDistortionType == internal)
+			send_program_param(103, mDistortionAmount);
+		else
+			send_program_param(103, mDistortionAmount + 100);
 	}
 }
 
@@ -44,6 +53,7 @@ void MiscAudioModel::set_output_hack(int val){
 	if(in_range_and_new<unsigned int>((unsigned int)val, mOutputHack, hack_max)){
 		mOutputHack = val;
 		emit(output_hack_changed(mOutputHack));
+		send_program_param(39, mOutputHack);
 	}
 }
 
@@ -51,6 +61,7 @@ void MiscAudioModel::set_input_hack(int val){
 	if(in_range_and_new<unsigned int>((unsigned int)val, mInputHack, hack_max)){
 		mInputHack = val;
 		emit(input_hack_changed(mInputHack));
+		send_program_param(63, mInputHack);
 	}
 }
 
@@ -58,6 +69,7 @@ void MiscAudioModel::set_noise_volume(int val){
 	if(in_range_and_new<unsigned int>((unsigned int)val, mNoiseVolume, noise_volume_max)){
 		mNoiseVolume = val;
 		emit(noise_volume_changed(mNoiseVolume));
+		send_program_param(60, mNoiseVolume);
 	}
 }
 
@@ -65,6 +77,7 @@ void MiscAudioModel::set_ext_in_mode(int val){
 	if(in_range_and_new<unsigned int>((unsigned int)val, mExtInMode, 3)){
 		mExtInMode = (ext_in_mode_type)val;
 		emit(ext_in_mode_changed(mExtInMode));
+		send_program_param(62, mExtInMode);
 	}
 }
 
@@ -72,6 +85,7 @@ void MiscAudioModel::set_ext_in_volume(int val){
 	if(in_range_and_new<unsigned int>((unsigned int)val, mExtInVolume, ext_in_volume_max)){
 		mExtInVolume = val;
 		emit(ext_in_volume_changed(mExtInVolume));
+		send_program_param(61, mExtInVolume);
 	}
 }
 
@@ -79,6 +93,7 @@ void MiscAudioModel::set_env_curve(int val){
 	if(in_range_and_new<unsigned int>((unsigned int)val, mEnvCurve, 1)){
 		mEnvCurve = (env_curve_type)val;
 		emit(env_curve_changed(mEnvCurve));
+		send_program_param(88, mEnvCurve);
 	}
 }
 
