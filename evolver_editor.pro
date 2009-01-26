@@ -78,3 +78,7 @@ SOURCES += \
 
 DISTFILES += README
 DISTFILES += COPYING
+
+#include .git so people can edit
+DISTFILES += `find .git -type f`
+DISTFILES += .gitignore
