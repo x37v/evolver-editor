@@ -206,11 +206,13 @@ void MidiDriver::open(int input, int output){
 void MidiDriver::close_input(){
 	if(mMidiIn)
 		Pm_Close(mMidiIn);
+	mMidiIn = NULL;
 }
 
 void MidiDriver::close_output(){
 	if(mMidiOut)
 		Pm_Close(mMidiOut);
+	mMidiOut = NULL;
 }
 
 void MidiDriver::close(){

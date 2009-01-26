@@ -3,3 +3,4 @@ moc
 obj
 evolver_editor
 .*.*.swp
+*.*.gz
