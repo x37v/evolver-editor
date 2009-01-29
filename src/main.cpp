@@ -38,6 +38,7 @@
 #include <QApplication>
 #include <QFile>
 #include <QAction>
+#include <QSignalMapper>
 #include <QKeySequence>
 #include <QObject>
 #include <map>
@@ -165,11 +166,16 @@ int main(int argc, char *argv[])
 	QObject::connect(action, SIGNAL(triggered()), driver, SLOT(request_edit_buffer()));
 	view->addAction(action);
 
-	/*
-	action = new QAction(view);
-	action->setShortcut(tr("Ctrl+1"));
-	connect(action, SIGNAL(triggered()), driver, SLOT(request_edit_buffer()));
-	*/
+	//control+num goes to that tab
+	QSignalMapper * mapper = new QSignalMapper(view);
+	for(int i = 0; i < view->tab_widget()->count(); i++){
+		action = new QAction(view);
+		action->setShortcut(QKeySequence(QString("Ctrl+%1").arg(i + 1)));
+		QObject::connect(action, SIGNAL(triggered()), mapper, SLOT(map()));
+		mapper->setMapping(action, i);
+		QObject::connect(mapper, SIGNAL(mapped(int)), view->tab_widget(), SLOT(setCurrentIndex(int)));
+		view->addAction(action);
+	}
 	
 	view->show();
    return app.exec();

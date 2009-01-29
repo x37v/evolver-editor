@@ -36,6 +36,7 @@ class ApplicationView : public QWidget {
 		AudioAndEnvelopeView * audio_and_envelopes();
 		ModulationView * modulation();
 		void connect_to_model(ApplicationModel * model);
+		QTabWidget * tab_widget();
 	private:
 		QVBoxLayout * mLayout;
 		QTabWidget * mTabView;

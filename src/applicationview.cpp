@@ -65,3 +65,6 @@ void ApplicationView::connect_to_model(ApplicationModel * model){
 	mModulations->connect_to_model(model);
 }
 
+QTabWidget * ApplicationView::tab_widget(){
+	return mTabView;
+}
