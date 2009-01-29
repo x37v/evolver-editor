@@ -37,6 +37,9 @@
 
 #include <QApplication>
 #include <QFile>
+#include <QAction>
+#include <QKeySequence>
+#include <QObject>
 #include <map>
 #include <iostream>
 using std::cout;
@@ -153,6 +156,20 @@ int main(int argc, char *argv[])
 			driver,
 			SLOT(quit()));
 	driver->start();
+
+	//set up key bindings
+	
+	//control+r requests edit buffer
+	QAction * action = new QAction(view);
+	action->setShortcut(QKeySequence(QString("Ctrl+r")));
+	QObject::connect(action, SIGNAL(triggered()), driver, SLOT(request_edit_buffer()));
+	view->addAction(action);
+
+	/*
+	action = new QAction(view);
+	action->setShortcut(tr("Ctrl+1"));
+	connect(action, SIGNAL(triggered()), driver, SLOT(request_edit_buffer()));
+	*/
 	
 	view->show();
    return app.exec();
