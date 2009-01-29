@@ -37,7 +37,7 @@ const unsigned int FilterModel::hpf_freq_max = 99;
 
 FilterModel::FilterModel(QObject * parent) : Model(parent) {
 	mMode = two_pole;
-	mCutFreq = cut_freq_max;
+	mCutFreq = 0;
 	mResonance = 0;
 	mKeyAmount = 0;
 	mAudioMod = 0;
@@ -46,7 +46,7 @@ FilterModel::FilterModel(QObject * parent) : Model(parent) {
 	mEnvAmt = 0;
 	mEnvAttack = 0;
 	mEnvDecay = 0;
-	mEnvSustain = env_sustain_max;
+	mEnvSustain = 0;
 	mEnvRelease = 110;
 	mEnvVelocity = 0;
 

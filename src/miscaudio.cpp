@@ -28,7 +28,7 @@ const unsigned int MiscAudioModel::noise_volume_max = 100;
 const unsigned int MiscAudioModel::ext_in_volume_max = 100;
 
 MiscAudioModel::MiscAudioModel(QObject * parent) : Model(parent){
-	mVolume = 100;
+	mVolume = 0;
 	mDistortionType = internal;
 	mDistortionAmount = 0;
 	mOutputHack = 0;

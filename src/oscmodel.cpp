@@ -35,9 +35,9 @@ const unsigned int DigitalOscModel::fm_in_max = 100;
 const unsigned int DigitalOscModel::ring_in_max = 100;
 
 OscModel::OscModel(QObject * parent): QObject(parent){
-	mFreq = 64;
+	mFreq = 0;
 	mGlide = 0;
-	mLevel = 50;
+	mLevel = 0;
 	mTune = 0;
 	mGlideMode = normal;
 }

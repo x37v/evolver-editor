@@ -41,11 +41,11 @@ const unsigned int VCAModel::num_pan_types = 7;
 
 VCAModel::VCAModel(QObject * parent) : Model(parent){
 	mLevel = 0;
-	mEnvAmount = 100;
+	mEnvAmount = 0;
 	mAttack = 0;
 	mDecay = 0;
-	mSustain = sustain_max;
-	mRelease = release_max;
+	mSustain = 0;
+	mRelease = 0;
 	mVelocity = 0;
 	mPanType = stereo_one;
 }

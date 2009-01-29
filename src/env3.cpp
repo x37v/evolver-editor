@@ -37,8 +37,8 @@ Env3Model::Env3Model(QObject * parent) : Model(parent){
 	mAmount = 0;
 	mAttack = 0;
 	mDecay = 0;
-	mSustain = sustain_max;
-	mRelease = release_max;
+	mSustain = 0;
+	mRelease = 0;
 	mVelocity = 0;
 }
 
