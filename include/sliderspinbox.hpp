@@ -37,6 +37,7 @@ class SliderSpinBox : public QWidget {
 		int value();
 	public slots:
 		void setValue(int val);
+		void setEnabled(bool val);
 	signals:
 		void valueChanged(int);
 	protected:

@@ -135,6 +135,7 @@ SequencerView::SequencerView(QWidget * parent) : QWidget(parent){
 	lab = new QLabel("length", this);
 	mLayout->addWidget(lab, 0, 0, Qt::AlignHCenter);
 	mLayout->setRowStretch(6, 10);
+	mLayout->setColumnStretch(20, 10);
 	setLayout(mLayout);
 }
 
@@ -187,6 +188,10 @@ void SequencerView::connect_to_model(SequencerModel * model){
 void SequencerView::set_length(unsigned int seq, unsigned int length){
 	if(seq > 3 || length > 16)
 		return;
+	for(unsigned int i = 0; i < length; i++)
+		mSequence[seq][i]->setEnabled(true);
+	for(unsigned int i = length; i < 16; i++)
+		mSequence[seq][i]->setEnabled(false);
 	mLength[seq]->setValue(length);
 }
 

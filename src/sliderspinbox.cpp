@@ -64,6 +64,11 @@ void SliderSpinBox::setValue(int val){
 	mSlider->setValue(val);
 }
 
+void SliderSpinBox::setEnabled(bool val){
+	mSlider->setEnabled(val);
+	mSpinBox->setEnabled(val);
+}
+
 void SliderSpinBox::connect_signals(){
 	QObject::connect(mSlider,
 			SIGNAL(valueChanged(int)),
