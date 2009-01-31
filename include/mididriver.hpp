@@ -47,6 +47,7 @@ class MidiDriver : public QThread {
 		const std::map<unsigned int, QString> * output_map();
 	protected:
 		void update_model_param(uint8_t index, uint8_t value);
+		void update_sequence_param(uint8_t index, uint8_t value);
 		void unpack_data(std::vector<uint8_t> packed, std::vector<uint8_t> &unpacked);
 		static const uint8_t evolver_sysex_header[];
 	public slots:

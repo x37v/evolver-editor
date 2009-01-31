@@ -104,7 +104,7 @@ SequencerView::SequencerView(QWidget * parent) : QWidget(parent){
 		mLength[i] = new QSpinBox(this);
 		mLength[i]->setRange(0,16);
 		mLength[i]->setValue(16);
-		mLayout->addWidget(mLength[i], i + 1, 0, Qt::AlignHCenter);
+		mLayout->addWidget(mLength[i], i + 1, 0, Qt::AlignTop | Qt::AlignHCenter);
 		for(unsigned int j = 0; j < 16; j++){
 			mSequence[i][j] = new SliderSpinBox(this, true);
 			mSequence[i][j]->setRange(0,100);

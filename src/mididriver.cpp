@@ -133,6 +133,9 @@ void MidiDriver::poll(){
 							mCurrentCommand = edit_dump;
 							mInputBuffer.clear();
 							break;
+						case seq_param:
+							mCurrentCommand = seq_param;
+							break;
 						default:
 							//XXX haven't implemented all the commands yet
 							mReading = false;
@@ -157,6 +160,11 @@ void MidiDriver::poll(){
 								unpack_data(mInputBuffer, unpacked);
 								for(unsigned int i = 0; i < 127; i++)
 									update_model_param(i, unpacked[i]);
+								//set all the sequences to maximum length, then let update_sequence_param set the length if needed
+								for(unsigned int i = 0; i < 4; i++)
+									invoke_method(mModel->sequencer(), set_length, Q_ARG(unsigned int, i), Q_ARG(unsigned int, 16));
+								for(unsigned int i = 0; i < 64; i++)
+									update_sequence_param(i, unpacked[i + 128]);
 							}
 							break;
 						case prog_param:
@@ -176,6 +184,22 @@ void MidiDriver::poll(){
 									break;
 							};
 							break;
+						case seq_param:
+							switch(index){
+								case 0:
+									mInputParamNumber = data;
+									break;
+								case 1:
+									mInputParamValue = data;
+									break;
+								case 2:
+									mInputParamValue |= (data << 4);
+									//update the shit
+									update_sequence_param(mInputParamNumber, mInputParamValue);
+									break;
+								default:
+									break;
+							};
 						default: 
 							break;
 					};
@@ -943,6 +967,25 @@ void MidiDriver::update_model_param(uint8_t index, uint8_t value){
 					Q_ARG(int, value));
 			break;
 	}
+}
+
+void MidiDriver::update_sequence_param(uint8_t index, uint8_t value){
+	uint8_t seq = index / 16;
+	uint8_t step = index % 16;
+
+	//seq zero has rests
+	//XXX not sure if length is quite correct
+	if(seq == 0 && value == 102) //rest
+		invoke_method(mModel->sequencer(), set_rest, Q_ARG(unsigned int, step), Q_ARG(bool, true));
+	else if (value == 101) //length
+		invoke_method(mModel->sequencer(), set_length, Q_ARG(unsigned int, seq), Q_ARG(unsigned int, step));
+	else {
+		if(seq == 0)
+			invoke_method(mModel->sequencer(), set_rest, Q_ARG(unsigned int, step), Q_ARG(bool, false));
+		invoke_method(mModel->sequencer(), set_value, Q_ARG(unsigned int, seq), 
+				Q_ARG(unsigned int, step), Q_ARG(unsigned int, value));
+	}
+
 }
 
 void MidiDriver::send_program_param(uint8_t index, uint8_t value){
