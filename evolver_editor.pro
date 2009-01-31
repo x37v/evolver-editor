@@ -50,7 +50,8 @@ HEADERS += include/common.hpp \
 	include/audioandenvelopeview.hpp \
 	include/titledwidget.hpp \
 	include/modulationview.hpp \
-	include/mididriver.hpp
+	include/mididriver.hpp \
+	include/sequencer.hpp
 
 SOURCES += \
 	src/model.cpp \
@@ -74,7 +75,8 @@ SOURCES += \
 	src/audioandenvelopeview.cpp \
 	src/titledwidget.cpp \
 	src/modulationview.cpp \
-	src/mididriver.cpp
+	src/mididriver.cpp \
+	src/sequencer.cpp
 
 DISTFILES += README
 DISTFILES += COPYING

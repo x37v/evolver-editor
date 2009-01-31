@@ -24,13 +24,13 @@
 #include <QWidget>
 class QSlider;
 class QSpinBox;
-class QHBoxLayout;
+class QBoxLayout;
 
-//this is a slider with a spinbox under it
+//this is a slider with a spinbox either next or under
 class SliderSpinBox : public QWidget {
 	Q_OBJECT
 	public:
-		SliderSpinBox(QWidget * parent = NULL);
+		SliderSpinBox(QWidget * parent = NULL, bool vertical = false);
 		QSlider * slider();
 		QSpinBox * spinbox();
 		void setRange(int min, int max);
@@ -40,9 +40,10 @@ class SliderSpinBox : public QWidget {
 	signals:
 		void valueChanged(int);
 	protected:
+		void connect_signals();
 		QSlider * mSlider;
 		QSpinBox * mSpinBox;
-		QHBoxLayout * mLayout;
+		QBoxLayout * mLayout;
 };
 
 #endif

@@ -25,6 +25,7 @@
 #include <QScrollArea>
 #include "audioandenvelopeview.hpp"
 #include "modulationview.hpp"
+#include "sequencer.hpp"
 
 ApplicationView::ApplicationView(QWidget * parent) : QWidget(parent){
 	//allocate
@@ -32,20 +33,25 @@ ApplicationView::ApplicationView(QWidget * parent) : QWidget(parent){
 	mTabView = new QTabWidget(this);
 	mAudioAndEnvelopes = new AudioAndEnvelopeView(this);
 	mModulations = new ModulationView(this);
+	mSequencer = new SequencerView(this);
 
 	//make them scrollable
 	QScrollArea * tab0 = new QScrollArea(this);
 	QScrollArea * tab1 = new QScrollArea(this);
+	QScrollArea * tab2 = new QScrollArea(this);
 	tab0->setWidget(mAudioAndEnvelopes);
 	tab1->setWidget(mModulations);
+	tab2->setWidget(mSequencer);
 
 	//let the tabs resize
 	tab0->setWidgetResizable(true);
 	tab1->setWidgetResizable(true);
+	tab2->setWidgetResizable(true);
 
 	//add tabs and layout
 	mTabView->addTab(tab0, QString("audio and envelopes"));
 	mTabView->addTab(tab1, QString("modulations"));
+	mTabView->addTab(tab2, QString("sequencer"));
 
 	mLayout->addWidget(mTabView);
 	mLayout->setContentsMargins(1,1,1,1);

@@ -28,6 +28,7 @@ class AudioAndEnvelopeView;
 class ModulationView;
 class QVBoxLayout;
 class ApplicationModel;
+class SequencerView;
 
 class ApplicationView : public QWidget {
 	Q_OBJECT
@@ -43,6 +44,7 @@ class ApplicationView : public QWidget {
 
 		AudioAndEnvelopeView * mAudioAndEnvelopes;
 		ModulationView * mModulations;
+		SequencerView * mSequencer;
 };
 
 #endif

@@ -22,30 +22,25 @@
 #include <QSlider>
 #include <QSpinBox>
 #include <QHBoxLayout>
+#include <QVBoxLayout>
 
-SliderSpinBox::SliderSpinBox(QWidget * parent) : QWidget(parent){
-	mSlider = new QSlider(Qt::Horizontal, this);
+SliderSpinBox::SliderSpinBox(QWidget * parent, bool vertical) : QWidget(parent){
 	mSpinBox = new QSpinBox(this);
-	mLayout = new QHBoxLayout(this);
+	if(vertical) {
+		mLayout = new QVBoxLayout(this);
+		mSlider = new QSlider(Qt::Vertical, this);
+		mLayout->addWidget(mSlider, 1, Qt::AlignHCenter);
+	} else {
+		mLayout = new QHBoxLayout(this);
+		mSlider = new QSlider(Qt::Horizontal, this);
+		mLayout->addWidget(mSlider, 1, Qt::AlignVCenter);
+	}
 
-	mLayout->addWidget(mSlider, 1, Qt::AlignVCenter);
 	mLayout->addWidget(mSpinBox, 0);
 	mLayout->setContentsMargins(1,1,1,1);
 
 	setLayout(mLayout);
-	QObject::connect(mSlider,
-			SIGNAL(valueChanged(int)),
-			mSpinBox,
-			SLOT(setValue(int)));
-	QObject::connect(mSpinBox,
-			SIGNAL(valueChanged(int)),
-			mSlider,
-			SLOT(setValue(int)));
-
-	QObject::connect(mSlider,
-			SIGNAL(valueChanged(int)),
-			this,
-			SIGNAL(valueChanged(int)));
+	connect_signals();
 }
 
 QSlider * SliderSpinBox::slider(){
@@ -69,3 +64,18 @@ void SliderSpinBox::setValue(int val){
 	mSlider->setValue(val);
 }
 
+void SliderSpinBox::connect_signals(){
+	QObject::connect(mSlider,
+			SIGNAL(valueChanged(int)),
+			mSpinBox,
+			SLOT(setValue(int)));
+	QObject::connect(mSpinBox,
+			SIGNAL(valueChanged(int)),
+			mSlider,
+			SLOT(setValue(int)));
+
+	QObject::connect(mSlider,
+			SIGNAL(valueChanged(int)),
+			this,
+			SIGNAL(valueChanged(int)));
+}
