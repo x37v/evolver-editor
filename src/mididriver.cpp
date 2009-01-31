@@ -163,7 +163,8 @@ void MidiDriver::poll(){
 								//set all the sequences to maximum length, then let update_sequence_param set the length if needed
 								for(unsigned int i = 0; i < 4; i++)
 									invoke_method(mModel->sequencer(), set_length, Q_ARG(unsigned int, i), Q_ARG(unsigned int, 16));
-								for(unsigned int i = 0; i < 64; i++)
+								//we go backwards so that our lengths are correct
+								for(int i = 63; i >= 0; i--)
 									update_sequence_param(i, unpacked[i + 128]);
 							}
 							break;
