@@ -42,7 +42,6 @@ const uint8_t MidiDriver::evolver_sysex_header[] = { 0x01, 0x20, 0x01 };
 #define MIDI_SYSEX_END 0xF7
 
 #define invoke_method(ob, meth, ...) (QMetaObject::invokeMethod(ob, #meth, Qt::QueuedConnection, __VA_ARGS__))
-#define invoke_method2(ob, meth, arg0, arg1) (QMetaObject::invokeMethod(ob, #meth, Qt::QueuedConnection, arg0, arg1))
 
 MidiDriver::MidiDriver(ApplicationModel * model, QObject * parent) : QThread(parent){
 	mMidiOut = NULL;
@@ -163,6 +162,8 @@ void MidiDriver::poll(){
 								//set all the sequences to maximum length, then let update_sequence_param set the length if needed
 								for(unsigned int i = 0; i < 4; i++)
 									invoke_method(mModel->sequencer(), set_length, Q_ARG(unsigned int, i), Q_ARG(unsigned int, 16));
+								//clear all the resets
+								QMetaObject::invokeMethod(mModel->sequencer(), "clear_sequence_resets", Qt::QueuedConnection);
 								//we go backwards so that our lengths are correct
 								for(int i = 63; i >= 0; i--)
 									update_sequence_param(i, unpacked[i + 128]);
@@ -978,11 +979,24 @@ void MidiDriver::update_sequence_param(uint8_t index, uint8_t value){
 	//XXX not sure if length is quite correct
 	if(seq == 0 && value == 102) //rest
 		invoke_method(mModel->sequencer(), set_rest, Q_ARG(unsigned int, step), Q_ARG(bool, true));
-	else if (value == 101) //length
-		invoke_method(mModel->sequencer(), set_length, Q_ARG(unsigned int, seq), Q_ARG(unsigned int, step));
-	else {
+	else if (value == 101) { //length
+		//if this end point is less than our current length, then set this step to be the length of our sequence
+		//otherwise, set this as an endpoint for later use
+		if(step < mModel->sequencer()->length(seq))
+			invoke_method(mModel->sequencer(), set_length, Q_ARG(unsigned int, seq), Q_ARG(unsigned int, step));
+		else
+			invoke_method(mModel->sequencer(), insert_sequence_reset, Q_ARG(unsigned int, seq), Q_ARG(unsigned int, step));
+	} else {
 		if(seq == 0)
 			invoke_method(mModel->sequencer(), set_rest, Q_ARG(unsigned int, step), Q_ARG(bool, false));
+		//so if this was the reset point for the sequence, find the next reset point
+		//and set the length to that
+		if(step == mModel->sequencer()->length(seq)){
+			invoke_method(mModel->sequencer(), remove_sequence_reset, Q_ARG(unsigned int, seq), Q_ARG(unsigned int, step));
+			invoke_method(mModel->sequencer(), set_length, 
+					Q_ARG(unsigned int, seq), 
+					Q_ARG(unsigned int, mModel->sequencer()->first_sequence_reset(seq)));
+		}
 		invoke_method(mModel->sequencer(), set_value, Q_ARG(unsigned int, seq), 
 				Q_ARG(unsigned int, step), Q_ARG(unsigned int, value));
 	}

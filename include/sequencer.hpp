@@ -28,6 +28,9 @@ class SequencerModel : public Model {
 	Q_OBJECT
 	public:
 		SequencerModel(QObject * parent = NULL);
+		unsigned int length(unsigned int seq);
+		//find the lowest sequence end point
+		unsigned int first_sequence_reset(unsigned int seq);
 	signals:
 		void length_changed(unsigned int seq, unsigned int length);
 		void rest_changed(unsigned int step, bool on);
@@ -38,9 +41,14 @@ class SequencerModel : public Model {
 		void set_rest(unsigned int step, bool rest);
 		void set_value(unsigned int seq, unsigned int step, unsigned int value);
 		void set_destination(unsigned int seq, unsigned int index);
+		void insert_sequence_reset(unsigned int seq, unsigned int step);
+		void remove_sequence_reset(unsigned int seq, unsigned int step);
+		void clear_sequence_resets();
 	private:
 		//values for each sequence at each step
 		unsigned int mSequence[4][16];
+		//is this an end point for a sequence
+		bool mSequenceReset[4][16];
 		//the length of each sequence [0..16]
 		unsigned int mLength[4];
 		//is this step a rest

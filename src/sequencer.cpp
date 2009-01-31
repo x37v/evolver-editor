@@ -34,8 +34,44 @@ SequencerModel::SequencerModel(QObject * parent) : Model(parent){
 		mDestination[i] = 0;
 		for(unsigned int j = 0; j < 16; j++){
 			mSequence[i][j] = 0;
+			mSequenceReset[i][j] = false;
 			mRest[j] = false;
 		}
+	}
+}
+
+unsigned int SequencerModel::length(unsigned int seq){
+	if(seq > 3)
+		return 0;
+	return mLength[seq];
+}
+
+unsigned int SequencerModel::first_sequence_reset(unsigned int seq){
+	if(seq > 3)
+		return 0;
+	for(unsigned int i = 0; i < 16; i++){
+		if(mSequenceReset[seq][i])
+			return i;
+	}
+	return 16;
+}
+
+void SequencerModel::insert_sequence_reset(unsigned int seq, unsigned int step){
+	if(seq > 3 || step > 15)
+		return;
+	mSequenceReset[seq][step] = true;
+}
+
+void SequencerModel::remove_sequence_reset(unsigned int seq, unsigned int step){
+	if(seq > 3 || step > 15)
+		return;
+	mSequenceReset[seq][step] = false;
+}
+
+void SequencerModel::clear_sequence_resets(){
+	for(unsigned int i = 0; i < 4; i++){
+		for(unsigned int j = 0; j < 16; j++)
+			mSequenceReset[i][j] = false;
 	}
 }
 
@@ -48,29 +84,47 @@ void SequencerModel::set_length(unsigned int seq, unsigned int length){
 		//send all the values up until length
 		//seq 0 has the rests
 		if(seq == 0){
+			//if our new length was on a rest, this is no longer a rest
+			if(length < 16)
+				set_rest(length, false);
 			for(unsigned int i = 0; i < length; i++){
 				if(i < 16){
 					if(mRest[i])
 						send_sequencer_param(i + seq * 16, 102);
 					else
 						send_sequencer_param(i + seq * 16, mSequence[seq][i]);
+					mSequenceReset[seq][i] = false;
 				}
 			}
 		} else {
 			for(unsigned int i = 0; i < length; i++){
-				if(i < 16)
+				if(i < 16) {
 					send_sequencer_param(i + seq * 16, mSequence[seq][i]);
+					mSequenceReset[seq][i] = false;
+				}
 			}
 		}
 		if(length != 16)
 			send_sequencer_param(length + seq * 16, 101);
 	}
+	//this is a sequence reset point
+	if(length < 15)
+		mSequenceReset[seq][length] = true;
 }
 
 void SequencerModel::set_rest(unsigned int step, bool rest){
 	if(step > 15)
 		return;
 	if(mRest[step] != rest){
+		//this is a no longer a sequence reset point
+		mSequenceReset[0][step] = false;
+
+		//if this rest was the reset point for the first sequence, 
+		//our length is no longer valid
+		//reset our length
+		if(rest && step == mLength[0])
+			set_length(0, first_sequence_reset(0));
+
 		mRest[step] = rest;
 		emit(rest_changed(step, mRest[step]));
 		if(rest)
@@ -86,6 +140,10 @@ void SequencerModel::set_value(unsigned int seq, unsigned int step, unsigned int
 	if(mSequence[seq][step] != value){
 		mSequence[seq][step] = value;
 		emit(value_changed(seq, step, mSequence[seq][step]));
+
+		//this is a no longer a sequence reset point
+		mSequenceReset[seq][step] = false;
+
 		//deal with length and rests
 		if((mRest[step] && seq == 0) || mLength[seq] <= step)
 			return;
