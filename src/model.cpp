@@ -34,3 +34,9 @@ void Model::send_program_param(uint8_t index, uint8_t value){
 	if(cMidiDriver)
 		cMidiDriver->send_program_param(index, value);
 }
+
+void Model::send_sequencer_param(uint8_t step, uint8_t value){
+	if(cMidiDriver)
+		cMidiDriver->send_sequencer_param(step, value);
+}
+

@@ -38,6 +38,7 @@ class DelayModel;
 class FeedbackModel;
 class MiscAudioModel;
 class MiscModulationModel;
+class SequencerModel;
 
 class ApplicationModel : public Model {
 	Q_OBJECT
@@ -55,6 +56,7 @@ class ApplicationModel : public Model {
 		FeedbackModel * feedback();
 		MiscAudioModel * misc_audio();
 		MiscModulationModel * misc_modulations();
+		SequencerModel * sequencer();
 	private slots:
 		void osc_set_freq(int index);
 		void osc_set_tune(int index);
@@ -93,6 +95,7 @@ class ApplicationModel : public Model {
 		FeedbackModel * mFeedback;
 		MiscAudioModel * mMiscAudio;
 		MiscModulationModel * mMiscModulation;
+		SequencerModel * mSequencer;
 };
 
 #endif

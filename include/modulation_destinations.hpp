@@ -22,14 +22,16 @@
 #define MODULATION_DESTINATIONS_HPP
 
 #define NUM_MODULATION_DESTINATIONS 69
+#define NUM_SEQ_MODULATION_DESTINATIONS 76
 
 #include <QComboBox>
 
 class ModDestComboBox : public QComboBox {
 	Q_OBJECT
 	public:
-		ModDestComboBox(QWidget * parent = NULL);
+		ModDestComboBox(QWidget * parent = NULL, bool sequencer = false);
 		static const char* modulation_destinations[];
+		static const char* seq_modulation_destinations[];
 };
 
 #endif

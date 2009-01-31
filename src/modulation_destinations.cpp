@@ -20,9 +20,13 @@
 
 #include "modulation_destinations.hpp"
 
-ModDestComboBox::ModDestComboBox(QWidget * parent) : QComboBox(parent){
+ModDestComboBox::ModDestComboBox(QWidget * parent, bool sequencer) : QComboBox(parent){
 	for(unsigned int i = 0; i < NUM_MODULATION_DESTINATIONS; i++)
 		addItem(modulation_destinations[i]);
+	if(sequencer){
+		for(unsigned int i = 0; i < (NUM_SEQ_MODULATION_DESTINATIONS - NUM_MODULATION_DESTINATIONS); i++)
+			addItem(seq_modulation_destinations[i]);
+	}
 }
 
 const char* ModDestComboBox::modulation_destinations[] = {
@@ -95,5 +99,15 @@ const char* ModDestComboBox::modulation_destinations[] = {
 	"Filter 1 (left) Resonance",
 	"Filter 2 (right) Resonance",
 	"Distortion"
+};
+
+const char* ModDestComboBox::seq_modulation_destinations[] = {
+	"Tempo Clock multiplier",
+	"MIDI: Note Out",
+	"MIDI: Velocity Out",
+	"MIDI: Mod Wheel Out",
+	"MIDI: Pressure Out",
+	"MIDI: Breath Controller Out",
+	"MIDI: Foot Controller Out"
 };
 
