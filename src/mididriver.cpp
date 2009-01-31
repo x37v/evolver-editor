@@ -31,6 +31,7 @@
 #include "delay.hpp"
 #include "feedback.hpp"
 #include "lfo.hpp"
+#include "sequencer.hpp"
 #include <string.h>
 #include <QTimer>
 
@@ -541,19 +542,19 @@ void MidiDriver::update_model_param(uint8_t index, uint8_t value){
 			break;
 		case 56:
 			//56     0 - 75  Sequencer 1 Destination (see destination table on page 60)
-			//XXX not implemented
+			invoke_method(mModel->sequencer(), set_destination, Q_ARG(unsigned int, 0), Q_ARG(unsigned int, value));
 			break;
 		case 57:
 			//57     0 - 75  Sequencer 2 Destination (see destination table on page 60)
-			//XXX not implemented
+			invoke_method(mModel->sequencer(), set_destination, Q_ARG(unsigned int, 1), Q_ARG(unsigned int, value));
 			break;
 		case 58:
 			//58     0 - 75  Sequencer 3 Destination (see destination table on page 60)
-			//XXX not implemented
+			invoke_method(mModel->sequencer(), set_destination, Q_ARG(unsigned int, 2), Q_ARG(unsigned int, value));
 			break;
 		case 59:
 			//59     0 - 75  Sequencer 4 Destination (see destination table on page 60)
-			//XXX not implemented
+			invoke_method(mModel->sequencer(), set_destination, Q_ARG(unsigned int, 3), Q_ARG(unsigned int, value));
 			break;
 		case 60:
 			//60     0 - 100 Noise Volume
