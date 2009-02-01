@@ -215,9 +215,43 @@ void MidiDriver::poll(){
 	}
 }
 
+void MidiDriver::open_input(QString name) throw(std::runtime_error){
+	bool found = false;
+	for(std::map<unsigned int, QString>::iterator it = mInputMap.begin();
+			it != mInputMap.end(); it++){
+		if(it->second == name){
+			open_input(it->first);
+			found = true;
+			break;
+		}
+	}
+	if(!found){
+		std::string msg("Cannot find MIDI input with name: ");
+		msg.append(name.toStdString());
+		throw std::runtime_error(msg);
+	}
+}
+
 void MidiDriver::open_input(int index){
 	close_input();
 	Pm_OpenInput(&mMidiIn, index, NULL, 512, NULL, NULL);
+}
+
+void MidiDriver::open_output(QString name) throw(std::runtime_error){
+	bool found = false;
+	for(std::map<unsigned int, QString>::iterator it = mOutputMap.begin();
+			it != mOutputMap.end(); it++){
+		if(it->second == name){
+			open_output(it->first);
+			found = true;
+			break;
+		}
+	}
+	if(!found){
+		std::string msg("Cannot find MIDI output with name: ");
+		msg.append(name.toStdString());
+		throw std::runtime_error(msg);
+	}
 }
 
 void MidiDriver::open_output(int index){

@@ -27,6 +27,7 @@
 #include <vector>
 #include <map>
 #include <QString>
+#include <stdexcept>
 
 class ApplicationModel;
 class QTimer;
@@ -36,7 +37,9 @@ class MidiDriver : public QThread {
 	public:
 		MidiDriver(ApplicationModel * model, QObject * parent = NULL);
 		virtual ~MidiDriver();
+		void open_input(QString name) throw(std::runtime_error);
 		void open_input(int index);
+		void open_output(QString name) throw(std::runtime_error);
 		void open_output(int index);
 		void open(int input, int output);
 		void close_input();

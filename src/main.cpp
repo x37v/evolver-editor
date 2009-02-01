@@ -88,7 +88,9 @@ int main(int argc, char *argv[])
 			("help,h", "Print this help message.")
 			("list-midiio,l", "List the midi input and output devices that we can connect to.")
 			("midiin,i", po::value<unsigned int>(), "Specify a port number to use for MIDI input messages.")
+			("midiin-name,n", po::value<std::string>(), "Specify a port name to use for MIDI input messages.")
 			("midiout,o", po::value<unsigned int>(), "Specify a port number to use for MIDI output messages.")
+			("midiout-name,m", po::value<std::string>(), "Specify a port name to use for MIDI output messages.")
 			("style-sheet,s", po::value<std::string>(), "Specify a style sheet file to use for the GUI.")
 			;
 
@@ -115,6 +117,9 @@ int main(int argc, char *argv[])
 			} else
 				driver->open_input(vm["midiin"].as<unsigned int>());
 		}
+		if(vm.count("midiin-name"))
+			driver->open_input(QString(vm["midiin-name"].as<std::string>().c_str()));
+
 		if(vm.count("midiout")){
 			if(driver->output_map()->find(vm["midiout"].as<unsigned int>()) == driver->output_map()->end()){
 				cout << endl << "Midi output device select is not valid" << endl << endl;
@@ -123,7 +128,11 @@ int main(int argc, char *argv[])
 				return -1;
 			} else
 				driver->open_output(vm["midiout"].as<unsigned int>());
-		} else {
+		} 
+		if(vm.count("midiout-name"))
+			driver->open_output(QString(vm["midiout-name"].as<std::string>().c_str()));
+
+		if(!vm.count("midiout") && !vm.count("midiout-name")) {
 			cout << "For now you must provide a midi output device on the command line to use this software" << endl;
 			cout << "You'll most likely want to connect a midi input device as well" << endl;
 			cout << "Eventually there will be a GUI way to do this" << endl;
