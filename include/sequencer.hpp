@@ -29,8 +29,8 @@ class SequencerModel : public Model {
 	public:
 		SequencerModel(QObject * parent = NULL);
 		unsigned int length(unsigned int seq);
-		//find the lowest sequence end point
-		unsigned int first_sequence_reset(unsigned int seq);
+		//find the lowest sequence end point, staring at start
+		unsigned int first_sequence_reset(unsigned int seq, unsigned int start = 0);
 	signals:
 		void length_changed(unsigned int seq, unsigned int length);
 		void rest_changed(unsigned int step, bool on);

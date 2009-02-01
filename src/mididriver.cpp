@@ -159,9 +159,6 @@ void MidiDriver::poll(){
 								unpack_data(mInputBuffer, unpacked);
 								for(unsigned int i = 0; i < 127; i++)
 									update_model_param(i, unpacked[i]);
-								//set all the sequences to maximum length, then let update_sequence_param set the length if needed
-								for(unsigned int i = 0; i < 4; i++)
-									invoke_method(mModel->sequencer(), set_length, Q_ARG(unsigned int, i), Q_ARG(unsigned int, 16));
 								//clear all the resets
 								QMetaObject::invokeMethod(mModel->sequencer(), "clear_sequence_resets", Qt::QueuedConnection);
 								//we go backwards so that our lengths are correct
@@ -1010,10 +1007,9 @@ void MidiDriver::update_sequence_param(uint8_t index, uint8_t value){
 	uint8_t step = index % 16;
 
 	//seq zero has rests
-	//XXX not sure if length is quite correct
-	if(seq == 0 && value == 102) //rest
+	if(seq == 0 && value == 102){ //rest
 		invoke_method(mModel->sequencer(), set_rest, Q_ARG(unsigned int, step), Q_ARG(bool, true));
-	else if (value == 101) { //length
+	} else if (value == 101) { //length
 		//if this end point is less than our current length, then set this step to be the length of our sequence
 		//otherwise, set this as an endpoint for later use
 		if(step < mModel->sequencer()->length(seq))
@@ -1024,12 +1020,11 @@ void MidiDriver::update_sequence_param(uint8_t index, uint8_t value){
 		if(seq == 0)
 			invoke_method(mModel->sequencer(), set_rest, Q_ARG(unsigned int, step), Q_ARG(bool, false));
 		//so if this was the reset point for the sequence, find the next reset point
-		//and set the length to that
+		//after this step and set the length to that
 		if(step == mModel->sequencer()->length(seq)){
-			invoke_method(mModel->sequencer(), remove_sequence_reset, Q_ARG(unsigned int, seq), Q_ARG(unsigned int, step));
 			invoke_method(mModel->sequencer(), set_length, 
 					Q_ARG(unsigned int, seq), 
-					Q_ARG(unsigned int, mModel->sequencer()->first_sequence_reset(seq)));
+					Q_ARG(unsigned int, mModel->sequencer()->first_sequence_reset(seq, step + 1)));
 		}
 		invoke_method(mModel->sequencer(), set_value, Q_ARG(unsigned int, seq), 
 				Q_ARG(unsigned int, step), Q_ARG(unsigned int, value));

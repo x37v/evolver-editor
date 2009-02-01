@@ -46,10 +46,10 @@ unsigned int SequencerModel::length(unsigned int seq){
 	return mLength[seq];
 }
 
-unsigned int SequencerModel::first_sequence_reset(unsigned int seq){
+unsigned int SequencerModel::first_sequence_reset(unsigned int seq, unsigned int start){
 	if(seq > 3)
 		return 0;
-	for(unsigned int i = 0; i < 16; i++){
+	for(unsigned int i = start; i < 16; i++){
 		if(mSequenceReset[seq][i])
 			return i;
 	}
