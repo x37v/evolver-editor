@@ -30,6 +30,13 @@
 
 #include "mididriverview.hpp"
 
+QScrollArea * new_scroll_widget(QWidget * obj, QWidget * parent){
+	QScrollArea * ret = new QScrollArea(parent);
+	ret->setWidget(obj);
+	ret->setWidgetResizable(true);
+	return ret;
+}
+
 ApplicationView::ApplicationView(QWidget * parent) : QWidget(parent){
 	//allocate
 	mLayout = new QVBoxLayout(this);
@@ -42,26 +49,12 @@ ApplicationView::ApplicationView(QWidget * parent) : QWidget(parent){
 
 	mMidiDriver = new MidiDriverView(this);
 
-
-	//make them scrollable
-	QScrollArea * tab0 = new QScrollArea(this);
-	QScrollArea * tab1 = new QScrollArea(this);
-	QScrollArea * tab2 = new QScrollArea(this);
-	tab0->setWidget(mAudioAndEnvelopes);
-	tab1->setWidget(mModulations);
-	tab2->setWidget(mSequencer);
-
-	//let the tabs resize
-	tab0->setWidgetResizable(true);
-	tab1->setWidgetResizable(true);
-	tab2->setWidgetResizable(true);
-
 	//add tabs and layout
-	mTabView->addTab(tab0, QString("audio and envelopes"));
-	mTabView->addTab(tab1, QString("modulations"));
-	mTabView->addTab(tab2, QString("sequencer"));
+	mTabView->addTab(new_scroll_widget(mAudioAndEnvelopes, this), QString("audio and envelopes"));
+	mTabView->addTab(new_scroll_widget(mModulations, this), QString("modulations"));
+	mTabView->addTab(new_scroll_widget(mSequencer, this), QString("sequencer"));
+	mTabView->addTab(new_scroll_widget(mMain, this), QString("main parameters"));
 	mTabView->addTab(mMidiDriver, QString("midi io select"));
-	mTabView->addTab(mMain, QString("main parameters"));
 
 	mLayout->addWidget(mTabView);
 	mLayout->setContentsMargins(1,1,1,1);
@@ -80,6 +73,7 @@ void ApplicationView::connect_to_model(ApplicationModel * model){
 	mAudioAndEnvelopes->connect_to_model(model);
 	mModulations->connect_to_model(model);
 	mSequencer->connect_to_model(model->sequencer());
+	mMain->connect_to_model(model->main());
 }
 
 QTabWidget * ApplicationView::tab_widget(){

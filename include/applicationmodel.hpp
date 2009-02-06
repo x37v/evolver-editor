@@ -40,6 +40,8 @@ class MiscAudioModel;
 class MiscModulationModel;
 class SequencerModel;
 
+class MainModel;
+
 class ApplicationModel : public Model {
 	Q_OBJECT
 	public:
@@ -57,6 +59,7 @@ class ApplicationModel : public Model {
 		MiscAudioModel * misc_audio();
 		MiscModulationModel * misc_modulations();
 		SequencerModel * sequencer();
+		MainModel * main();
 	private slots:
 		void osc_set_freq(int index);
 		void osc_set_tune(int index);
@@ -96,6 +99,7 @@ class ApplicationModel : public Model {
 		MiscAudioModel * mMiscAudio;
 		MiscModulationModel * mMiscModulation;
 		SequencerModel * mSequencer;
+		MainModel * mMain;
 };
 
 #endif

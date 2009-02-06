@@ -30,6 +30,7 @@
 #include "miscaudio.hpp"
 #include "miscmodulation.hpp"
 #include "sequencer.hpp"
+#include "mainparameters.hpp"
 #include <QSignalMapper>
 
 ApplicationModel::ApplicationModel(QObject * parent) : Model(parent){
@@ -156,6 +157,7 @@ ApplicationModel::ApplicationModel(QObject * parent) : Model(parent){
 	mMiscAudio = new MiscAudioModel(this);
 	mMiscModulation = new MiscModulationModel(this);
 	mSequencer = new SequencerModel(this);
+	mMain = new MainModel(this);
 }
 
 std::vector<AnalogOscModel *> * ApplicationModel::analog_oscs(){
@@ -204,6 +206,10 @@ MiscModulationModel * ApplicationModel::misc_modulations(){
 
 SequencerModel * ApplicationModel::sequencer(){
 	return mSequencer;
+}
+
+MainModel * ApplicationModel::main(){
+	return mMain;
 }
 
 

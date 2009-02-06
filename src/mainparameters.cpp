@@ -303,3 +303,232 @@ MainView::MainView(QWidget * parent) : QWidget(parent){
 
 	setLayout(mLayout);
 }
+
+void MainView::set_program_number(int val){
+	mProgramNumber->setValue(val);
+}
+
+void MainView::set_bank_number(int val){
+	mBankNumber->setValue(val);
+}
+
+void MainView::set_master_volume(int val){
+	mMasterVolume->setValue(val);
+}
+
+void MainView::set_master_transpose(int val){
+	mMasterTranspose->setValue(val);
+}
+
+void MainView::set_bpm(int val){
+	mBPM->setValue(val);
+}
+
+void MainView::set_clock_divide(int val){
+	mClockDiv->setCurrentIndex(val);
+}
+
+void MainView::set_use_program_tempo(bool val){
+	mUseProgramTempo->setChecked(val);
+}
+
+void MainView::set_midi_clock_select(int val){
+	mMIDIClockSelect->setCurrentIndex(val);
+}
+
+void MainView::set_lock_sequence(bool val){
+	mLockSequence->setChecked(val);
+}
+
+void MainView::set_poly_chain_select(int val){
+	mPolyChainSelect->setCurrentIndex(val);
+}
+
+void MainView::set_input_gain(int val){
+	mInputGain->setCurrentIndex(val);
+}
+
+void MainView::set_master_fine_tune(int val){
+	mMasterFineTune->setValue(val);
+}
+
+void MainView::set_midi_receive(int val){
+	mMIDIReceive->setCurrentIndex(val);
+}
+
+void MainView::set_midi_transmit(int val){
+	mMIDITransmit->setCurrentIndex(val);
+}
+
+void MainView::set_midi_channel(int val){
+	mMIDIChannel->setCurrentIndex(val);
+}
+
+void MainView::connect_to_model(MainModel * model){
+	QObject::connect(
+			this,
+			SIGNAL(program_number_changed(int)),
+			model,
+			SLOT(set_program_number(int)));
+	QObject::connect(
+			model,
+			SIGNAL(program_number_changed(int)),
+			this,
+			SLOT(set_program_number(int)));
+
+	QObject::connect(
+			this,
+			SIGNAL(bank_number_changed(int)),
+			model,
+			SLOT(set_bank_number(int)));
+	QObject::connect(
+			model,
+			SIGNAL(bank_number_changed(int)),
+			this,
+			SLOT(set_bank_number(int)));
+
+	QObject::connect(
+			this,
+			SIGNAL(master_volume_changed(int)),
+			model,
+			SLOT(set_master_volume(int)));
+	QObject::connect(
+			model,
+			SIGNAL(master_volume_changed(int)),
+			this,
+			SLOT(set_master_volume(int)));
+
+	QObject::connect(
+			this,
+			SIGNAL(master_transpose_changed(int)),
+			model,
+			SLOT(set_master_transpose(int)));
+	QObject::connect(
+			model,
+			SIGNAL(master_transpose_changed(int)),
+			this,
+			SLOT(set_master_transpose(int)));
+
+	QObject::connect(
+			this,
+			SIGNAL(bpm_changed(int)),
+			model,
+			SLOT(set_bpm(int)));
+	QObject::connect(
+			model,
+			SIGNAL(bpm_changed(int)),
+			this,
+			SLOT(set_bpm(int)));
+
+	QObject::connect(
+			this,
+			SIGNAL(clock_divide_changed(int)),
+			model,
+			SLOT(set_clock_divide(int)));
+	QObject::connect(
+			model,
+			SIGNAL(clock_divide_changed(int)),
+			this,
+			SLOT(set_clock_divide(int)));
+
+	QObject::connect(
+			this,
+			SIGNAL(use_program_tempo_changed(bool)),
+			model,
+			SLOT(set_use_program_tempo(bool)));
+	QObject::connect(
+			model,
+			SIGNAL(use_program_tempo_changed(bool)),
+			this,
+			SLOT(set_use_program_tempo(bool)));
+
+	QObject::connect(
+			this,
+			SIGNAL(midi_clock_select_changed(int)),
+			model,
+			SLOT(set_midi_clock_select(int)));
+	QObject::connect(
+			model,
+			SIGNAL(midi_clock_select_changed(int)),
+			this,
+			SLOT(set_midi_clock_select(int)));
+
+	QObject::connect(
+			this,
+			SIGNAL(lock_sequence_changed(bool)),
+			model,
+			SLOT(set_lock_sequence(bool)));
+	QObject::connect(
+			model,
+			SIGNAL(lock_sequence_changed(bool)),
+			this,
+			SLOT(set_lock_sequence(bool)));
+
+	QObject::connect(
+			this,
+			SIGNAL(poly_chain_select_changed(int)),
+			model,
+			SLOT(set_poly_chain_select(int)));
+	QObject::connect(
+			model,
+			SIGNAL(poly_chain_select_changed(int)),
+			this,
+			SLOT(set_poly_chain_select(int)));
+
+	QObject::connect(
+			this,
+			SIGNAL(input_gain_changed(int)),
+			model,
+			SLOT(set_input_gain(int)));
+	QObject::connect(
+			model,
+			SIGNAL(input_gain_changed(int)),
+			this,
+			SLOT(set_input_gain(int)));
+
+	QObject::connect(
+			this,
+			SIGNAL(master_fine_tune_changed(int)),
+			model,
+			SLOT(set_master_fine_tune(int)));
+	QObject::connect(
+			model,
+			SIGNAL(master_fine_tune_changed(int)),
+			this,
+			SLOT(set_master_fine_tune(int)));
+
+	QObject::connect(
+			this,
+			SIGNAL(midi_receive_changed(int)),
+			model,
+			SLOT(set_midi_receive(int)));
+	QObject::connect(
+			model,
+			SIGNAL(midi_receive_changed(int)),
+			this,
+			SLOT(set_midi_receive(int)));
+
+	QObject::connect(
+			this,
+			SIGNAL(midi_transmit_changed(int)),
+			model,
+			SLOT(set_midi_transmit(int)));
+	QObject::connect(
+			model,
+			SIGNAL(midi_transmit_changed(int)),
+			this,
+			SLOT(set_midi_transmit(int)));
+
+	QObject::connect(
+			this,
+			SIGNAL(midi_channel_changed(int)),
+			model,
+			SLOT(set_midi_channel(int)));
+	QObject::connect(
+			model,
+			SIGNAL(midi_channel_changed(int)),
+			this,
+			SLOT(set_midi_channel(int)));
+
+}
+
