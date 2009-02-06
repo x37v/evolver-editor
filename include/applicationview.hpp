@@ -30,6 +30,7 @@ class QVBoxLayout;
 class ApplicationModel;
 class SequencerView;
 class MidiDriverView;
+class MainView;
 
 class ApplicationView : public QWidget {
 	Q_OBJECT
@@ -40,6 +41,7 @@ class ApplicationView : public QWidget {
 		void connect_to_model(ApplicationModel * model);
 		QTabWidget * tab_widget();
 		MidiDriverView * midi_driver();
+		MainView * main();
 	private:
 		QVBoxLayout * mLayout;
 		QTabWidget * mTabView;
@@ -48,6 +50,7 @@ class ApplicationView : public QWidget {
 		ModulationView * mModulations;
 		SequencerView * mSequencer;
 		MidiDriverView * mMidiDriver;
+		MainView * mMain;
 };
 
 #endif

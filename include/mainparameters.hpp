@@ -82,4 +82,35 @@ class MainModel : public QObject {
 		unsigned int mMIDIChannel;
 };
 
+#include <QWidget>
+class SliderSpinBox;
+class QComboBox;
+class QToolButton;
+class QSpinBox;
+class QGridLayout;
+
+class MainView : public QWidget {
+	Q_OBJECT
+	public:
+		MainView(QWidget * parent = NULL);
+	private:
+		QGridLayout * mLayout;
+
+		QSpinBox * mProgramNumber;
+		QSpinBox * mBankNumber;
+		SliderSpinBox * mMasterVolume;
+		SliderSpinBox * mMasterTranspose;
+		SliderSpinBox * mBPM;
+		QComboBox * mClockDiv;
+		QToolButton * mUseProgramTempo;
+		QComboBox * mMIDIClockSelect;
+		QToolButton * mLockSequence;
+		QComboBox * mPolyChainSelect;
+		QComboBox * mInputGain;
+		SliderSpinBox * mMasterFineTune;
+		QComboBox * mMIDIReceive;
+		QComboBox * mMIDITransmit;
+		QComboBox * mMIDIChannel;
+};
+
 #endif

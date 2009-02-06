@@ -1,5 +1,13 @@
 #include "mainparameters.hpp"
 #include "common.hpp"
+#include "sliderspinbox.hpp"
+#include <QGridLayout>
+#include <QComboBox>
+#include <QSpinBox>
+#include <QToolButton>
+#include <QString>
+#include <QLabel>
+#include <QHBoxLayout>
 
 const unsigned int MainModel::program_number_max = 128;
 const unsigned int MainModel::program_number_min = 1;
@@ -36,7 +44,7 @@ const char * MainModel::clock_divide_names[] = {
 	"Sixty-Fourth Notes triplets"
 };
 const char * MainModel::midi_clock_select_names[] = {
-	"Use Internal clock, don’t send MIDI clock",
+	"Use Internal clock, don't send MIDI clock",
 	"Use Internal clock, send MIDI clock",
 	"Use MIDI clock In",
 	"Use MIDI clock In, and retransmit MIDI clock out",
@@ -63,8 +71,8 @@ const char * MainModel::input_gain_names[] = {
 const char * MainModel::midi_receive_names[] = {
 	"Off: no MIDI is received",
 	"All MIDI received",
-	"Only MIDI program changes received (along with note/controller data)",
-	"Only parameters received (along with note/controller data)"
+	"Only MIDI program changes received (+ note/controller data)",
+	"Only parameters received (+ note/controller data)"
 };
 const char * MainModel::midi_transmit_names[] = {
 	"Off: no MIDI is transmitted",
@@ -195,3 +203,103 @@ void MainModel::set_midi_channel(int val){
 	}
 }
 
+MainView::MainView(QWidget * parent) : QWidget(parent){
+	//allocate
+	mLayout = new QGridLayout(this);
+	mProgramNumber = new QSpinBox(this);
+	mBankNumber = new QSpinBox(this);
+	mMasterVolume = new SliderSpinBox(this);
+	mMasterTranspose = new SliderSpinBox(this);
+	mBPM = new SliderSpinBox(this);
+	mClockDiv = new QComboBox(this);
+	mUseProgramTempo = new QToolButton(this);
+	mMIDIClockSelect = new QComboBox(this);
+	mLockSequence = new QToolButton(this);
+	mPolyChainSelect = new QComboBox(this);
+	mInputGain = new QComboBox(this);
+	mMasterFineTune = new SliderSpinBox(this);
+	mMIDIReceive = new QComboBox(this);
+	mMIDITransmit = new QComboBox(this);
+	mMIDIChannel = new QComboBox(this);
+
+	//set up
+	mProgramNumber->setRange(MainModel::program_number_min, MainModel::program_number_max);
+	mBankNumber->setRange(MainModel::bank_number_min, MainModel::bank_number_max);
+	mMasterVolume->setRange(0, MainModel::master_volume_max);
+	mMasterTranspose->setRange(MainModel::master_transpose_min, MainModel::master_volume_max);
+	mBPM->setRange(MainModel::bpm_min, MainModel::bpm_max);
+	for(unsigned int i = 0; i <= MainModel::clock_divide_max; i++)
+		mClockDiv->addItem(MainModel::clock_divide_names[i]);
+	mUseProgramTempo->setCheckable(true);
+	mUseProgramTempo->setText("use program tempo");
+	for(unsigned int i = 0; i <= MainModel::midi_clock_select_max; i++)
+		mMIDIClockSelect->addItem(MainModel::midi_clock_select_names[i]);
+	mLockSequence->setCheckable(true);
+	mLockSequence->setText("lock sequence");
+	for(unsigned int i = 0; i <= MainModel::poly_chain_select_max; i++)
+		mPolyChainSelect->addItem(MainModel::poly_chain_select_names[i]);
+	for(unsigned int i = 0; i <= MainModel::input_gain_max; i++)
+		mInputGain->addItem(MainModel::input_gain_names[i]);
+	mMasterFineTune->setRange(MainModel::master_fine_tune_min, MainModel::master_fine_tune_max);
+	for(unsigned int i = 0; i <= MainModel::midi_receive_max; i++)
+		mMIDIReceive->addItem(MainModel::midi_receive_names[i]);
+	for(unsigned int i = 0; i <= MainModel::midi_transmit_max; i++)
+		mMIDITransmit->addItem(MainModel::midi_transmit_names[i]);
+	mMIDIChannel->addItem("omni");
+	for(unsigned int i = 1; i <= MainModel::midi_channel_max; i++)
+		mMIDIChannel->addItem(QString("%1").arg(i));
+
+	//layout
+	unsigned int row = 0;
+	QHBoxLayout * progLayout = new QHBoxLayout;
+
+	progLayout->addWidget(mProgramNumber);
+	progLayout->addSpacing(2);
+	progLayout->addWidget(new QLabel("bank number"));
+	progLayout->addWidget(mBankNumber);
+	progLayout->addStretch(10);
+	progLayout->setContentsMargins(0,0,0,0);
+
+	mLayout->addWidget(new QLabel("program number", this), ++row, 0, 1, 1, Qt::AlignRight);
+	mLayout->addLayout(progLayout, row, 1);
+
+	mLayout->addWidget(new QLabel("master volume", this), ++row, 0, 1, 1, Qt::AlignRight);
+	mLayout->addWidget(mMasterVolume, row, 1);
+	mLayout->addWidget(new QLabel("master transpose", this), ++row, 0, 1, 1, Qt::AlignRight);
+	mLayout->addWidget(mMasterTranspose, row, 1);
+	mLayout->addWidget(new QLabel("master tune", this), ++row, 0, 1, 1, Qt::AlignRight);
+	mLayout->addWidget(mMasterFineTune, row, 1);
+	mLayout->addWidget(new QLabel("input gain", this), ++row, 0, 1, 1, Qt::AlignRight);
+	mLayout->addWidget(mInputGain, row, 1);
+
+	mLayout->addWidget(new QLabel("clock divide", this), ++row, 0, 1, 1, Qt::AlignRight);
+	mLayout->addWidget(mClockDiv, row, 1);
+	mLayout->addWidget(new QLabel("bpm", this), ++row, 0, 1, 1, Qt::AlignRight);
+	mLayout->addWidget(mBPM, row, 1);
+
+	QHBoxLayout * buttonLayout = new QHBoxLayout;
+	buttonLayout->addWidget(mUseProgramTempo);
+	buttonLayout->addWidget(mLockSequence);
+	buttonLayout->addStretch(10);
+	buttonLayout->setContentsMargins(0,0,0,0);
+	mLayout->addLayout(buttonLayout, ++row, 1);
+	//mLayout->addWidget(mUseProgramTempo, ++row, 1, 1, 1, Qt::AlignLeft);
+	//mLayout->addWidget(mLockSequence, ++row, 1, 1, 1, Qt::AlignLeft);
+
+	mLayout->addWidget(new QLabel("poly chain", this), ++row, 0, 1, 1, Qt::AlignRight);
+	mLayout->addWidget(mPolyChainSelect, row, 1);
+
+	mLayout->addWidget(new QLabel("midi clock", this), ++row, 0, 1, 1, Qt::AlignRight);
+	mLayout->addWidget(mMIDIClockSelect, row, 1);
+	mLayout->addWidget(new QLabel("midi receive", this), ++row, 0, 1, 1, Qt::AlignRight);
+	mLayout->addWidget(mMIDIReceive, row, 1);
+	mLayout->addWidget(new QLabel("midi transmit", this), ++row, 0, 1, 1, Qt::AlignRight);
+	mLayout->addWidget(mMIDITransmit, row, 1);
+	mLayout->addWidget(new QLabel("midi channel", this), ++row, 0, 1, 1, Qt::AlignRight);
+	mLayout->addWidget(mMIDIChannel, row, 1);
+
+	mLayout->setRowStretch(row + 1, 10);
+	mLayout->setColumnStretch(4, 10);
+
+	setLayout(mLayout);
+}
