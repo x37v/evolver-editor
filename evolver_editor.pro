@@ -52,7 +52,8 @@ HEADERS += include/common.hpp \
 	include/modulationview.hpp \
 	include/mididriver.hpp \
 	include/sequencer.hpp \
-	include/mididriverview.hpp
+	include/mididriverview.hpp \
+	include/mainparameters.hpp
 
 SOURCES += \
 	src/model.cpp \
@@ -78,7 +79,8 @@ SOURCES += \
 	src/modulationview.cpp \
 	src/mididriver.cpp \
 	src/sequencer.cpp \
-	src/mididriverview.cpp
+	src/mididriverview.cpp \
+	src/mainparameters.cpp
 
 DISTFILES += README
 DISTFILES += COPYING
