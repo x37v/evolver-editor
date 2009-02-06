@@ -1072,6 +1072,20 @@ void MidiDriver::send_sequencer_param(uint8_t step, uint8_t value){
 	}
 }
 
+void MidiDriver::send_main_param(uint8_t index, uint8_t value){
+	if(mMidiOut){
+		uint8_t msg[10];
+		msg[0] = (uint8_t)MIDI_SYSEX_START;
+		memcpy(msg + 1, evolver_sysex_header, 3);
+		msg[4] = main_param;
+		msg[5] = index & 0x7F;
+		msg[6] = value & 0x0F;
+		msg[7] = (value >> 4) & 0x0F;
+		msg[8] = (uint8_t)MIDI_SYSEX_END;
+		Pm_WriteSysEx(mMidiOut, 0, msg);
+	}
+}
+
 void MidiDriver::update_device_list(){
 	mInputMap.clear();
 	mOutputMap.clear();

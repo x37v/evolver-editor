@@ -81,7 +81,7 @@ const char * MainModel::midi_transmit_names[] = {
 	"Only parameters are transmitted"
 };
 
-MainModel::MainModel(QObject * parent) : QObject(parent){
+MainModel::MainModel(QObject * parent) : Model(parent){
 	mProgramNumber = 1;
 	mBankNumber = 1;
 	mMasterVolume = 0;
@@ -102,6 +102,7 @@ void MainModel::set_program_number(int val){
 	if(in_range_and_new<unsigned int>((unsigned int)val, mProgramNumber, program_number_max, program_number_min)){
 		mProgramNumber = val;
 		emit(program_number_changed(mProgramNumber));
+		send_main_param(0, mProgramNumber - 1);
 	}
 }
 
@@ -109,6 +110,7 @@ void MainModel::set_bank_number(int val){
 	if(in_range_and_new<unsigned int>((unsigned int)val, mBankNumber, bank_number_max, bank_number_min)){
 		mBankNumber = val;
 		emit(bank_number_changed(mBankNumber));
+		send_main_param(1, mBankNumber - 1);
 	}
 }
 
@@ -116,6 +118,7 @@ void MainModel::set_master_volume(int val){
 	if(in_range_and_new<unsigned int>((unsigned int)val, mMasterVolume, master_volume_max)){
 		mMasterVolume = val;
 		emit(master_volume_changed(mMasterVolume));
+		send_main_param(2, mMasterVolume);
 	}
 }
 
@@ -123,6 +126,7 @@ void MainModel::set_master_transpose(int val){
 	if(in_range_and_new<int>(val, mMasterTranspose, master_transpose_max, master_transpose_min)){
 		mMasterTranspose = val;
 		emit(master_transpose_changed(mMasterTranspose));
+		send_main_param(3, mMasterTranspose + 36);
 	}
 }
 
@@ -130,6 +134,7 @@ void MainModel::set_bpm(int val){
 	if(in_range_and_new<unsigned int>((unsigned int)val, mBPM, bpm_max, bpm_min)){
 		mBPM = val;
 		emit(bpm_changed(mBPM));
+		send_main_param(4, mBPM);
 	}
 }
 
@@ -137,6 +142,7 @@ void MainModel::set_clock_divide(int val){
 	if(in_range_and_new<unsigned int>((unsigned int)val, mClockDiv, clock_divide_max)){
 		mClockDiv = val;
 		emit(clock_divide_changed(mClockDiv));
+		send_main_param(5, mClockDiv);
 	}
 }
 
@@ -144,6 +150,7 @@ void MainModel::set_use_program_tempo(bool val){
 	if(val != mUseProgramTempo){
 		mUseProgramTempo = val;
 		emit(use_program_tempo_changed(mUseProgramTempo));
+		send_main_param(6, mUseProgramTempo);
 	}
 }
 
@@ -151,6 +158,7 @@ void MainModel::set_midi_clock_select(int val){
 	if(in_range_and_new<unsigned int>((unsigned int)val, mMIDIClockSelect, midi_clock_select_max)){
 		mMIDIClockSelect = val;
 		emit(midi_clock_select_changed(mMIDIClockSelect));
+		send_main_param(7, mMIDIClockSelect);
 	}
 }
 
@@ -158,6 +166,7 @@ void MainModel::set_lock_sequence(bool val){
 	if(val != mLockSequence){
 		mLockSequence = val;
 		emit(lock_sequence_changed(mLockSequence));
+		send_main_param(8, mLockSequence);
 	}
 }
 
@@ -165,6 +174,7 @@ void MainModel::set_poly_chain_select(int val){
 	if(in_range_and_new<unsigned int>((unsigned int)val, mPolyChainSelect, poly_chain_select_max)){
 		mPolyChainSelect = val;
 		emit(poly_chain_select_changed(mPolyChainSelect));
+		send_main_param(9, mPolyChainSelect);
 	}
 }
 
@@ -172,6 +182,7 @@ void MainModel::set_input_gain(int val){
 	if(in_range_and_new<unsigned int>((unsigned int)val, mInputGain, input_gain_max)){
 		mInputGain = val;
 		emit(input_gain_changed(mInputGain));
+		send_main_param(10, mInputGain);
 	}
 }
 
@@ -179,6 +190,7 @@ void MainModel::set_master_fine_tune(int val){
 	if(in_range_and_new<int>(val, mMasterFineTune, master_fine_tune_max, master_fine_tune_min)){
 		mMasterFineTune = val;
 		emit(master_fine_tune_changed(mMasterFineTune));
+		send_main_param(11, mMasterFineTune + 50);
 	}
 }
 
@@ -186,6 +198,7 @@ void MainModel::set_midi_receive(int val){
 	if(in_range_and_new<unsigned int>((unsigned int)val, mMIDIReceive, midi_receive_max)){
 		mMIDIReceive = val;
 		emit(midi_receive_changed(mMIDIReceive));
+		send_main_param(12, mMIDIReceive);
 	}
 }
 
@@ -193,6 +206,7 @@ void MainModel::set_midi_transmit(int val){
 	if(in_range_and_new<unsigned int>((unsigned int)val, mMIDITransmit, midi_transmit_max)){
 		mMIDITransmit = val;
 		emit(midi_transmit_changed(mMIDITransmit));
+		send_main_param(13, mMIDITransmit);
 	}
 }
 
@@ -200,6 +214,7 @@ void MainModel::set_midi_channel(int val){
 	if(in_range_and_new<unsigned int>((unsigned int)val, mMIDIChannel, midi_channel_max)){
 		mMIDIChannel = val;
 		emit(midi_channel_changed(mMIDIChannel));
+		send_main_param(14, mMIDIChannel);
 	}
 }
 
@@ -226,7 +241,7 @@ MainView::MainView(QWidget * parent) : QWidget(parent){
 	mProgramNumber->setRange(MainModel::program_number_min, MainModel::program_number_max);
 	mBankNumber->setRange(MainModel::bank_number_min, MainModel::bank_number_max);
 	mMasterVolume->setRange(0, MainModel::master_volume_max);
-	mMasterTranspose->setRange(MainModel::master_transpose_min, MainModel::master_volume_max);
+	mMasterTranspose->setRange(MainModel::master_transpose_min, MainModel::master_transpose_max);
 	mBPM->setRange(MainModel::bpm_min, MainModel::bpm_max);
 	for(unsigned int i = 0; i <= MainModel::clock_divide_max; i++)
 		mClockDiv->addItem(MainModel::clock_divide_names[i]);
@@ -245,7 +260,7 @@ MainView::MainView(QWidget * parent) : QWidget(parent){
 		mMIDIReceive->addItem(MainModel::midi_receive_names[i]);
 	for(unsigned int i = 0; i <= MainModel::midi_transmit_max; i++)
 		mMIDITransmit->addItem(MainModel::midi_transmit_names[i]);
-	mMIDIChannel->addItem("omni");
+	mMIDIChannel->addItem("all (omni)");
 	for(unsigned int i = 1; i <= MainModel::midi_channel_max; i++)
 		mMIDIChannel->addItem(QString("%1").arg(i));
 
@@ -302,6 +317,68 @@ MainView::MainView(QWidget * parent) : QWidget(parent){
 	mLayout->setColumnStretch(4, 10);
 
 	setLayout(mLayout);
+
+	//connect internal sigs
+	QObject::connect(mProgramNumber,
+			SIGNAL(valueChanged(int)),
+			this,
+			SIGNAL(program_number_changed(int)));
+	QObject::connect(mBankNumber,
+			SIGNAL(valueChanged(int)),
+			this,
+			SIGNAL(bank_number_changed(int)));
+	QObject::connect(mMasterVolume,
+			SIGNAL(valueChanged(int)),
+			this,
+			SIGNAL(master_volume_changed(int)));
+	QObject::connect(mMasterTranspose,
+			SIGNAL(valueChanged(int)),
+			this,
+			SIGNAL(master_transpose_changed(int)));
+	QObject::connect(mBPM,
+			SIGNAL(valueChanged(int)),
+			this,
+			SIGNAL(bpm_changed(int)));
+	QObject::connect(mBPM,
+			SIGNAL(valueChanged(int)),
+			this,
+			SIGNAL(clock_divide_changed(int)));
+	QObject::connect(mUseProgramTempo,
+			SIGNAL(toggled(bool)),
+			this,
+			SIGNAL(use_program_tempo_changed(bool)));
+	QObject::connect(mMIDIClockSelect,
+			SIGNAL(currentIndexChanged(int)),
+			this,
+			SIGNAL(midi_clock_select_changed(int)));
+	QObject::connect(mLockSequence,
+			SIGNAL(toggled(bool)),
+			this,
+			SIGNAL(lock_sequence_changed(bool)));
+	QObject::connect(mPolyChainSelect,
+			SIGNAL(currentIndexChanged(int)),
+			this,
+			SIGNAL(poly_chain_select_changed(int)));
+	QObject::connect(mInputGain,
+			SIGNAL(currentIndexChanged(int)),
+			this,
+			SIGNAL(input_gain_changed(int)));
+	QObject::connect(mMasterFineTune,
+			SIGNAL(valueChanged(int)),
+			this,
+			SIGNAL(master_fine_tune_changed(int)));
+	QObject::connect(mMIDIReceive,
+			SIGNAL(currentIndexChanged(int)),
+			this,
+			SIGNAL(midi_receive_changed(int)));
+	QObject::connect(mMIDITransmit,
+			SIGNAL(currentIndexChanged(int)),
+			this,
+			SIGNAL(midi_transmit_changed(int)));
+	QObject::connect(mMIDIChannel,
+			SIGNAL(currentIndexChanged(int)),
+			this,
+			SIGNAL(midi_channel_changed(int)));
 }
 
 void MainView::set_program_number(int val){

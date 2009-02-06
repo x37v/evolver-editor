@@ -62,6 +62,7 @@ class MidiDriver : public QThread {
 		void request_waveform_dump(int index);
 		void send_program_param(uint8_t index, uint8_t value);
 		void send_sequencer_param(uint8_t step, uint8_t value);
+		void send_main_param(uint8_t index, uint8_t value);
 		void update_device_list();
 	protected slots:
 		void poll();

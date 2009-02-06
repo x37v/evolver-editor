@@ -40,3 +40,8 @@ void Model::send_sequencer_param(uint8_t step, uint8_t value){
 		cMidiDriver->send_sequencer_param(step, value);
 }
 
+void Model::send_main_param(uint8_t index, uint8_t value){
+	if(cMidiDriver)
+		cMidiDriver->send_main_param(index, value);
+}
+

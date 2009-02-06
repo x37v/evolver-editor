@@ -1,9 +1,9 @@
 #ifndef MAIN_PARAMETERS_HPP
 #define MAIN_PARAMETERS_HPP
 
-#include <QObject>
+#include "model.hpp"
 
-class MainModel : public QObject {
+class MainModel : public Model {
 	Q_OBJECT
 	public:
 		MainModel(QObject * parent = NULL);
