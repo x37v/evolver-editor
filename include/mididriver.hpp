@@ -38,16 +38,20 @@ class MidiDriver : public QThread {
 		MidiDriver(ApplicationModel * model, QObject * parent = NULL);
 		virtual ~MidiDriver();
 		void open_input(QString name) throw(std::runtime_error);
-		void open_input(int index);
 		void open_output(QString name) throw(std::runtime_error);
+		const std::map<unsigned int, QString> * input_map();
+		const std::map<unsigned int, QString> * output_map();
+	signals:
+		void input_index_changed(int index);
+		void output_index_changed(int index);
+	public slots:
+		void open_input(int index);
 		void open_output(int index);
 		void open(int input, int output);
 		void close_input();
 		void close_output();
 		void close();
 		void run();
-		const std::map<unsigned int, QString> * input_map();
-		const std::map<unsigned int, QString> * output_map();
 	protected:
 		void update_model_param(uint8_t index, uint8_t value);
 		void update_sequence_param(uint8_t index, uint8_t value);
@@ -85,6 +89,8 @@ class MidiDriver : public QThread {
 		unsigned int mInputParamNumber;
 		uint8_t mInputParamValue;
 		QTimer * mTimer;
+		int mInputIndex;
+		int mOutputIndex;
 		std::map<unsigned int, QString> mInputMap;
 		std::map<unsigned int, QString> mOutputMap;
 };

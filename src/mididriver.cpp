@@ -46,6 +46,8 @@ const uint8_t MidiDriver::evolver_sysex_header[] = { 0x01, 0x20, 0x01 };
 MidiDriver::MidiDriver(ApplicationModel * model, QObject * parent) : QThread(parent){
 	mMidiOut = NULL;
 	mMidiIn = NULL;
+	mInputIndex = -1;
+	mOutputIndex = -1;
 	mReading = false;
 	mModel = model;
 	mTimer = new QTimer;
@@ -230,8 +232,13 @@ void MidiDriver::open_input(QString name) throw(std::runtime_error){
 }
 
 void MidiDriver::open_input(int index){
-	close_input();
-	Pm_OpenInput(&mMidiIn, index, NULL, 512, NULL, NULL);
+	if(index != mInputIndex){
+		close_input();
+		if(index >= 0)
+			Pm_OpenInput(&mMidiIn, index, NULL, 512, NULL, NULL);
+		mInputIndex = index;
+		emit(input_index_changed(mInputIndex));
+	}
 }
 
 void MidiDriver::open_output(QString name) throw(std::runtime_error){
@@ -252,8 +259,13 @@ void MidiDriver::open_output(QString name) throw(std::runtime_error){
 }
 
 void MidiDriver::open_output(int index){
-	close_output();
-	Pm_OpenOutput(&mMidiOut, index, NULL, 512, NULL, NULL, 0);
+	if(index != mOutputIndex){
+		close_output();
+		if(index >= 0)
+			Pm_OpenOutput(&mMidiOut, index, NULL, 512, NULL, NULL, 0);
+		mOutputIndex = index;
+		emit(output_index_changed(mOutputIndex));
+	}
 }
 
 void MidiDriver::open(int input, int output){

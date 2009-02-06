@@ -27,6 +27,8 @@
 #include "modulationview.hpp"
 #include "sequencer.hpp"
 
+#include "mididriverview.hpp"
+
 ApplicationView::ApplicationView(QWidget * parent) : QWidget(parent){
 	//allocate
 	mLayout = new QVBoxLayout(this);
@@ -34,6 +36,8 @@ ApplicationView::ApplicationView(QWidget * parent) : QWidget(parent){
 	mAudioAndEnvelopes = new AudioAndEnvelopeView(this);
 	mModulations = new ModulationView(this);
 	mSequencer = new SequencerView(this);
+
+	mMidiDriver = new MidiDriverView(this);
 
 	//make them scrollable
 	QScrollArea * tab0 = new QScrollArea(this);
@@ -52,6 +56,7 @@ ApplicationView::ApplicationView(QWidget * parent) : QWidget(parent){
 	mTabView->addTab(tab0, QString("audio and envelopes"));
 	mTabView->addTab(tab1, QString("modulations"));
 	mTabView->addTab(tab2, QString("sequencer"));
+	mTabView->addTab(mMidiDriver, QString("midi io select"));
 
 	mLayout->addWidget(mTabView);
 	mLayout->setContentsMargins(1,1,1,1);
@@ -74,4 +79,8 @@ void ApplicationView::connect_to_model(ApplicationModel * model){
 
 QTabWidget * ApplicationView::tab_widget(){
 	return mTabView;
+}
+
+MidiDriverView * ApplicationView::midi_driver(){
+	return mMidiDriver;
 }

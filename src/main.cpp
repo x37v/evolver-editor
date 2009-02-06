@@ -34,6 +34,7 @@
 #include "miscaudio.hpp"
 #include "miscmodulation.hpp"
 #include "mididriver.hpp"
+#include "mididriverview.hpp"
 
 #include <QApplication>
 #include <QFile>
@@ -77,6 +78,31 @@ int main(int argc, char *argv[])
 
 	//update the list of midi i/o devices
 	driver->update_device_list();
+	view->midi_driver()->update_inputs(driver->input_map());
+	view->midi_driver()->update_outputs(driver->output_map());
+
+	//connect up the driver and its view
+	QObject::connect(
+			driver, 
+			SIGNAL(input_index_changed(int)),
+			view->midi_driver(), 
+			SLOT(set_input_index(int)));
+	QObject::connect(
+			view->midi_driver(), 
+			SIGNAL(input_index_changed(int)),
+			driver, 
+			SLOT(open_input(int)));
+	QObject::connect(
+			driver, 
+			SIGNAL(output_index_changed(int)),
+			view->midi_driver(), 
+			SLOT(set_output_index(int)));
+	QObject::connect(
+			view->midi_driver(), 
+			SIGNAL(output_index_changed(int)),
+			driver, 
+			SLOT(open_output(int)));
+
 
 	try {
 		// Declare the supported options.
