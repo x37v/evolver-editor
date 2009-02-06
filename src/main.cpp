@@ -158,14 +158,6 @@ int main(int argc, char *argv[])
 		if(vm.count("midiout-name"))
 			driver->open_output(QString(vm["midiout-name"].as<std::string>().c_str()));
 
-		if(!vm.count("midiout") && !vm.count("midiout-name")) {
-			cout << "For now you must provide a midi output device on the command line to use this software" << endl;
-			cout << "You'll most likely want to connect a midi input device as well" << endl;
-			cout << "Eventually there will be a GUI way to do this" << endl;
-			cout << endl << desc << endl;
-			return -1;
-		}
-
 		//set the style sheet
 		bool styled = false;
 		if(vm.count("style-sheet")){

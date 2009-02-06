@@ -17,6 +17,9 @@ MidiDriverView::MidiDriverView(QWidget * parent) : QWidget(parent){
 	mInputSelect->addItem("no selection", -1);
 	mOutputSelect->addItem("no selection", -1);
 
+	mLayout->setRowStretch(4, 10);
+	mLayout->setColumnStretch(4, 10);
+
 	setLayout(mLayout);
 
 	//connect internal signals/slots
