@@ -45,3 +45,13 @@ void Model::send_main_param(uint8_t index, uint8_t value){
 		cMidiDriver->send_main_param(index, value);
 }
 
+void Model::send_program_request(uint8_t program, uint8_t bank){
+	if(cMidiDriver)
+		cMidiDriver->request_program(program, bank);
+}
+
+void Model::update_model(){
+	if(cMidiDriver)
+		cMidiDriver->request_edit_buffer();
+}
+

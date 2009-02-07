@@ -35,6 +35,8 @@ class Model : public QObject {
 		void send_program_param(uint8_t index, uint8_t value);
 		void send_sequencer_param(uint8_t step, uint8_t value);
 		void send_main_param(uint8_t index, uint8_t value);
+		void send_program_request(uint8_t program, uint8_t bank);
+		void update_model();
 };
 
 #endif

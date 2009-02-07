@@ -32,6 +32,7 @@
 #include "feedback.hpp"
 #include "lfo.hpp"
 #include "sequencer.hpp"
+#include "mainparameters.hpp"
 #include <string.h>
 #include <QTimer>
 
@@ -74,6 +75,22 @@ void MidiDriver::run(){
 	}
 }
 
+void MidiDriver::request_update_state(){
+	request_edit_buffer();
+	request_main_params();
+}
+
+void MidiDriver::request_main_params(){
+	if(mMidiOut){
+		uint8_t msg[8];
+		msg[0] = (uint8_t)MIDI_SYSEX_START;
+		memcpy(msg + 1, evolver_sysex_header, 3);
+		msg[4] = main_param_dump_request;
+		msg[5] = (uint8_t)MIDI_SYSEX_END;
+		Pm_WriteSysEx(mMidiOut, 0, msg);
+	}
+}
+
 void MidiDriver::request_edit_buffer(){
 	if(mMidiOut){
 		uint8_t msg[8];
@@ -81,6 +98,19 @@ void MidiDriver::request_edit_buffer(){
 		memcpy(msg + 1, evolver_sysex_header, 3);
 		msg[4] = edit_dump_request;
 		msg[5] = (uint8_t)MIDI_SYSEX_END;
+		Pm_WriteSysEx(mMidiOut, 0, msg);
+	}
+}
+
+void MidiDriver::request_program(uint8_t program, uint8_t bank){
+	if(mMidiOut){
+		uint8_t msg[9];
+		msg[0] = (uint8_t)MIDI_SYSEX_START;
+		memcpy(msg + 1, evolver_sysex_header, 3);
+		msg[4] = prog_dump_request;
+		msg[5] = 0x03 & bank;
+		msg[6] = 0x7F & program;
+		msg[7] = (uint8_t)MIDI_SYSEX_END;
 		Pm_WriteSysEx(mMidiOut, 0, msg);
 	}
 }
@@ -134,8 +164,15 @@ void MidiDriver::poll(){
 							mCurrentCommand = edit_dump;
 							mInputBuffer.clear();
 							break;
+						case main_param_dump:
+							mCurrentCommand = main_param_dump;
+							mInputBuffer.clear();
+							break;
 						case seq_param:
 							mCurrentCommand = seq_param;
+							break;
+						case main_param:
+							mCurrentCommand = main_param;
 							break;
 						default:
 							//XXX haven't implemented all the commands yet
@@ -146,9 +183,17 @@ void MidiDriver::poll(){
 					unsigned int index = mReadingCount - 4;
 					switch(mCurrentCommand){
 						case prog_dump:
-							//XXX for now ditch bank and prog
-							if(index < 2)
+							if(index == 0){
+								//bank number
+								//XXX we requested this program, so we don't have to actually set it
+								//invoke_method(mModel->main(), set_bank_number, Q_ARG(int, data + 1));
 								break;
+							} else if (index == 1){
+								//program number
+								//XXX we requested this program, so we don't have to actually set it
+								//invoke_method(mModel->main(), set_program_number, Q_ARG(int, data + 1));
+								break;
+							}
 							//update the index for the prog_param, let it fall through
 							index -= 2;
 						case edit_dump:
@@ -160,13 +205,21 @@ void MidiDriver::poll(){
 								std::vector<uint8_t> unpacked;
 								unpack_data(mInputBuffer, unpacked);
 								for(unsigned int i = 0; i < 127; i++)
-									update_model_param(i, unpacked[i]);
+									update_program_param(i, unpacked[i]);
 								//clear all the resets
 								QMetaObject::invokeMethod(mModel->sequencer(), "clear_sequence_resets", Qt::QueuedConnection);
 								//we go backwards so that our lengths are correct
 								for(int i = 63; i >= 0; i--)
 									update_sequence_param(i, unpacked[i + 128]);
 							}
+							break;
+						case main_param_dump:
+							//main parmeters are not packed, they come "index, "value" 
+							//so every other can be sent to the model
+							if(index % 2 == 0){
+								mInputParamValue = data;
+							} else 
+								update_main_param(index >> 1, (data << 4) | mInputParamValue);
 							break;
 						case prog_param:
 							switch(index){
@@ -179,7 +232,7 @@ void MidiDriver::poll(){
 								case 2:
 									mInputParamValue |= (data << 4);
 									//update the shit
-									update_model_param(mInputParamNumber, mInputParamValue);
+									update_program_param(mInputParamNumber, mInputParamValue);
 									break;
 								default:
 									break;
@@ -201,6 +254,23 @@ void MidiDriver::poll(){
 								default:
 									break;
 							};
+						case main_param:
+							switch(index){
+								case 0:
+									mInputParamNumber = data;
+									break;
+								case 1:
+									mInputParamValue = data;
+									break;
+								case 2:
+									mInputParamValue |= (data << 4);
+									//update the shit
+									update_main_param(mInputParamNumber, mInputParamValue);
+									break;
+								default:
+									break;
+							};
+							break;
 						default: 
 							break;
 					};
@@ -298,7 +368,7 @@ MidiDriver::~MidiDriver(){
 	close();
 }
 
-void MidiDriver::update_model_param(uint8_t index, uint8_t value){
+void MidiDriver::update_program_param(uint8_t index, uint8_t value){
 	switch(index){
 		case 0:
 			//0 0 - 120 Oscillator 1 Frequency, 0 – 120 in semitones (10 octave range)
@@ -1042,6 +1112,58 @@ void MidiDriver::update_sequence_param(uint8_t index, uint8_t value){
 				Q_ARG(unsigned int, step), Q_ARG(unsigned int, value));
 	}
 
+}
+
+void MidiDriver::update_main_param(uint8_t index, uint8_t value){
+	switch(index){
+		case 0:
+			invoke_method(mModel->main(), set_program_number, Q_ARG(int, value + 1));
+			break;
+		case 1:
+			invoke_method(mModel->main(), set_bank_number, Q_ARG(int, value + 1));
+			break;
+		case 2:
+			invoke_method(mModel->main(), set_master_volume, Q_ARG(int, value));
+			break;
+		case 3:
+			invoke_method(mModel->main(), set_master_transpose, Q_ARG(int, value - 36));
+			break;
+		case 4:
+			invoke_method(mModel->main(), set_bpm, Q_ARG(int, value));
+			break;
+		case 5:
+			invoke_method(mModel->main(), set_clock_divide, Q_ARG(int, value));
+			break;
+		case 6:
+			invoke_method(mModel->main(), set_use_program_tempo, Q_ARG(bool, value));
+			break;
+		case 7:
+			invoke_method(mModel->main(), set_midi_clock_select, Q_ARG(int, value));
+			break;
+		case 8:
+			invoke_method(mModel->main(), set_lock_sequence, Q_ARG(bool, value));
+			break;
+		case 9:
+			invoke_method(mModel->main(), set_poly_chain_select, Q_ARG(int, value));
+			break;
+		case 10:
+			invoke_method(mModel->main(), set_input_gain, Q_ARG(int, value));
+			break;
+		case 11:
+			invoke_method(mModel->main(), set_master_fine_tune, Q_ARG(int, value - 50));
+			break;
+		case 12:
+			invoke_method(mModel->main(), set_midi_receive, Q_ARG(int, value));
+			break;
+		case 13:
+			invoke_method(mModel->main(), set_midi_transmit, Q_ARG(int, value));
+			break;
+		case 14:
+			invoke_method(mModel->main(), set_midi_channel, Q_ARG(int, value));
+			break;
+		default:
+			break;
+	};
 }
 
 void MidiDriver::send_program_param(uint8_t index, uint8_t value){

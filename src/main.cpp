@@ -190,7 +190,7 @@ int main(int argc, char *argv[])
 	//control+r requests edit buffer
 	QAction * action = new QAction(view);
 	action->setShortcut(QKeySequence(QString("Ctrl+r")));
-	QObject::connect(action, SIGNAL(triggered()), driver, SLOT(request_edit_buffer()));
+	QObject::connect(action, SIGNAL(triggered()), driver, SLOT(request_update_state()));
 	view->addAction(action);
 
 	//control+num goes to that tab

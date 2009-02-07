@@ -103,6 +103,7 @@ void MainModel::set_program_number(int val){
 		mProgramNumber = val;
 		emit(program_number_changed(mProgramNumber));
 		send_main_param(0, mProgramNumber - 1);
+		send_program_request(mProgramNumber - 1, mBankNumber - 1);
 	}
 }
 
@@ -111,6 +112,7 @@ void MainModel::set_bank_number(int val){
 		mBankNumber = val;
 		emit(bank_number_changed(mBankNumber));
 		send_main_param(1, mBankNumber - 1);
+		send_program_request(mProgramNumber - 1, mBankNumber - 1);
 	}
 }
 
