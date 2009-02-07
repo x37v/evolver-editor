@@ -30,6 +30,7 @@
 #include "miscaudio.hpp"
 #include "miscmodulation.hpp"
 #include "sequencer.hpp"
+#include "triggermidi.hpp"
 #include "mainparameters.hpp"
 #include <QSignalMapper>
 
@@ -157,6 +158,7 @@ ApplicationModel::ApplicationModel(QObject * parent) : Model(parent){
 	mMiscAudio = new MiscAudioModel(this);
 	mMiscModulation = new MiscModulationModel(this);
 	mSequencer = new SequencerModel(this);
+	mTriggerMIDI = new TriggerMIDIModel(this);
 	mMain = new MainModel(this);
 }
 
@@ -206,6 +208,10 @@ MiscModulationModel * ApplicationModel::misc_modulations(){
 
 SequencerModel * ApplicationModel::sequencer(){
 	return mSequencer;
+}
+
+TriggerMIDIModel * ApplicationModel::trigger_midi(){
+	return mTriggerMIDI;
 }
 
 MainModel * ApplicationModel::main(){

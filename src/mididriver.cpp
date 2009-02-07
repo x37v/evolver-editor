@@ -32,6 +32,7 @@
 #include "feedback.hpp"
 #include "lfo.hpp"
 #include "sequencer.hpp"
+#include "triggermidi.hpp"
 #include "mainparameters.hpp"
 #include <string.h>
 #include <QTimer>
@@ -654,6 +655,7 @@ void MidiDriver::update_program_param(uint8_t index, uint8_t value){
 			invoke_method(mModel->env3(), set_release, Q_ARG(int, value));
 			break;
 		case 54:
+			invoke_method(mModel->trigger_midi(), set_trigger_select, Q_ARG(int, value));
 			//54     0 - 13  Trigger Select
 			//                  0    All - The envelopes will be triggered by either the sequencer or MIDI notes
 			//                  1    Seq – The envelopes will be triggered by the sequencer only.
@@ -673,11 +675,15 @@ void MidiDriver::update_program_param(uint8_t index, uint8_t value){
 			//                       external signal
 			//                  13 The sequence plays once when a key is hit
 			//
-			//XXX not implemented
 			break;
 		case 55:
 			//55     0 - 73  Key Off / Transpose – 0 = MIDI notes ignored. 1 = -36
-			//XXX not implemented
+			if(value == 0){
+				invoke_method(mModel->trigger_midi(), set_midi_keys_on, Q_ARG(bool, false));
+			} else {
+				invoke_method(mModel->trigger_midi(), set_midi_keys_on, Q_ARG(bool, true));
+				invoke_method(mModel->trigger_midi(), set_midi_transpose, Q_ARG(int, value - 37));
+			}
 			break;
 		case 56:
 			//56     0 - 75  Sequencer 1 Destination (see destination table on page 60)
@@ -757,7 +763,7 @@ void MidiDriver::update_program_param(uint8_t index, uint8_t value){
 			break;
 		case 70:
 			//70     0 - 12   Pitch Bend Range, in semitones
-			//XXX not implemented
+			invoke_method(mModel->trigger_midi(), set_midi_pitch_bend_range, Q_ARG(int, value));
 			break;
 		case 71:
 			//71     0-5      Key Mode
@@ -767,7 +773,8 @@ void MidiDriver::update_program_param(uint8_t index, uint8_t value){
 			//                   3    High note priority with re-trigger
 			//                   4    Last note hit priority
 			//                   5    Last note hit priority with re-trigger
-			//XXX not implemented
+			invoke_method(mModel->trigger_midi(), set_midi_key_mode, 
+					Q_ARG(int, value % (TriggerMIDIModel::midi_key_mode_max + 1)));
 			break;
 		case 72:
 			//72     0 - 200 Glide, Oscillator 3; 101 – 199 = Fingered; 200 = osc midi off

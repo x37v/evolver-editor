@@ -39,6 +39,7 @@ class FeedbackModel;
 class MiscAudioModel;
 class MiscModulationModel;
 class SequencerModel;
+class TriggerMIDIModel;
 
 class MainModel;
 
@@ -59,6 +60,7 @@ class ApplicationModel : public Model {
 		MiscAudioModel * misc_audio();
 		MiscModulationModel * misc_modulations();
 		SequencerModel * sequencer();
+		TriggerMIDIModel * trigger_midi();
 		MainModel * main();
 	private slots:
 		void osc_set_freq(int index);
@@ -99,6 +101,7 @@ class ApplicationModel : public Model {
 		MiscAudioModel * mMiscAudio;
 		MiscModulationModel * mMiscModulation;
 		SequencerModel * mSequencer;
+		TriggerMIDIModel * mTriggerMIDI;
 		MainModel * mMain;
 };
 

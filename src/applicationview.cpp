@@ -27,6 +27,7 @@
 #include "modulationview.hpp"
 #include "sequencer.hpp"
 #include "mainparameters.hpp"
+#include "triggermidi.hpp"
 
 #include "mididriverview.hpp"
 
@@ -44,6 +45,7 @@ ApplicationView::ApplicationView(QWidget * parent) : QWidget(parent){
 	mAudioAndEnvelopes = new AudioAndEnvelopeView(this);
 	mModulations = new ModulationView(this);
 	mSequencer = new SequencerView(this);
+	mTriggerMIDI = new TriggerMIDIView(this);
 
 	mMain = new MainView(this);
 
@@ -54,6 +56,7 @@ ApplicationView::ApplicationView(QWidget * parent) : QWidget(parent){
 	mTabView->addTab(new_scroll_widget(mModulations, this), QString("modulations"));
 	mTabView->addTab(new_scroll_widget(mSequencer, this), QString("sequencer"));
 	mTabView->addTab(new_scroll_widget(mMain, this), QString("main parameters"));
+	mTabView->addTab(new_scroll_widget(mTriggerMIDI, this), QString("trigger parameters"));
 	mTabView->addTab(mMidiDriver, QString("midi io select"));
 
 	mLayout->addWidget(mTabView);
@@ -74,6 +77,7 @@ void ApplicationView::connect_to_model(ApplicationModel * model){
 	mModulations->connect_to_model(model);
 	mSequencer->connect_to_model(model->sequencer());
 	mMain->connect_to_model(model->main());
+	mTriggerMIDI->connect_to_model(model->trigger_midi());
 }
 
 QTabWidget * ApplicationView::tab_widget(){

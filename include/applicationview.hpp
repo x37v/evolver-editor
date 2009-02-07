@@ -31,6 +31,7 @@ class ApplicationModel;
 class SequencerView;
 class MidiDriverView;
 class MainView;
+class TriggerMIDIView;
 
 class ApplicationView : public QWidget {
 	Q_OBJECT
@@ -51,6 +52,7 @@ class ApplicationView : public QWidget {
 		SequencerView * mSequencer;
 		MidiDriverView * mMidiDriver;
 		MainView * mMain;
+		TriggerMIDIView * mTriggerMIDI;
 };
 
 #endif
