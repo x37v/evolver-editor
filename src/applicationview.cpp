@@ -30,6 +30,7 @@
 #include "triggermidi.hpp"
 
 #include "mididriverview.hpp"
+#include "titledwidget.hpp"
 
 QScrollArea * new_scroll_widget(QWidget * obj, QWidget * parent){
 	QScrollArea * ret = new QScrollArea(parent);
@@ -45,9 +46,14 @@ ApplicationView::ApplicationView(QWidget * parent) : QWidget(parent){
 	mAudioAndEnvelopes = new AudioAndEnvelopeView(this);
 	mModulations = new ModulationView(this);
 	mSequencer = new SequencerView(this);
-	mTriggerMIDI = new TriggerMIDIView(this);
 
+	QVBoxLayout * triggerMainLayout = new QVBoxLayout;
+	mTriggerMIDI = new TriggerMIDIView(this);
 	mMain = new MainView(this);
+	triggerMainLayout->addWidget(new TitledWidget(QString("main parameters"), mMain, this));
+	triggerMainLayout->addWidget(new TitledWidget(QString("midi and trigger parameters"), mTriggerMIDI, this));
+	QWidget * triggerMainWidget = new QWidget;
+	triggerMainWidget->setLayout(triggerMainLayout);
 
 	mMidiDriver = new MidiDriverView(this);
 
@@ -55,8 +61,7 @@ ApplicationView::ApplicationView(QWidget * parent) : QWidget(parent){
 	mTabView->addTab(new_scroll_widget(mAudioAndEnvelopes, this), QString("audio and envelopes"));
 	mTabView->addTab(new_scroll_widget(mModulations, this), QString("modulations"));
 	mTabView->addTab(new_scroll_widget(mSequencer, this), QString("sequencer"));
-	mTabView->addTab(new_scroll_widget(mMain, this), QString("main parameters"));
-	mTabView->addTab(new_scroll_widget(mTriggerMIDI, this), QString("trigger parameters"));
+	mTabView->addTab(new_scroll_widget(triggerMainWidget, this), QString("main, trigger/midi params"));
 	mTabView->addTab(mMidiDriver, QString("midi io select"));
 
 	mLayout->addWidget(mTabView);

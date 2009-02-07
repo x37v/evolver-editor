@@ -29,7 +29,7 @@ TitledWidget::TitledWidget(QString title, QWidget * widget, QWidget * parent) : 
 	mWidget = widget;
 	widget->setParent(this);
 	mLayout->addWidget(mLabel, 0, Qt::AlignHCenter);
-	mLayout->addWidget(mWidget, 0);
+	mLayout->addWidget(mWidget, 0, Qt::AlignHCenter);
 	mLayout->setContentsMargins(1,1,1,1);
 	mLayout->setSpacing(2);
 	mLayout->addStretch(1);
