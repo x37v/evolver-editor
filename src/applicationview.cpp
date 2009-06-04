@@ -30,6 +30,7 @@
 #include "triggermidi.hpp"
 
 #include "mididriverview.hpp"
+#include "helpview.hpp"
 #include "titledwidget.hpp"
 
 QScrollArea * new_scroll_widget(QWidget * obj, QWidget * parent){
@@ -57,12 +58,15 @@ ApplicationView::ApplicationView(QWidget * parent) : QWidget(parent){
 
 	mMidiDriver = new MidiDriverView(this);
 
+	mHelp = new HelpView(this);
+
 	//add tabs and layout
 	mTabView->addTab(new_scroll_widget(mAudioAndEnvelopes, this), QString("audio and envelopes"));
 	mTabView->addTab(new_scroll_widget(mModulations, this), QString("modulations"));
 	mTabView->addTab(new_scroll_widget(mSequencer, this), QString("sequencer"));
 	mTabView->addTab(new_scroll_widget(triggerMainWidget, this), QString("main, trigger/midi params"));
 	mTabView->addTab(mMidiDriver, QString("midi io select"));
+	mTabView->addTab(mHelp, QString("help"));
 
 	mLayout->addWidget(mTabView);
 	mLayout->setContentsMargins(1,1,1,1);

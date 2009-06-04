@@ -54,7 +54,8 @@ HEADERS += include/common.hpp \
 	include/sequencer.hpp \
 	include/mididriverview.hpp \
 	include/mainparameters.hpp \
-	include/triggermidi.hpp
+	include/triggermidi.hpp \
+	include/helpview.hpp
 
 SOURCES += \
 	src/model.cpp \
@@ -82,7 +83,8 @@ SOURCES += \
 	src/sequencer.cpp \
 	src/mididriverview.cpp \
 	src/mainparameters.cpp \
-	src/triggermidi.cpp
+	src/triggermidi.cpp \
+	src/helpview.cpp
 
 DISTFILES += README
 DISTFILES += COPYING

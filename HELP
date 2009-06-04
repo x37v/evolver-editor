@@ -1,0 +1,7 @@
+Key Bindings:
+	Ctrl+r: 
+		Request the current "edit buffer" from the evolver.
+		This will grab the current "patch" from the evolver and update the state of this software to reflect the settings in the evolver.
+		You must have both the MIDI input and output of the evolver routed into the evolver_editor software for this to work.
+	Ctrl+<number>:
+		This will make the software display a specific tab.  To get to the first tab, use Ctrl+1, the second tab, use Ctrl+2, etc.

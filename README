@@ -32,15 +32,16 @@ Building/Installing:
 Running:
 	Use the -h switch to find out the command line options.
 
-	To get data from the evolver you have to connect the midi out of the evolver
+	To get data from the evolver you have to connect the MIDI out of the evolver
 	to the software, use the -i command line switch to specify the device to use
-	for that.
+	for that or use the GUI tab to select your MIDI in device.
 
-	To send data to the evolver you have to connect the midi out from this software
-	to your evolver, use the -o command line switch to do that.
+	To send data to the evolver you have to connect the MIDI out from this
+	software to your evolver, use the -o command line switch to do that or use
+	the GUI tab to select your MIDI out device.
 
 	Example:
-		I will use evolver_editor -l to list the midi i/o devices and then when
+		I will use evolver_editor -l to list the MIDI i/o devices and then when
 		I've found the ones I want to connect to, lets say input index 3 and
 		output index 2, I run the software using the following command:
 		./evolver_editor -i 3 -o 2
