@@ -1,6 +1,7 @@
-This is an editor for the Dave Smith Instrument's Evolver synthesizer.
+This is a graphical editor for the Dave Smith Instrument's Evolver synthesizer.
 It was developed for the tabletop version, but I figure it should work for the
-keyboard version as well.
+keyboard version as well.  It has been tested on Linux and I'm pretty sure it
+also works on OSx.
 
 Author/contact:
 	By Alex Norman (http://x37v.info) 
