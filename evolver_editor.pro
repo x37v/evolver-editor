@@ -93,3 +93,4 @@ DISTFILES += COPYING
 #include .git so people can edit
 DISTFILES += `find .git -type f`
 DISTFILES += .gitignore
+DISTFILES += doc/evolver_editor_help.txt
