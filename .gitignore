@@ -5,3 +5,4 @@ evolver_editor
 .*.*.swp
 *.*.gz
 usr
+qrc_evolver_editor.cpp

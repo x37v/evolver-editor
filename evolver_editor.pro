@@ -16,6 +16,7 @@ VERSION = 0.1
 LIBS += -lporttime -lportmidi -lboost_program_options
 DEPENDPATH += . include src
 INCLUDEPATH += . include
+RESOURCES = evolver_editor.qrc
 MOC_DIR = moc
 OBJECTS_DIR = obj
 

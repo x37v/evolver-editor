@@ -6,7 +6,7 @@
 HelpView::HelpView(QWidget * parent) : QTextEdit(parent) {
 	setReadOnly(true);
 
-	QFile help_file("HELP");
+	QFile help_file(":/doc/evolver_editor_help.txt");
 	if(help_file.open(QIODevice::ReadOnly | QIODevice::Text)){
 		QTextStream help_file_stream(&help_file);
 		setText(help_file_stream.readAll());
