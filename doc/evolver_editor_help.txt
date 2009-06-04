@@ -1,3 +1,17 @@
+About:
+	This software is intended to be used for editing the Dave Smith Instrument's "Evolver" (http://www.davesmithinstruments.com/).  
+	It has only been tested on the table top version but may work on the keyboard version.
+	This software was written by Alex Norman: http://x37v.info/
+	This software is licenced GPL v3, see the file "COPYING" for more information.
+
+	If you find it useful, please consider a donation: http://x37v.info/donate/
+
+
+MIDI:
+	In order to send data to an evolver you must connect the MIDI out from this software to the MIDI input of an evolver, through a hardware MIDI interface.
+	In order to receive data from an evolver you must connect the MIDI out from the evolver to the MIDI input of this software, through a hardware MIDI interface.
+	You can modify the MIDI input and output settings through command-line arguments or using the 'midi io select' tab in the GUI.
+
 Key Bindings:
 	Ctrl+r: 
 		Request the current "edit buffer" from the evolver.
@@ -5,3 +19,7 @@ Key Bindings:
 		You must have both the MIDI input and output of the evolver routed into the evolver_editor software for this to work.
 	Ctrl+<number>:
 		This will make the software display a specific tab.  To get to the first tab, use Ctrl+1, the second tab, use Ctrl+2, etc.
+
+Command-Line Arguments:
+	Use the --help switch when executing this application in order to find out more about the command-line arguments.
+
