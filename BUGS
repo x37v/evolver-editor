@@ -1,0 +1,3 @@
+gui midi i/o selector doesn't seem to work quite right
+after initial start up, ctrl-r causes patch to be reloaded.. should just grab
+	what is in the current edit buffer, and not send any data
