@@ -31,6 +31,7 @@
 
 class ApplicationModel;
 class QTimer;
+class QMutex;
 
 class MidiDriver : public QThread {
 	Q_OBJECT
@@ -101,6 +102,7 @@ class MidiDriver : public QThread {
 		int mOutputIndex;
 		std::map<unsigned int, QString> mInputMap;
 		std::map<unsigned int, QString> mOutputMap;
+		QMutex * mMutex;
 };
 
 #endif

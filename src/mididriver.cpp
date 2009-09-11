@@ -36,6 +36,7 @@
 #include "mainparameters.hpp"
 #include <string.h>
 #include <QTimer>
+#include <QMutex>
 
 const uint8_t MidiDriver::evolver_sysex_header[] = { 0x01, 0x20, 0x01 };
 
@@ -51,8 +52,10 @@ MidiDriver::MidiDriver(ApplicationModel * model, QObject * parent) : QThread(par
 	mInputIndex = -1;
 	mOutputIndex = -1;
 	mReading = false;
+	mReadingCount = 0;
 	mModel = model;
 	mTimer = new QTimer;
+	mMutex = new QMutex(QMutex::Recursive);
 	connect(mTimer, SIGNAL(timeout()), this, SLOT(poll()));
 
 	update_device_list();
@@ -69,11 +72,9 @@ const std::map<unsigned int, QString> * MidiDriver::output_map(){
 }
 
 void MidiDriver::run(){
-	if(mMidiIn){
-		//ms
-		mTimer->start(2);
-		exec();
-	}
+	//ms
+	mTimer->start(2);
+	exec();
 }
 
 void MidiDriver::request_update_state(){
@@ -82,6 +83,7 @@ void MidiDriver::request_update_state(){
 }
 
 void MidiDriver::request_main_params(){
+	mMutex->lock();
 	if(mMidiOut){
 		uint8_t msg[8];
 		msg[0] = (uint8_t)MIDI_SYSEX_START;
@@ -90,9 +92,11 @@ void MidiDriver::request_main_params(){
 		msg[5] = (uint8_t)MIDI_SYSEX_END;
 		Pm_WriteSysEx(mMidiOut, 0, msg);
 	}
+	mMutex->unlock();
 }
 
 void MidiDriver::request_edit_buffer(){
+	mMutex->lock();
 	if(mMidiOut){
 		uint8_t msg[8];
 		msg[0] = (uint8_t)MIDI_SYSEX_START;
@@ -101,9 +105,11 @@ void MidiDriver::request_edit_buffer(){
 		msg[5] = (uint8_t)MIDI_SYSEX_END;
 		Pm_WriteSysEx(mMidiOut, 0, msg);
 	}
+	mMutex->unlock();
 }
 
 void MidiDriver::request_program(uint8_t program, uint8_t bank){
+	mMutex->lock();
 	if(mMidiOut){
 		uint8_t msg[9];
 		msg[0] = (uint8_t)MIDI_SYSEX_START;
@@ -114,11 +120,13 @@ void MidiDriver::request_program(uint8_t program, uint8_t bank){
 		msg[7] = (uint8_t)MIDI_SYSEX_END;
 		Pm_WriteSysEx(mMidiOut, 0, msg);
 	}
+	mMutex->unlock();
 }
 
 void MidiDriver::request_waveform_dump(int waveform){
 	if(waveform < 0 || waveform > 127)
 		return;
+	mMutex->lock();
 	if(mMidiOut){
 		uint8_t msg[8];
 		msg[0] = (uint8_t)MIDI_SYSEX_START;
@@ -128,12 +136,21 @@ void MidiDriver::request_waveform_dump(int waveform){
 		msg[6] = (uint8_t)MIDI_SYSEX_END;
 		Pm_WriteSysEx(mMidiOut, 0, msg);
 	}
+	mMutex->unlock();
 }
 
 void MidiDriver::poll(){
 	PmEvent msg;
 	PmError count;
-	count = Pm_Read(mMidiIn, &msg, 1);
+
+	mMutex->lock();
+	if(!mMidiIn){
+		mReading = false;
+		mMutex->unlock();
+		return;
+	} else
+		count = Pm_Read(mMidiIn, &msg, 1);
+	mMutex->unlock();
 
 	while(count > 0){
 		/* ignore real-time messages */
@@ -280,8 +297,17 @@ void MidiDriver::poll(){
 				mReadingCount++;
 			}
 		}
+
+		mMutex->lock();
 		//read some more
-		count = Pm_Read(mMidiIn, &msg, 1);
+		if(mMidiIn)
+			count = Pm_Read(mMidiIn, &msg, 1);
+		else {
+			mReading = false;
+			mMutex->unlock();
+			return;
+		}
+		mMutex->unlock();
 	}
 }
 
@@ -303,13 +329,16 @@ void MidiDriver::open_input(QString name) throw(std::runtime_error){
 }
 
 void MidiDriver::open_input(int index){
+	mMutex->lock();
 	if(index != mInputIndex){
 		close_input();
 		if(index >= 0)
 			Pm_OpenInput(&mMidiIn, index, NULL, 512, NULL, NULL);
 		mInputIndex = index;
-		emit(input_index_changed(mInputIndex));
-	}
+		mMutex->unlock();
+		emit(input_index_changed(index));
+	} else
+		mMutex->unlock();
 }
 
 void MidiDriver::open_output(QString name) throw(std::runtime_error){
@@ -330,13 +359,15 @@ void MidiDriver::open_output(QString name) throw(std::runtime_error){
 }
 
 void MidiDriver::open_output(int index){
+	mMutex->lock();
 	if(index != mOutputIndex){
 		close_output();
 		if(index >= 0)
 			Pm_OpenOutput(&mMidiOut, index, NULL, 512, NULL, NULL, 0);
 		mOutputIndex = index;
-		emit(output_index_changed(mOutputIndex));
+		emit(output_index_changed(index));
 	}
+	mMutex->unlock();
 }
 
 void MidiDriver::open(int input, int output){
@@ -345,15 +376,19 @@ void MidiDriver::open(int input, int output){
 }
 
 void MidiDriver::close_input(){
+	mMutex->lock();
 	if(mMidiIn)
 		Pm_Close(mMidiIn);
 	mMidiIn = NULL;
+	mMutex->unlock();
 }
 
 void MidiDriver::close_output(){
+	mMutex->lock();
 	if(mMidiOut)
 		Pm_Close(mMidiOut);
 	mMidiOut = NULL;
+	mMutex->unlock();
 }
 
 void MidiDriver::close(){
@@ -367,6 +402,7 @@ MidiDriver::~MidiDriver(){
 	mTimer->stop();
 	delete mTimer;
 	close();
+	delete mMutex;
 }
 
 void MidiDriver::update_program_param(uint8_t index, uint8_t value){
@@ -1174,6 +1210,7 @@ void MidiDriver::update_main_param(uint8_t index, uint8_t value){
 }
 
 void MidiDriver::send_program_param(uint8_t index, uint8_t value){
+	mMutex->lock();
 	if(mMidiOut){
 		uint8_t msg[10];
 		msg[0] = (uint8_t)MIDI_SYSEX_START;
@@ -1185,9 +1222,11 @@ void MidiDriver::send_program_param(uint8_t index, uint8_t value){
 		msg[8] = (uint8_t)MIDI_SYSEX_END;
 		Pm_WriteSysEx(mMidiOut, 0, msg);
 	}
+	mMutex->unlock();
 }
 
 void MidiDriver::send_sequencer_param(uint8_t step, uint8_t value){
+	mMutex->lock();
 	if(mMidiOut){
 		uint8_t msg[10];
 		msg[0] = (uint8_t)MIDI_SYSEX_START;
@@ -1199,9 +1238,11 @@ void MidiDriver::send_sequencer_param(uint8_t step, uint8_t value){
 		msg[8] = (uint8_t)MIDI_SYSEX_END;
 		Pm_WriteSysEx(mMidiOut, 0, msg);
 	}
+	mMutex->unlock();
 }
 
 void MidiDriver::send_main_param(uint8_t index, uint8_t value){
+	mMutex->lock();
 	if(mMidiOut){
 		uint8_t msg[10];
 		msg[0] = (uint8_t)MIDI_SYSEX_START;
@@ -1213,9 +1254,11 @@ void MidiDriver::send_main_param(uint8_t index, uint8_t value){
 		msg[8] = (uint8_t)MIDI_SYSEX_END;
 		Pm_WriteSysEx(mMidiOut, 0, msg);
 	}
+	mMutex->unlock();
 }
 
 void MidiDriver::update_device_list(){
+	mMutex->lock();
 	mInputMap.clear();
 	mOutputMap.clear();
 	/* list device information */
@@ -1227,6 +1270,7 @@ void MidiDriver::update_device_list(){
         if (info->output)
 			  mOutputMap[(unsigned int) i] = QString(info->name);
     }
+	mMutex->unlock();
 }
 
 //unpack our data
