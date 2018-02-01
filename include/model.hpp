@@ -22,6 +22,7 @@
 #define MODEL_HPP
 
 #include <QObject>
+#include <stdint.h>
 
 class MidiDriver;
 
