@@ -159,13 +159,11 @@ int main(int argc, char *argv[])
 			driver->open_output(QString(vm["midiout-name"].as<std::string>().c_str()));
 
 		//set the style sheet
-		bool styled = false;
 		if(vm.count("style-sheet")){
 			QFile file(QString(vm["style-sheet"].as<std::string>().c_str()));
 			if(file.open(QFile::ReadOnly)){
 				QString styleSheet = QLatin1String(file.readAll());
 				app.setStyleSheet(styleSheet);
-				styled = true;
 			} else {
 				qWarning("Cannot open style sheet: %s\n"
 						"Application will use default style.", vm["style-sheet"].as<std::string>().c_str());
