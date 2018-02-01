@@ -141,7 +141,7 @@ void MidiDriver::request_waveform_dump(int waveform){
 
 void MidiDriver::poll(){
 	PmEvent msg;
-	PmError count;
+	int count = 0;
 
 	mMutex->lock();
 	if(!mMidiIn){
